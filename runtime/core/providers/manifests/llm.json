@@ -1,0 +1,185 @@
+{
+  "manifest_version": 1,
+  "provider_type": "LLM",
+  "task_id": "AI_GIRLFRIEND_SYSTEM_ARCH_AUDIT_PERSONA_MEMORY_V2",
+  "default_selection": "dark_roast",
+  "note": "候选模型清单与 GGUF 路径的唯一真源仍是 runtime/llm/models.json（由 models_admin.py 消费）。本清单只补充「能力/预算/工具」维度，绝不复制 path/sha256，避免第二份状态源。",
+  "model_source": "runtime/llm/models.json",
+  "active_selection_source": "runtime/llm/active_model.json",
+  "transport": {
+    "protocol": "openai-compatible chat-completions",
+    "base_url": "http://127.0.0.1:8090/v1",
+    "s2s_llm_backend_flag": "chat-completions",
+    "argument_class_by_backend": {
+      "responses-api": "ResponsesApiLanguageModelHandlerArguments",
+      "chat-completions": "ChatCompletionsLanguageModelHandlerArguments",
+      "llama.cpp": "LanguageModelHandlerArguments"
+    },
+    "default_frozen_note": "models.json 的 models.dark_roast.default=true 是本 default_selection 的依据；两处若出现分歧，以 models.json 为准并同步这里。"
+  },
+  "shared_capabilities": {
+    "context_window": 8192,
+    "recommended_context_budget": 6144,
+    "budget_note": "8192 来自 models.json 冻结启动参数 -c 8192；6144 = 75 % 保守预算，留给系统提示与工具回文",
+    "tools": {
+      "supported_by_transport": true,
+      "enabled_in_production": false,
+      "reason": "llama.cpp 官方把 tools/MCP 标为 experimental 并警告不要在不可信环境开放文件/执行工具；系统自己维护 Tool Layer，不把它当核心依赖"
+    },
+    "json_mode": {
+      "supported": false,
+      "reason": "未验证，禁止当作可用能力"
+    },
+    "streaming": {
+      "supported": true,
+      "evidence": "--responses_api_stream 在现役命令行内"
+    },
+    "system_message": {
+      "supported": true
+    },
+    "multiple_system_messages": {
+      "supported": false,
+      "reason": "统一由 Context Builder 合成单条 system 文本"
+    }
+  },
+  "providers": [
+    {
+      "id": "dark_roast",
+      "provider_type": "LLM",
+      "display_name_zh": "DARK ROAST 9B",
+      "enabled": true,
+      "ui_visible": true,
+      "role": "realtime",
+      "version": "Q4_K_M i1 MTP-max",
+      "capabilities": {
+        "context_window": 8192,
+        "recommended_context_budget": 6144,
+        "language_zh": {
+          "supported": true
+        },
+        "persona_following": {
+          "supported": true,
+          "rating": "unrated_this_round"
+        },
+        "tools": {
+          "supported": true,
+          "enabled_in_production": false
+        }
+      }
+    },
+    {
+      "id": "gemma4",
+      "provider_type": "LLM",
+      "display_name_zh": "Gemma4 12B",
+      "enabled": true,
+      "ui_visible": true,
+      "role": "quality",
+      "version": "Q4_K_M QAT HauhauCS-Balanced",
+      "capabilities": {
+        "context_window": 8192,
+        "recommended_context_budget": 6144,
+        "language_zh": {
+          "supported": true
+        },
+        "persona_following": {
+          "supported": true,
+          "rating": "unrated_this_round"
+        },
+        "tools": {
+          "supported": true,
+          "enabled_in_production": false
+        }
+      }
+    },
+    {
+      "id": "legacy14",
+      "provider_type": "LLM",
+      "display_name_zh": "原 14B",
+      "enabled": true,
+      "ui_visible": false,
+      "role": "emergency_rollback",
+      "version": "Q4_K_M",
+      "capabilities": {
+        "context_window": 8192,
+        "recommended_context_budget": 6144,
+        "language_zh": {
+          "supported": true
+        },
+        "persona_following": {
+          "supported": true,
+          "rating": "unknown"
+        },
+        "tools": {
+          "supported": true,
+          "enabled_in_production": false
+        }
+      }
+    },
+    {
+      "id": "test_fake",
+      "provider_type": "LLM",
+      "display_name": "TEST FAKE LLM",
+      "display_name_zh": "测试假语言模型",
+      "version": "1",
+      "enabled": false,
+      "ui_visible": false,
+      "role": "contract_fixture",
+      "purpose": "任务 §25 CORE CONTRACT 夹具：不联网、不加载权重，只记录收到的 messages 并按脚本回复。",
+      "handler": {
+        "module": "providers.adapters.fake_llm_adapter",
+        "class": "FakeLLMHandler",
+        "cli_flag_value": "chat-completions",
+        "cli_arguments_class": "ChatCompletionsLanguageModelHandlerArguments"
+      },
+      "capabilities": {
+        "context_window": 4096,
+        "recommended_context_budget": 3072,
+        "streaming": {
+          "supported": true
+        },
+        "system_message": {
+          "supported": true
+        },
+        "multiple_system_messages": {
+          "supported": false
+        },
+        "language_zh": {
+          "supported": true
+        },
+        "persona_following": {
+          "supported": false,
+          "reason": "桩件不生成内容，无法评估人格遵循"
+        },
+        "json_mode": {
+          "supported": false
+        },
+        "tools": {
+          "supported": false
+        }
+      }
+    },
+    {
+      "id": "qwen3_live",
+      "provider_type": "LLM",
+      "display_name_zh": "Qwen3 直播",
+      "enabled": true,
+      "ui_visible": true,
+      "role": "LIVE",
+      "version": "Qwen3-4B-Instruct-2507 Q4_K_M",
+      "capabilities": {
+        "context_window": 8192,
+        "recommended_context_budget": 6144,
+        "language_zh": {
+          "supported": true
+        },
+        "streaming": {
+          "supported": true
+        },
+        "tools": {
+          "enabled_in_production": false
+        }
+      },
+      "note": "Independent new live model; no mode auto-routing; asset authority remains models.json"
+    }
+  ]
+}

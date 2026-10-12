@@ -1,0 +1,148 @@
+/* ============================================================================
+ * avatar_layout.css — AI_GIRLFRIEND_UI_AVATAR_LAYOUT_ADJUSTER_02_FIX (v2)
+ * 画面布局设置面板（人物大小 / 水平 / 垂直 / 预设 / 恢复默认）。
+ * v1 的可拖拽 divider 已删除：正式 UI 不得出现分割线（TASK 02 STEP 2/3）。
+ * 另含 TASK 02 STEP 1 产物：
+ *   · .conn-badge —— 持续断连 ≥3s 后的右上角静态提示（无任何动画）
+ *   · .circle.state-reconnecting —— 重连态改用静态样式，不再复用
+ *     state-connecting 的黄色脉冲（消灭大圆环闪烁）
+ *   · prefers-reduced-motion —— 该模式下所有非必要动画关闭
+ * ==========================================================================*/
+
+/* ---- 入口按钮与浮层卡片 ----
+ * 特异性说明：avatar-sync.js 注入 `body > *:not(#av-layer)`（含 id，1,0,1），
+ * 会把 body 直接子元素的 position 压成 relative。所以 body 直挂的元素
+ * （卡片 / 徽标）选择器必须带 id（1,1,0+）才能保住 fixed 定位。 */
+#av-layout-card.av-layout-card {
+  position: fixed;
+  right: 18px;
+  bottom: 76px;
+  z-index: 11000;
+  width: min(300px, calc(100vw - 32px));
+  box-sizing: border-box;
+  padding: 14px 16px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  background: rgba(10, 10, 12, 0.92);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+#av-layout-card.av-layout-card[hidden] { display: none; }
+.av-layout-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.av-layout-title { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; }
+.av-layout-close {
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+.av-layout-close:hover { color: #fff; }
+
+.av-layout-field { display: grid; gap: 4px; margin-bottom: 10px; }
+.av-layout-field-label {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(255, 255, 255, 0.85);
+}
+.av-layout-field-label output { color: #4ec9b0; font-variant-numeric: tabular-nums; }
+.av-layout-field input[type="range"] {
+  width: 100%;
+  accent-color: #4ec9b0;
+  cursor: pointer;
+}
+
+.av-layout-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 2px 0 10px;
+}
+.av-layout-preset {
+  flex: 1 1 auto;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font: inherit;
+  font-size: 11px;
+  padding: 5px 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.av-layout-preset:hover { background: rgba(255, 255, 255, 0.14); }
+.av-layout-preset.active { border-color: #4ec9b0; color: #4ec9b0; }
+
+.av-layout-reset {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 7px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  font: inherit;
+  font-size: 11px;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+.av-layout-reset:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+.av-layout-hint { margin: 8px 0 0; color: rgba(255, 255, 255, 0.45); font-size: 10px; }
+
+@media (max-width: 640px) {
+  #av-layout-card.av-layout-card { right: 10px; bottom: 64px; }
+}
+
+/* ---- TASK 02 STEP 1：持续断连静态徽标（右上角，无动画、无脉冲） ---- */
+#conn-badge.conn-badge {
+  position: fixed;
+  top: 14px;
+  right: 16px;
+  z-index: 12000;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(20, 20, 24, 0.85);
+  color: rgba(255, 255, 255, 0.85);
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+}
+#conn-badge.conn-badge[hidden] { display: none; }
+#conn-badge.conn-badge.conn-badge-error {
+  border-color: rgba(248, 113, 113, 0.4);
+  color: #fca5a5;
+}
+
+/* ---- TASK 02 STEP 1：重连态 = 静态。不再复用 state-connecting 的
+ *      黄色 --glow + thinking 脉冲，disconnected→connected 抖动时页面不再
+ *      出现"大圆环反复出现消失"。 ---- */
+.circle.state-reconnecting { --glow: #94a3b8; }
+.circle.state-reconnecting .circle-core,
+.circle.state-reconnecting .circle-ring,
+.circle.state-reconnecting .circle-ring-outer { animation: none; }
+
+/* ---- TASK 02 STEP 1：prefers-reduced-motion —— 所有非必要动画关闭。
+ *      保留"变化能被看见"（transition 即时完成），去掉循环/闪烁。 ---- */
+@media (prefers-reduced-motion: reduce) {
+  .circle .circle-ring,
+  .circle .circle-ring-outer,
+  .circle .circle-core,
+  .orb-wrap .orb,
+  .ind-spinner,
+  .thinking-dot,
+  .voice-wave,
+  .conn-badge {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}

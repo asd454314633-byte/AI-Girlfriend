@@ -1,0 +1,12 @@
+﻿asset,description,source,license,distribution_note
+wav2lip_weights,Wav2Lip 权重 (wav2lip.pth),https://github.com/Rudrabha/Wav2Lip,NON-COMMERCIAL,原始一键包内携带；本地 models/；不随仓库发布
+wav2lip256_package,Wav2Lip256 整合包组件,原始一键包 lineage（2026-08-05 版，见 SOURCE_LOCK route_verdict）,UNKNOWN/REVIEW,本地 models/ 与 runtime/avatar；不随仓库发布
+s3fd,s3fd 人脸检测权重,Wav2Lip 官方仓库,NON-COMMERCIAL,不随仓库发布
+qwen3_14b_gguf,Qwen3 14B GGUF,QwenLM 官方发布（HF），经 llama.cpp 量化链,Apache-2.0 (model),不随仓库发布；本地 models/
+llama_cpp,llama.cpp Windows 二进制,ggml-org/llama.cpp releases,MIT,不随仓库发布
+qwen3_tts,Qwen3-TTS 声音克隆服务,QwenLM 官方 + faster-qwen3-tts GGML wheel（F1 文档级）,REVIEW_REQUIRED,本地 TTS 服务目录；不随仓库发布
+faster_whisper,faster-whisper 1.2.1,PyPI / SYSTRAN/faster-whisper,MIT,venv 依赖，不随仓库发布
+silero_vad,Silero VAD v5,snakers4/silero-vad（经 speech-to-speech VADHandler）,MIT,venv 依赖，不随仓库发布
+avatar_media,官方示例形象（视频/图像）,原始一键包 lineage,UNKNOWN/REVIEW,不随仓库发布
+voice_reference,用户参考声音（15s）,用户个人录制,PERSONAL DATA,绝对排除
+reading_library,用户书库/阅读进度,用户个人数据,PERSONAL DATA,"绝对排除（runtime/reading/data, reading/library）"

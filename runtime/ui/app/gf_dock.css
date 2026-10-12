@@ -1,0 +1,302 @@
+/* ============================================================================
+ * gf_dock.css — AI_GIRLFRIEND_UI_DETAIL_LEFT_DOCK_CONSOLIDATION_01
+ *
+ * 唯一左侧控制 Dock 的排布层。本文件只做三件事：
+ *   1) 把 #app 从「一行行往下堆」改成「左 Dock + 右空画布」的两列网格；
+ *   2) 把迁进 Dock 的既有控件（它们各自带着上游写死的 min(420px,100%) /
+ *      min(520px,100%) / position:fixed 之类）在窄列里重新收好；
+ *   3) 把大语音圆球缩小到 Dock 上部实时交互区能容纳的尺寸。
+ *
+ * 明确不做（越界即停）：
+ *   · 不写任何 #av-video / #av-layer 的 transform、transform-origin、mask、
+ *     width、height、object-fit 规则 —— 人物变换的唯一 owner 是
+ *     avatar_layout.js（任务书第 9 条：本轮不得重写它），几何覆盖的唯一
+ *     地方是 ui_layout_modes.css 的 LIVE 段。本文件连选择器都不出现 #av-video。
+ *   · 不新建控件、不复制控件、不写任何 JS。
+ *   · 不改 9:16 舞台：LIVE 段只调 Dock 自己，--uivm-stage-* 一律不碰
+ *     （任务书第 10 条）。
+ *
+ * 加载顺序：必须排在 style.css / ui/girlfriend.css / avatar_panel.css /
+ * ui_layout_modes.css 之后 —— 它靠 #gf-dock 前缀与双 ID 选择器取胜，
+ * 而不是靠 !important（下面只有一处 !important，用于压 #gf-status-container
+ * 上游那条 position:fixed !important，属于以毒攻毒，已就地注明）。
+ * ==========================================================================*/
+
+/* ------------------------------------------------------------------ 变量表 */
+body {
+  /* 第 5 条建议值：Dock 宽度。1920px 下 24vw=460.8 → 取上限 430。 */
+  --gf-dock-w: clamp(340px, 24vw, 430px);
+  /* 安全边距：Dock 与视口上/下/左之间的留白，同时用于 max-height 的让位。 */
+  --gf-dock-safe: 16px;
+  --gf-dock-pad: 12px;
+  --gf-dock-gap: 12px;
+}
+
+/* ------------------------------------------------------------- #app 两列网格
+ * 上游 style.css 只写了 #app{display:grid;grid-template-rows:auto 1fr auto;
+ * min-height:100vh}，靠自动放置排四个子元素。本轮子元素变成
+ *   header.topbar / aside#gf-dock / main.stage / footer.footer
+ * 需要让 Dock 跨第 2、3 行占满左列，所以必须显式命名区域。
+ * 双 ID 选择器（2,0,0）压过上游的 #app（1,0,0），不需要 !important。
+ *
+ * 列宽 = --gf-dock-w + 一个安全边距：Dock 自己带 margin-left:16px，而网格项的
+ * margin 是从列轨道里【扣掉】的（实测 1920 下元素只有 414 而不是 430）。
+ * 把轨道加宽一个 safe，元素盒才【正好等于】第 5 条要求的 clamp(340px,24vw,430px)。
+ * 判据是 getBoundingClientRect().width，不是计算值里的 clamp 表达式。 */
+#app#app {
+  grid-template-columns: calc(var(--gf-dock-w) + var(--gf-dock-safe)) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "topbar topbar"
+    "dock   stage"
+    "dock   footer";
+}
+#app#app > header.topbar { grid-area: topbar; }
+#app#app > aside#gf-dock { grid-area: dock; }
+#app#app > main.stage { grid-area: stage; }
+#app#app > footer.footer { grid-area: footer; }
+
+/* 中央画布已经清空（第 7 条）：不给它任何绘制，只保留占位，
+ * 让上游的 1fr 行仍有主、main.js 的 $(".orb-wrap") 之类查询不炸。 */
+#app#app > main.stage {
+  padding: 0;
+  min-height: 0;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------------ Dock 本体 */
+#gf-dock.gf-dock {
+  position: relative;
+  /* 高于 #av-layer(0) 与 #app(1)：人物放大到铺满屏时，Dock 必须依然可读。
+     低于 #uivm-divider(10500) 与 #uivm-panel 曾经的浮层层级，避免抢走
+     人物边界拖拽手柄。 */
+  z-index: 3;
+  box-sizing: border-box;
+  align-self: start;
+  min-height: 0;
+  /* 第 5 条：max-height = calc(100vh - 安全边距)。
+     再让开实测页头高度（--uivm-topbar-h 由 ui_layout_modes.js 现场量出并写在
+     body 上，两种模式都写），否则 Dock 底边会溢出视口。 */
+  max-height: calc(100vh - var(--uivm-topbar-h, 0px) - (var(--gf-dock-safe) * 2));
+  margin: var(--gf-dock-safe) 0 var(--gf-dock-safe) var(--gf-dock-safe);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  /* 不透明到足以盖住身后的人物像素：第 8 条要求圆球不得再压在人物面部/黑雾
+     交界上，前提是它背后这块板子真的把人物挡住。 */
+  background: color-mix(in srgb, var(--bg-elev) 94%, #000);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+/* 第 5 条：overflow-y = auto，超高时 Dock 内部滚动，绝不把页面向下顶。 */
+.gf-dock-scroll {
+  box-sizing: border-box;
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--gf-dock-pad) var(--gf-dock-pad) calc(var(--gf-dock-pad) + 2px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gf-dock-gap);
+}
+
+.gf-dock-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  padding-top: 2px;
+}
+.gf-dock-group + .gf-dock-group {
+  border-top: 1px solid var(--border);
+  padding-top: var(--gf-dock-gap);
+}
+.gf-dock-title {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.gf-dock-body {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* ------------------------------------------- 迁进来的既有控件：只在窄列里收边
+ * 这些规则【只改宽度/对齐/定位】，不改任何控件自己的内部样式，
+ * 也不改它们的 DOM —— 控件是搬进来的原件，不是复制品。 */
+
+/* 上游 .gf-controls{width:min(420px,100%);justify-content:center}
+   在 430px 的列里 420 会把内边距吃光，且居中会让"模型/语音模型"两列不对称。 */
+#gf-dock .gf-controls {
+  width: 100%;
+  gap: 10px 12px;
+  justify-content: flex-start;
+}
+#gf-dock .gf-controls .gf-field { flex: 1 1 150px; }
+/* 「回复自动朗读」那一行原本横排在控件条里，进 Dock 后独占一行。 */
+#gf-dock .gf-controls .gf-switch-row { flex: 1 1 100%; }
+#gf-dock .gf-controls .btn { flex: 1 1 auto; }
+
+/* 语音表现卡：上游 min(520px,100%) → 收满 Dock 宽。 */
+#gf-dock .gf-voice-performance { width: 100%; }
+#gf-dock .gf-performance-fields {
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+/* 本轮对话 + 输入区：上游都是 min(520px,100%)。 */
+#gf-dock .gf-live-conversation { width: 100%; max-height: 22vh; }
+#gf-dock .gf-composer { width: 100%; }
+#gf-dock .gf-composer-input { font-size: 13px; padding: 9px 10px; }
+
+/* 数字人面板挂点：面板自己 width:min(720px,100%)，在 Dock 里就是 100%。 */
+#gf-dock #av-panel-mount { width: 100%; min-width: 0; }
+#gf-dock #av-panel-mount .av-panel { width: 100%; }
+
+/* 系统状态原本 position:fixed 钉在视口左下角（上游写了 !important），
+   进 Dock 后必须回到文档流，否则会脱离分组、继续压在 Dock 上面。
+   这里用 !important 只是为了压掉上游那条 !important —— 双 ID 选择器本身
+   已经比特异性更高，但 important 之间只比特异性，所以两边都要写。 */
+#gf-dock #gf-status-container {
+  position: static !important;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  top: auto;
+  z-index: auto !important;
+  width: 100%;
+  max-width: 100%;
+  max-height: none;
+  pointer-events: auto;
+  padding: 8px 10px;
+  background: color-mix(in srgb, var(--bg-elev-2) 70%, transparent);
+  box-shadow: none;
+}
+
+/* ------------------------------------------------- 第 8 条：圆球缩小并归位
+ * 上游 .circle{width:clamp(140px,min(38vw,46vh),320px)} —— 1920×1080 下是
+ * 320px，摆在中央画布上正好压住人物。缩到 Dock 能容纳的尺寸后，它连同
+ * mic/stop 两个侧键一起待在「实时」分组里，背后是 Dock 的不透明底板。
+ * .circle-core / .circle-indicator / .ind 全是百分比，跟着一起缩，不用另调。 */
+#gf-dock .orb-wrap {
+  gap: 10px;
+  flex-wrap: nowrap;
+  justify-content: center;
+  width: 100%;
+}
+#gf-dock .circle {
+  /* 76px 下限保证戴耳机时也能点中；128px 上限让 mic/stop 两个 40px 侧键
+     在 live 态展开后（76+40+40+2*10=176 … 128+40+40+20=228）仍在
+     Dock 内容宽（430-2*12-2=404）之内。 */
+  width: clamp(76px, 7.2vw, 128px);
+  flex: none;
+}
+/* 侧键：只改高度与 live 态宽度。
+   注意【不要】在这里写 width —— 上游 .side-btn 空闲态靠 width:0 收起，
+   写死宽度会让 mic/stop 在未连接时常驻占位，那是行为变化不是排布变化。 */
+#gf-dock .side-btn { height: 40px; }
+#gf-dock .side-btn svg { width: 18px; height: 18px; }
+#gf-dock .orb-wrap.live .side-btn { width: 40px; }
+/* 噪声门弧线是绝对定位的 80×80 覆盖层，跟着圆球一起缩。 */
+#gf-dock .mic-gate-arc { width: 62px; height: 62px; }
+
+/* 圆球下方的状态文字：上游是居中大字距，在窄列里换行会很难看。 */
+#gf-dock .circle-caption {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  width: 100%;
+}
+#gf-dock .circle-subcaption {
+  max-width: 100%;
+  font-size: 12px;
+  margin-top: 4px;
+}
+#gf-dock .queue-actions { margin-top: 6px; width: 100%; }
+
+/* ------------------------------------------------- 画面布局面板：从浮层变分组
+ * ui_layout_modes.css 把 #uivm-panel 写成 position:fixed 的悬浮卡（V2 §15/§16
+ * 的产物）。本轮它被 ui_layout_modes.js 挂进 Dock 的「画面」分组，
+ * 所以必须回到文档流：否则它会继续按 left/top 钉在视口上，
+ * 既盖住 Dock 也盖住人物。
+ * 选择器用 #gf-dock 前缀（2,1,1）压过 ui_layout_modes.css 里最强的
+ * body[data-view-mode="detail"] #uivm-panel.uivm-panel（1,2,1），
+ * 因此这里同样不需要 !important。 */
+#gf-dock #uivm-panel.uivm-panel {
+  position: static;
+  left: auto;
+  right: auto;
+  top: auto;
+  bottom: auto;
+  transform: none;
+  width: 100%;
+  max-width: 100%;
+  max-height: none;
+  overflow: visible;
+  box-sizing: border-box;
+  padding: 9px 10px;
+  box-shadow: none;
+  border-color: var(--border);
+  background: color-mix(in srgb, var(--bg-elev-2) 72%, transparent);
+}
+/* 收起态：上游把宽度收成 auto + max-width:320px，在 Dock 里应当照样占满列宽，
+   否则那条标题会在分组里左右跳。 */
+#gf-dock #uivm-panel.uivm-panel[data-collapsed="1"] {
+  width: 100%;
+  max-width: 100%;
+  padding: 7px 10px;
+}
+/* 「画面布局」入口按钮：进 Dock 后占满一行，和 陪读 / 数字人 同一套观感。
+ * 面板自己的 .uivm-head（标题 + #uivm-mode-tag + 收起钮）刻意【保留】：
+ * 上一轮验收明确要求"收起态也看得见现在是哪个模式"，把它藏掉是回退。 */
+#gf-dock #gf-layout-open.gf-layout-open { width: 100%; flex: 1 1 100%; }
+
+/* ------------------------------------------------------------ LIVE_PORTRAIT
+ * 第 10 条：核心构图（9:16 舞台）保持不动。ui_layout_modes.css 已经把 #app
+ * 整体推到舞台右侧并压窄，Dock 作为 #app 的第一列自然跟着过去 —— 这里
+ * 只需要保证它在窄列里不溢出，并且不去碰任何 --uivm-stage-* 变量。 */
+body[data-view-mode="live-portrait"] #gf-dock.gf-dock {
+  margin-left: 0;
+  margin-right: var(--gf-dock-safe);
+  max-height: calc(100vh - var(--uivm-topbar-h, 0px) - (var(--gf-dock-safe) * 2));
+}
+/* LIVE 下 #app 已被压到舞台右侧那条列，Dock 宽度不能超过它，
+   否则会把 footer / 页头挤出可视区。min() 让它在窄窗口里自动让路。
+   +safe 与 DETAIL 那条同理：Dock 在 LIVE 下带的是 margin-right，
+   轨道要多留一个安全边距，元素盒才等于 --gf-dock-w。 */
+body[data-view-mode="live-portrait"] #app#app {
+  grid-template-columns: minmax(0, calc(var(--gf-dock-w) + var(--gf-dock-safe))) minmax(0, 1fr);
+}
+
+/* ------------------------------------------------------------- 窄窗口降级 */
+@media (max-width: 1100px) {
+  body { --gf-dock-w: clamp(300px, 34vw, 380px); }
+  #gf-dock .circle { width: clamp(68px, 9vw, 104px); }
+}
+@media (max-width: 860px) {
+  /* 单列：Dock 落到画布上方，中央空画布收起来，避免出现"左边一条空列"。 */
+  #app#app {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "topbar"
+      "dock"
+      "stage"
+      "footer";
+  }
+  #gf-dock.gf-dock {
+    margin: 0 var(--gf-dock-safe) var(--gf-dock-safe);
+    max-height: min(64vh, calc(100vh - var(--uivm-topbar-h, 0px) - (var(--gf-dock-safe) * 2)));
+  }
+  body[data-view-mode="live-portrait"] #app#app {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

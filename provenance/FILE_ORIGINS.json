@@ -1,0 +1,1859 @@
+{
+  "source": "previous private audited staging tree; no old Git history copied",
+  "files": [
+    {
+      "path": "LICENSE",
+      "source_sha256": "d964fc77d50ed6e98bc30ebed8f58b8262981bd855c49aaf3843eeb4254e193a",
+      "final_sha256": "d964fc77d50ed6e98bc30ebed8f58b8262981bd855c49aaf3843eeb4254e193a",
+      "changed_for_archive": false
+    },
+    {
+      "path": "NOTICE.md",
+      "source_sha256": "3de3a08c8d74ae369d015b88aa17a7eef073ab84773099bf2f8bbf05ac846c09",
+      "final_sha256": "f44e940df72d1e22863cf0675bf3095b6ba41562cf612fd5c1cbc59848a1786d",
+      "changed_for_archive": true
+    },
+    {
+      "path": "docs/INSTALL.md",
+      "source_sha256": "c214e050b82f60834fc66cd9c1edc0320f3c2784b454f06d350e1aa1c82f994a",
+      "final_sha256": "5382094e3e252162a3c1a961c738ff035b80c12b7cc4e1a6be23369479d73a0a",
+      "changed_for_archive": true
+    },
+    {
+      "path": "docs/TESTING.md",
+      "source_sha256": "6066f8151c4839005b1f552b54d77889a056e693b9fff9685163d99ede827b55",
+      "final_sha256": "0941d38ad0fe956d3793339419d953b4a02dba3b6daa2c72f1412d7888356b78",
+      "changed_for_archive": true
+    },
+    {
+      "path": "provenance/COMPONENT_SOURCES.csv",
+      "source_sha256": "40414d8f3dda6aa53ac17e54b39e53fd2e5a68a3c100df87d3e72b711abcb4bc",
+      "final_sha256": "40414d8f3dda6aa53ac17e54b39e53fd2e5a68a3c100df87d3e72b711abcb4bc",
+      "changed_for_archive": false
+    },
+    {
+      "path": "provenance/MODEL_AND_ASSET_SOURCES.csv",
+      "source_sha256": "6585cba9cf62dc8e04085ab420c1278c7a0b55c127e35206f72def7145680bfd",
+      "final_sha256": "6585cba9cf62dc8e04085ab420c1278c7a0b55c127e35206f72def7145680bfd",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/.env.example",
+      "source_sha256": "6882c73acd0f1247cd3eee617e457896af2f2efbd74d0fcac02e6cc0b46017a5",
+      "final_sha256": "6882c73acd0f1247cd3eee617e457896af2f2efbd74d0fcac02e6cc0b46017a5",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/.gitignore",
+      "source_sha256": "efb9ffdfb7631c3ca1588430e9909c1a4ffb69700558c5f6164d43c9b244ace4",
+      "final_sha256": "efb9ffdfb7631c3ca1588430e9909c1a4ffb69700558c5f6164d43c9b244ace4",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/Dockerfile",
+      "source_sha256": "a33d7adff52599f809bc01e434ebe0f05a2121c8fe23813de3111866f14bc62d",
+      "final_sha256": "a33d7adff52599f809bc01e434ebe0f05a2121c8fe23813de3111866f14bc62d",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/LICENSE",
+      "source_sha256": "6b934ce628eac39c44f6401b52efc0884db51c937777f1122f0b56648813f0b6",
+      "final_sha256": "6b934ce628eac39c44f6401b52efc0884db51c937777f1122f0b56648813f0b6",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/README-EN.md",
+      "source_sha256": "a5c1d2954d2f17426ce735963601ded675ac57a0aa02851a0812676c5c53d666",
+      "final_sha256": "a5c1d2954d2f17426ce735963601ded675ac57a0aa02851a0812676c5c53d666",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/README.md",
+      "source_sha256": "bcb1f741c5372f800d4befcf803e33edd91978a52edc68ba3a8456c4838a5784",
+      "final_sha256": "bcb1f741c5372f800d4befcf803e33edd91978a52edc68ba3a8456c4838a5784",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/app.py",
+      "source_sha256": "7d1a574433afaef5bbe74775a42b6b203667f117e3d13aae92cf24e44ed7fd81",
+      "final_sha256": "7d1a574433afaef5bbe74775a42b6b203667f117e3d13aae92cf24e44ed7fd81",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/assets/faq.md",
+      "source_sha256": "9067604a556653e231243a032947e4486335e16f67e7cd94ff52a628caedc785",
+      "final_sha256": "9067604a556653e231243a032947e4486335e16f67e7cd94ff52a628caedc785",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/__init__.py",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "final_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/audio_features/__init__.py",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "final_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/audio_features/base_asr.py",
+      "source_sha256": "d2abe507ff9305ba21e2e6536f87d77f65f3a433177e27b79f7863b340fb1fc7",
+      "final_sha256": "d2abe507ff9305ba21e2e6536f87d77f65f3a433177e27b79f7863b340fb1fc7",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/audio_features/hubert.py",
+      "source_sha256": "598b322b5137e5e37528458ed48304a8827acda68ba5c8d0a059a5abe949948f",
+      "final_sha256": "598b322b5137e5e37528458ed48304a8827acda68ba5c8d0a059a5abe949948f",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/audio_features/mel.py",
+      "source_sha256": "35102de4cf15ae13cc1e8478fc138cfc26638decba397e8c9ba3f7b285eb4595",
+      "final_sha256": "35102de4cf15ae13cc1e8478fc138cfc26638decba397e8c9ba3f7b285eb4595",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/audio_features/whisper.py",
+      "source_sha256": "189c774f662650f5c6e8a5f230759e091e0e07945ccf995cd86dd12c252924a1",
+      "final_sha256": "189c774f662650f5c6e8a5f230759e091e0e07945ccf995cd86dd12c252924a1",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/base_avatar.py",
+      "source_sha256": "1ffc8ac8e62535e3d8a0fe20514b2503a5901b3ffbda9974fe1030b6a3621c39",
+      "final_sha256": "1ffc8ac8e62535e3d8a0fe20514b2503a5901b3ffbda9974fe1030b6a3621c39",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/genavatar.py",
+      "source_sha256": "d388e62a05540166de70d2ef8419053244f9e2a1cf803831f1c977492b33d569",
+      "final_sha256": "d388e62a05540166de70d2ef8419053244f9e2a1cf803831f1c977492b33d569",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/myutil.py",
+      "source_sha256": "57dc3f4e744244a096c875b043f2808aa2045e2a3771c26de90b124d61cd09fe",
+      "final_sha256": "57dc3f4e744244a096c875b043f2808aa2045e2a3771c26de90b124d61cd09fe",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/__init__.py",
+      "source_sha256": "ccd6f1e5ebcc92d26d7322a565c120d93aeda34c6ccba5e9aaa6f1138d7d91fb",
+      "final_sha256": "ccd6f1e5ebcc92d26d7322a565c120d93aeda34c6ccba5e9aaa6f1138d7d91fb",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/audio_processor.py",
+      "source_sha256": "b7b62f3daa99678576138bf581a6394a10d346571a2530a760d1299ffd622b81",
+      "final_sha256": "b7b62f3daa99678576138bf581a6394a10d346571a2530a760d1299ffd622b81",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/blending.py",
+      "source_sha256": "f1be04977db7e6fa1551dfe66dfbdea1e2f32c8d237edaf5a75a0ca4ddd80b53",
+      "final_sha256": "f1be04977db7e6fa1551dfe66dfbdea1e2f32c8d237edaf5a75a0ca4ddd80b53",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/dwpose/default_runtime.py",
+      "source_sha256": "bb7df18270b1ca337192faae7a416b2dea23b45e798e832caab5781f41189d06",
+      "final_sha256": "bb7df18270b1ca337192faae7a416b2dea23b45e798e832caab5781f41189d06",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/dwpose/rtmpose-l_8xb32-270e_coco-ubody-wholebody-384x288.py",
+      "source_sha256": "7c0da61ee9517ee6c97ec10dd6be592eb51501434a93fa0a8e7f3f3739b5e477",
+      "final_sha256": "7c0da61ee9517ee6c97ec10dd6be592eb51501434a93fa0a8e7f3f3739b5e477",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/face_detection/README.md",
+      "source_sha256": "f41720c331cfb2f079b465643237904d0ce53d7365959c7f1814a582963e00a3",
+      "final_sha256": "f41720c331cfb2f079b465643237904d0ce53d7365959c7f1814a582963e00a3",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/face_detection/__init__.py",
+      "source_sha256": "39b9365b1fd90ae823be551c6d55dce6b253fe1ecb015853b724eee3bdcfa470",
+      "final_sha256": "39b9365b1fd90ae823be551c6d55dce6b253fe1ecb015853b724eee3bdcfa470",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/face_detection/api.py",
+      "source_sha256": "f16098febe99d47b8886ccad9fc75ef9aecbf3a97eb51f3b459ec8da42aa0561",
+      "final_sha256": "f16098febe99d47b8886ccad9fc75ef9aecbf3a97eb51f3b459ec8da42aa0561",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/face_detection/detection/__init__.py",
+      "source_sha256": "1f3233930bfb7ac8b1726e4af8ed9b93925046d16edc640afd218f9d02b6d235",
+      "final_sha256": "1f3233930bfb7ac8b1726e4af8ed9b93925046d16edc640afd218f9d02b6d235",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/face_detection/detection/core.py",
+      "source_sha256": "ba16a80fac378da9b5bbfc9c190975ab4fe153b13b0d18d892ab5bbfcbb9c71e",
+      "final_sha256": "ba16a80fac378da9b5bbfc9c190975ab4fe153b13b0d18d892ab5bbfcbb9c71e",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/face_detection/detection/sfd/__init__.py",
+      "source_sha256": "6fbfb62eccc1a14de7c0a8cb1ca6f3c59af42479955ac08acbf548f28ec1feed",
+      "final_sha256": "6fbfb62eccc1a14de7c0a8cb1ca6f3c59af42479955ac08acbf548f28ec1feed",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/face_detection/detection/sfd/bbox.py",
+      "source_sha256": "3ed1487243bbde8ab47c567f46ee4b177a549e31440db8d71376bffc70a7bd86",
+      "final_sha256": "3ed1487243bbde8ab47c567f46ee4b177a549e31440db8d71376bffc70a7bd86",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/face_detection/detection/sfd/detect.py",
+      "source_sha256": "2bb9e9383e6a582d216515aab36759652cb9e7800a1910a6394ff721c4291a90",
+      "final_sha256": "2bb9e9383e6a582d216515aab36759652cb9e7800a1910a6394ff721c4291a90",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/face_detection/detection/sfd/net_s3fd.py",
+      "source_sha256": "80960aaefd9fb97a5e9784dc0a48bc38f43bdcaacb268782ede16a959e77a5a9",
+      "final_sha256": "80960aaefd9fb97a5e9784dc0a48bc38f43bdcaacb268782ede16a959e77a5a9",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/face_detection/detection/sfd/sfd_detector.py",
+      "source_sha256": "155be501e83825f9b0508ee7d596f13047559350adbdbf17fcbf361cfab22e92",
+      "final_sha256": "155be501e83825f9b0508ee7d596f13047559350adbdbf17fcbf361cfab22e92",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/face_detection/models.py",
+      "source_sha256": "2cde93a32467b9c5cfd009499c917afe8c89f512622237c2d865ba8fbb8a37e9",
+      "final_sha256": "2cde93a32467b9c5cfd009499c917afe8c89f512622237c2d865ba8fbb8a37e9",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/face_detection/utils.py",
+      "source_sha256": "561bfe5ec349a28f086e04efbb2d43cbc45c15fbcac48c311d497cb2bd2efe9a",
+      "final_sha256": "561bfe5ec349a28f086e04efbb2d43cbc45c15fbcac48c311d497cb2bd2efe9a",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/face_parsing/__init__.py",
+      "source_sha256": "c2824281e80458b81b7ecdde6cfd2b5f0224b022f41aaf1c61144a52163b2494",
+      "final_sha256": "c2824281e80458b81b7ecdde6cfd2b5f0224b022f41aaf1c61144a52163b2494",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/face_parsing/model.py",
+      "source_sha256": "05d69d1bd77fbca7b537602fe3f7851e8b2e1a3ea0279f383b4223598157e2d2",
+      "final_sha256": "05d69d1bd77fbca7b537602fe3f7851e8b2e1a3ea0279f383b4223598157e2d2",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/face_parsing/resnet.py",
+      "source_sha256": "48b54ccb2274be74fb1078b01e735748a5cc04100200d7b4fb3df4f90d7dba7c",
+      "final_sha256": "48b54ccb2274be74fb1078b01e735748a5cc04100200d7b4fb3df4f90d7dba7c",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/preprocessing.py",
+      "source_sha256": "705d860ec2290fa0359dfacce740284b64eb6b35d1af88f56cc69ebef84c97c2",
+      "final_sha256": "705d860ec2290fa0359dfacce740284b64eb6b35d1af88f56cc69ebef84c97c2",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/training_utils.py",
+      "source_sha256": "9311db040174d4c743f69198cfb79046f11b0312da7a541042dae47eb12842ff",
+      "final_sha256": "9311db040174d4c743f69198cfb79046f11b0312da7a541042dae47eb12842ff",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/utils/utils.py",
+      "source_sha256": "13b916d6d23d49144fd6b62b335225394831ea91608277a08391caffbbed1806",
+      "final_sha256": "13b916d6d23d49144fd6b62b335225394831ea91608277a08391caffbbed1806",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/audio2feature.py",
+      "source_sha256": "dd3cb43c9ac7a8400ef6b3c9c0d450f5bbd4e548d175ea78038466d0336d2419",
+      "final_sha256": "dd3cb43c9ac7a8400ef6b3c9c0d450f5bbd4e548d175ea78038466d0336d2419",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/__init__.py",
+      "source_sha256": "199ca006dc30956afd3520ec3f8113c29e6e575f19061ff44dca6b928165a171",
+      "final_sha256": "199ca006dc30956afd3520ec3f8113c29e6e575f19061ff44dca6b928165a171",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/__main__.py",
+      "source_sha256": "260236595af0a0df76a5121229593502d46b8dcc4acc16eb6b64b2b62be2f278",
+      "final_sha256": "260236595af0a0df76a5121229593502d46b8dcc4acc16eb6b64b2b62be2f278",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/assets/gpt2/merges.txt",
+      "source_sha256": "fe36cab26d4f4421ed725e10a2e9ddb7f799449c603a96e7f29b5a3c82a95862",
+      "final_sha256": "fe36cab26d4f4421ed725e10a2e9ddb7f799449c603a96e7f29b5a3c82a95862",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/assets/gpt2/special_tokens_map.json",
+      "source_sha256": "c0b3c279b6ecdb71996a86ffb4d4ab94dfdb5df95f00bac9515688faef2ff5dd",
+      "final_sha256": "c0b3c279b6ecdb71996a86ffb4d4ab94dfdb5df95f00bac9515688faef2ff5dd",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/assets/gpt2/tokenizer_config.json",
+      "source_sha256": "1e664fe1a5bc404dcb204a76c76bc4100c91bd12c66098d8a8090b11b6ee6f0d",
+      "final_sha256": "1e664fe1a5bc404dcb204a76c76bc4100c91bd12c66098d8a8090b11b6ee6f0d",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/assets/gpt2/vocab.json",
+      "source_sha256": "3ba3c3109ff33976c4bd966589c11ee14fcaa1f4c9e5e154c2ed7f99d80709e7",
+      "final_sha256": "3ba3c3109ff33976c4bd966589c11ee14fcaa1f4c9e5e154c2ed7f99d80709e7",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/assets/mel_filters.npz",
+      "source_sha256": "dd2cc75e70e36fcbdd8ffbc2499062f30094093e6bf2cbafa9859f59972b420b",
+      "final_sha256": "dd2cc75e70e36fcbdd8ffbc2499062f30094093e6bf2cbafa9859f59972b420b",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/assets/multilingual/added_tokens.json",
+      "source_sha256": "f1acda6b99dd830d4ad39012259cd256d7e44cb2e3e4836b9804ac3f8e6805b9",
+      "final_sha256": "f1acda6b99dd830d4ad39012259cd256d7e44cb2e3e4836b9804ac3f8e6805b9",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/assets/multilingual/merges.txt",
+      "source_sha256": "9ec394d4060fee3cdbf52479ed021ed8bf7a4662d06a10ee45d8bbe95d267c45",
+      "final_sha256": "9ec394d4060fee3cdbf52479ed021ed8bf7a4662d06a10ee45d8bbe95d267c45",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/assets/multilingual/special_tokens_map.json",
+      "source_sha256": "c0b3c279b6ecdb71996a86ffb4d4ab94dfdb5df95f00bac9515688faef2ff5dd",
+      "final_sha256": "c0b3c279b6ecdb71996a86ffb4d4ab94dfdb5df95f00bac9515688faef2ff5dd",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/assets/multilingual/tokenizer_config.json",
+      "source_sha256": "b4594fd40712d072d4d637a42a8fb92abdb65c094dd5cb8d1da8d5cebb7b3473",
+      "final_sha256": "b4594fd40712d072d4d637a42a8fb92abdb65c094dd5cb8d1da8d5cebb7b3473",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/assets/multilingual/vocab.json",
+      "source_sha256": "4e8036c8f80442384c12c2eaceb2f1c25d3ee38b8b07584bae6e74fe75ba4de4",
+      "final_sha256": "4e8036c8f80442384c12c2eaceb2f1c25d3ee38b8b07584bae6e74fe75ba4de4",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/audio.py",
+      "source_sha256": "bc56ce6dd84c10de96db5400448f46afa384408e5f3132a7221ebca273837a08",
+      "final_sha256": "bc56ce6dd84c10de96db5400448f46afa384408e5f3132a7221ebca273837a08",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/decoding.py",
+      "source_sha256": "f97702a1257580765d0be41c43dbc433d5a983a0d66082b18b8e3b63e4dad53c",
+      "final_sha256": "f97702a1257580765d0be41c43dbc433d5a983a0d66082b18b8e3b63e4dad53c",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/model.py",
+      "source_sha256": "93c0671d35aace5c97278232258345176ddac95b293de456d50babbb97120d0b",
+      "final_sha256": "93c0671d35aace5c97278232258345176ddac95b293de456d50babbb97120d0b",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/normalizers/__init__.py",
+      "source_sha256": "678cbbf410bb76fcfe7edf90c6c26242c80c55e280bc831a1893b86999eeba2a",
+      "final_sha256": "678cbbf410bb76fcfe7edf90c6c26242c80c55e280bc831a1893b86999eeba2a",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/normalizers/basic.py",
+      "source_sha256": "d75a266f48f8e3a2a1e9df0fa6fee2859818e1991fe6d18c5f0c5ba98851c927",
+      "final_sha256": "d75a266f48f8e3a2a1e9df0fa6fee2859818e1991fe6d18c5f0c5ba98851c927",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/normalizers/english.json",
+      "source_sha256": "d67f3595953324659e454e354496509144c45ff6ac105943c98bb2bd7fb55292",
+      "final_sha256": "d67f3595953324659e454e354496509144c45ff6ac105943c98bb2bd7fb55292",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/normalizers/english.py",
+      "source_sha256": "d2944d4db1221a7ee3db453ae5597310bc01d45e683764c57476f514e25f4651",
+      "final_sha256": "d2944d4db1221a7ee3db453ae5597310bc01d45e683764c57476f514e25f4651",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/tokenizer.py",
+      "source_sha256": "ade4fa8792a1eed6e50ec6d2079a3e61c7df67a1d358d14c6d40db70fe57443f",
+      "final_sha256": "ade4fa8792a1eed6e50ec6d2079a3e61c7df67a1d358d14c6d40db70fe57443f",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/transcribe.py",
+      "source_sha256": "4d8c631980383132ca26f370e09ff42df356e3b225fc3eaf5d21229534d3cf27",
+      "final_sha256": "4d8c631980383132ca26f370e09ff42df356e3b225fc3eaf5d21229534d3cf27",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk/whisper/whisper/utils.py",
+      "source_sha256": "51396c6da293a3d8276f0cbdcf97f38ce1ec7bdd8198923f6b0737ea72927406",
+      "final_sha256": "51396c6da293a3d8276f0cbdcf97f38ce1ec7bdd8198923f6b0737ea72927406",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/musetalk_avatar.py",
+      "source_sha256": "31224eec07a96f7a6218ba4a587145ae0afb2631b4daae3f3be78387e088db1c",
+      "final_sha256": "31224eec07a96f7a6218ba4a587145ae0afb2631b4daae3f3be78387e088db1c",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/ultralight/audio2feature.py",
+      "source_sha256": "b7def8f957d2bcb52ee909898641243f6ce835b19f223025027615654109b881",
+      "final_sha256": "b7def8f957d2bcb52ee909898641243f6ce835b19f223025027615654109b881",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/ultralight/face_detect_utils/base_module.py",
+      "source_sha256": "c86174981155d4fba83c3d271304950b656094731405608b4a7147f1bbcc3263",
+      "final_sha256": "c86174981155d4fba83c3d271304950b656094731405608b4a7147f1bbcc3263",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/ultralight/face_detect_utils/detect_face.py",
+      "source_sha256": "3dc5a8af99abf2c7798f1d8186490c57bbe71c7cfed6f518562c89c30dc5c640",
+      "final_sha256": "3dc5a8af99abf2c7798f1d8186490c57bbe71c7cfed6f518562c89c30dc5c640",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/ultralight/face_detect_utils/get_landmark.py",
+      "source_sha256": "dd2248b23b56124a0624352d6babd2dc63a10267ffa7fe2b97d1d0a65dccf2eb",
+      "final_sha256": "dd2248b23b56124a0624352d6babd2dc63a10267ffa7fe2b97d1d0a65dccf2eb",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/ultralight/face_detect_utils/mean_face.txt",
+      "source_sha256": "40bed2653ae861e9a24b4766c3d085986b7c1245a27373913a9a5b1a6ce069ef",
+      "final_sha256": "40bed2653ae861e9a24b4766c3d085986b7c1245a27373913a9a5b1a6ce069ef",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/ultralight/face_detect_utils/pfld_mobileone.py",
+      "source_sha256": "74f8229c3ac6491208020f7b1c94d6ad88de389087d0a6143e1e400ff746a95d",
+      "final_sha256": "74f8229c3ac6491208020f7b1c94d6ad88de389087d0a6143e1e400ff746a95d",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/ultralight/genavatar.py",
+      "source_sha256": "ea981dbb1fe012ddaefbb288ae580e927b3d9b768220535af21d7c943ed18c5e",
+      "final_sha256": "ea981dbb1fe012ddaefbb288ae580e927b3d9b768220535af21d7c943ed18c5e",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/ultralight/unet.py",
+      "source_sha256": "5661d676ea19b6793a400df5b18289de0441a0500337d664e25bd913cc7d6509",
+      "final_sha256": "5661d676ea19b6793a400df5b18289de0441a0500337d664e25bd913cc7d6509",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/ultralight_avatar.py",
+      "source_sha256": "d16bea1975c0fa1d00d87a26775a94d560cfb242d16f47b4604e646268d99d5a",
+      "final_sha256": "d16bea1975c0fa1d00d87a26775a94d560cfb242d16f47b4604e646268d99d5a",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/wav2lip/audio.py",
+      "source_sha256": "368d80509a8dc0ca8b9c68c0d21d652f8d6f8a7d3dcd90e936326bbd68fbaed1",
+      "final_sha256": "368d80509a8dc0ca8b9c68c0d21d652f8d6f8a7d3dcd90e936326bbd68fbaed1",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/wav2lip/face_detection/README.md",
+      "source_sha256": "f41720c331cfb2f079b465643237904d0ce53d7365959c7f1814a582963e00a3",
+      "final_sha256": "f41720c331cfb2f079b465643237904d0ce53d7365959c7f1814a582963e00a3",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/wav2lip/face_detection/__init__.py",
+      "source_sha256": "7215846a10fcb2162dab619cf1cb45bd6c0faac2b7d1a71ed8cc1cc0811db86a",
+      "final_sha256": "7215846a10fcb2162dab619cf1cb45bd6c0faac2b7d1a71ed8cc1cc0811db86a",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/wav2lip/face_detection/api.py",
+      "source_sha256": "318f3dd23a41f1d423f540dcf7d7b7d3bdb97c83354cffce40f868948fac35c6",
+      "final_sha256": "318f3dd23a41f1d423f540dcf7d7b7d3bdb97c83354cffce40f868948fac35c6",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/wav2lip/face_detection/detection/__init__.py",
+      "source_sha256": "1f3233930bfb7ac8b1726e4af8ed9b93925046d16edc640afd218f9d02b6d235",
+      "final_sha256": "1f3233930bfb7ac8b1726e4af8ed9b93925046d16edc640afd218f9d02b6d235",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/wav2lip/face_detection/detection/core.py",
+      "source_sha256": "ba16a80fac378da9b5bbfc9c190975ab4fe153b13b0d18d892ab5bbfcbb9c71e",
+      "final_sha256": "ba16a80fac378da9b5bbfc9c190975ab4fe153b13b0d18d892ab5bbfcbb9c71e",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/wav2lip/face_detection/detection/sfd/__init__.py",
+      "source_sha256": "6fbfb62eccc1a14de7c0a8cb1ca6f3c59af42479955ac08acbf548f28ec1feed",
+      "final_sha256": "6fbfb62eccc1a14de7c0a8cb1ca6f3c59af42479955ac08acbf548f28ec1feed",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/wav2lip/face_detection/detection/sfd/bbox.py",
+      "source_sha256": "3ed1487243bbde8ab47c567f46ee4b177a549e31440db8d71376bffc70a7bd86",
+      "final_sha256": "3ed1487243bbde8ab47c567f46ee4b177a549e31440db8d71376bffc70a7bd86",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/wav2lip/face_detection/detection/sfd/detect.py",
+      "source_sha256": "1848d75a551131c786a5e10d4ffab517dda606af27913e19ab48467c1a779d71",
+      "final_sha256": "1848d75a551131c786a5e10d4ffab517dda606af27913e19ab48467c1a779d71",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/wav2lip/face_detection/detection/sfd/net_s3fd.py",
+      "source_sha256": "80960aaefd9fb97a5e9784dc0a48bc38f43bdcaacb268782ede16a959e77a5a9",
+      "final_sha256": "80960aaefd9fb97a5e9784dc0a48bc38f43bdcaacb268782ede16a959e77a5a9",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/wav2lip/face_detection/detection/sfd/sfd_detector.py",
+      "source_sha256": "155be501e83825f9b0508ee7d596f13047559350adbdbf17fcbf361cfab22e92",
+      "final_sha256": "155be501e83825f9b0508ee7d596f13047559350adbdbf17fcbf361cfab22e92",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/wav2lip/face_detection/models.py",
+      "source_sha256": "2cde93a32467b9c5cfd009499c917afe8c89f512622237c2d865ba8fbb8a37e9",
+      "final_sha256": "2cde93a32467b9c5cfd009499c917afe8c89f512622237c2d865ba8fbb8a37e9",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/wav2lip/face_detection/utils.py",
+      "source_sha256": "561bfe5ec349a28f086e04efbb2d43cbc45c15fbcac48c311d497cb2bd2efe9a",
+      "final_sha256": "561bfe5ec349a28f086e04efbb2d43cbc45c15fbcac48c311d497cb2bd2efe9a",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/wav2lip/genavatar.py",
+      "source_sha256": "f49252d56b71e47dfb9f5d1f5e7f4a8e20cd665796c10f7113da8757998e0af1",
+      "final_sha256": "f49252d56b71e47dfb9f5d1f5e7f4a8e20cd665796c10f7113da8757998e0af1",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/wav2lip/hparams.py",
+      "source_sha256": "4a4c31dc51ebd8140da18ac24841e582b2472389f7c65e7f0a6b4447fc0c71cf",
+      "final_sha256": "4a4c31dc51ebd8140da18ac24841e582b2472389f7c65e7f0a6b4447fc0c71cf",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/wav2lip/inference_silence.py",
+      "source_sha256": "33a4c41f66849f775165225ffed788b475995e80cdff6eb0a42ac05d9a1df421",
+      "final_sha256": "33a4c41f66849f775165225ffed788b475995e80cdff6eb0a42ac05d9a1df421",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/avatars/wav2lip_avatar.py",
+      "source_sha256": "cd18112719089e231ce99ee51ec09ad52c7c116eb8dee9d0c55f690b1a563689",
+      "final_sha256": "cd18112719089e231ce99ee51ec09ad52c7c116eb8dee9d0c55f690b1a563689",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/config.py",
+      "source_sha256": "96cbdd2b84f12373698dfe5fb2752f6eeab5c4f1dbf223501ae00de0cecf2253",
+      "final_sha256": "96cbdd2b84f12373698dfe5fb2752f6eeab5c4f1dbf223501ae00de0cecf2253",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/config.yaml",
+      "source_sha256": "105b6c21ffd5e3f4590527266e87f2c15ad1c697e5ebbedbed4eaf86e6f523c0",
+      "final_sha256": "105b6c21ffd5e3f4590527266e87f2c15ad1c697e5ebbedbed4eaf86e6f523c0",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/docs/admin_api.md",
+      "source_sha256": "ea697520fd14e935ddfadad46f9b52933d97f2ee3395d02e3a4162e3cf14138e",
+      "final_sha256": "ea697520fd14e935ddfadad46f9b52933d97f2ee3395d02e3a4162e3cf14138e",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/docs/api.md",
+      "source_sha256": "17f240a5ca9439128e11e7ce97d789e0fa711920185ff1db7203be95ffd03720",
+      "final_sha256": "17f240a5ca9439128e11e7ce97d789e0fa711920185ff1db7203be95ffd03720",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/docs/avatar_api.md",
+      "source_sha256": "cd59455ee810fce78133df0f33b8b15a0a155e9df194cb7ecf9e8fb70c3b2119",
+      "final_sha256": "cd59455ee810fce78133df0f33b8b15a0a155e9df194cb7ecf9e8fb70c3b2119",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/docs/virtualcam_guide.md",
+      "source_sha256": "5617e7cb370789976508dd1f31ae62f0d38f0088fbbdce4a5ce1eeb9887dd76f",
+      "final_sha256": "5617e7cb370789976508dd1f31ae62f0d38f0088fbbdce4a5ce1eeb9887dd76f",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/llm.py",
+      "source_sha256": "37db94d643e3b4955091a3f7dc04eb47d347d37b1d61b61e04e5c08d45c4d6d8",
+      "final_sha256": "37db94d643e3b4955091a3f7dc04eb47d347d37b1d61b61e04e5c08d45c4d6d8",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/registry.py",
+      "source_sha256": "2f5450833e245b9a90478a2aea2a51af7301210bfaeacc74f41a41af061517c2",
+      "final_sha256": "2f5450833e245b9a90478a2aea2a51af7301210bfaeacc74f41a41af061517c2",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/requirements.txt",
+      "source_sha256": "669283d9e52bf721fdda8171cadaa15b80af80bee7c8dbd510d718f27fc14133",
+      "final_sha256": "669283d9e52bf721fdda8171cadaa15b80af80bee7c8dbd510d718f27fc14133",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/server/__init__.py",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "final_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/server/asr_server.py",
+      "source_sha256": "dd261641cfa3f90a8f80ad7f6dd84d93e6b3708097475c5b3d12aebfbffb6852",
+      "final_sha256": "dd261641cfa3f90a8f80ad7f6dd84d93e6b3708097475c5b3d12aebfbffb6852",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/server/avatar_routes.py",
+      "source_sha256": "f3e525dc3fb232c29520d0a99140d2c89cbad6b1be809943c1586819986e5089",
+      "final_sha256": "f3e525dc3fb232c29520d0a99140d2c89cbad6b1be809943c1586819986e5089",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/server/idempotency.py",
+      "source_sha256": "fb9b033a57d049b0996e2f4bb71818f6d1592fba3c065bab494c91dff97d858a",
+      "final_sha256": "fb9b033a57d049b0996e2f4bb71818f6d1592fba3c065bab494c91dff97d858a",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/server/playback.py",
+      "source_sha256": "76ca09df4f41404ea66b6d4476a94afb2f5b7f4f8c6d5de0651b8883ad39d13e",
+      "final_sha256": "76ca09df4f41404ea66b6d4476a94afb2f5b7f4f8c6d5de0651b8883ad39d13e",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/server/routes.py",
+      "source_sha256": "57b4f622c97f9ffaa644c43a1ddd628853cf63b59600c889cc96d0ea2b5cdd38",
+      "final_sha256": "57b4f622c97f9ffaa644c43a1ddd628853cf63b59600c889cc96d0ea2b5cdd38",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/server/rtc_manager.py",
+      "source_sha256": "b15e8111231670064b491467eaadba7b8f2ea72bcc87c5346c9a5074b5fbb5b3",
+      "final_sha256": "b15e8111231670064b491467eaadba7b8f2ea72bcc87c5346c9a5074b5fbb5b3",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/server/session_lifecycle.py",
+      "source_sha256": "66015d342a5b9affc40ce7f6f925f74f15b3217074cc645f11daa97ceb6fe9c5",
+      "final_sha256": "66015d342a5b9affc40ce7f6f925f74f15b3217074cc645f11daa97ceb6fe9c5",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/server/session_manager.py",
+      "source_sha256": "8703ae8a10fbd71bbf359d1c4faa1cd1dda615fc2547777ff4b46bb0f263a61c",
+      "final_sha256": "8703ae8a10fbd71bbf359d1c4faa1cd1dda615fc2547777ff4b46bb0f263a61c",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/server/task_manager.py",
+      "source_sha256": "e12f9a2192fbfc67c420510652727dc7980eaad064825d0d4fb607adc2b2dafb",
+      "final_sha256": "e12f9a2192fbfc67c420510652727dc7980eaad064825d0d4fb607adc2b2dafb",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/server/terminate_gate.py",
+      "source_sha256": "376f5b395df328cbeaa07c306d7d71cf2afa101ba006129c8848b898ed143f7a",
+      "final_sha256": "376f5b395df328cbeaa07c306d7d71cf2afa101ba006129c8848b898ed143f7a",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/server/webrtc.py",
+      "source_sha256": "0dd8419d96ce916dcb7774d0fbcfbe0c8a05ad12556cf02ecec475640b3092ca",
+      "final_sha256": "0dd8419d96ce916dcb7774d0fbcfbe0c8a05ad12556cf02ecec475640b3092ca",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/streamout/__init__.py",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "final_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/streamout/base_output.py",
+      "source_sha256": "29b040a23d97ca9f94d78e0e74d288e3b2a4209fda4ba0c4c56793b03eb8cc9f",
+      "final_sha256": "29b040a23d97ca9f94d78e0e74d288e3b2a4209fda4ba0c4c56793b03eb8cc9f",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/streamout/rtmp.py",
+      "source_sha256": "e800d3e8ad65bac3af03e72401a9adc55505ed85d4de561a009ab0063b193d84",
+      "final_sha256": "e800d3e8ad65bac3af03e72401a9adc55505ed85d4de561a009ab0063b193d84",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/streamout/virtualcam.py",
+      "source_sha256": "bad10d2fb4b5205bf9c462950d0433da8b2f48acd174416d04f00f76237afed0",
+      "final_sha256": "bad10d2fb4b5205bf9c462950d0433da8b2f48acd174416d04f00f76237afed0",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/streamout/webrtc.py",
+      "source_sha256": "ed725cdd798437e3adac7e727bb01e3bec2f8c9f505319b10e2cc5f1f13a419d",
+      "final_sha256": "ed725cdd798437e3adac7e727bb01e3bec2f8c9f505319b10e2cc5f1f13a419d",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/tts/__init__.py",
+      "source_sha256": "be18d323c9645e39609e258544bf1f4f53ac01bafe8be507d1dba5766e3f77af",
+      "final_sha256": "be18d323c9645e39609e258544bf1f4f53ac01bafe8be507d1dba5766e3f77af",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/tts/azure.py",
+      "source_sha256": "4e6052c948d075d9a6acd96282b71ba8af6a5103100b8c43a2f2946d6c3bc866",
+      "final_sha256": "4e6052c948d075d9a6acd96282b71ba8af6a5103100b8c43a2f2946d6c3bc866",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/tts/base_tts.py",
+      "source_sha256": "ceedfed5f503fff315a38fa27222a6cf7c5e3368f25788975bb3efa7da001b11",
+      "final_sha256": "ceedfed5f503fff315a38fa27222a6cf7c5e3368f25788975bb3efa7da001b11",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/tts/cosyvoice.py",
+      "source_sha256": "fa6a0528edcaa344057484125d6ef611c3d3d125125d93c548a7a61990250e1e",
+      "final_sha256": "fa6a0528edcaa344057484125d6ef611c3d3d125125d93c548a7a61990250e1e",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/tts/doubao.py",
+      "source_sha256": "a2183a68cbb559e78348a3b5ab456d58f5c27a2ce3a77bb13655405883d8d0c8",
+      "final_sha256": "a2183a68cbb559e78348a3b5ab456d58f5c27a2ce3a77bb13655405883d8d0c8",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/tts/edge.py",
+      "source_sha256": "9292124e794aaffb151582f1917bc31e04676e907ed8b342b18ec2439f27fd5e",
+      "final_sha256": "9292124e794aaffb151582f1917bc31e04676e907ed8b342b18ec2439f27fd5e",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/tts/fish.py",
+      "source_sha256": "e9d8956d725fd622282ceecfa22398fba9350ccc79c555a0f57d1885a4a29537",
+      "final_sha256": "e9d8956d725fd622282ceecfa22398fba9350ccc79c555a0f57d1885a4a29537",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/tts/indextts2.py",
+      "source_sha256": "4c8126a0414ff7dada4479e6cc4b82cb64e040cb4905c86092ff24288aa4d0c0",
+      "final_sha256": "4c8126a0414ff7dada4479e6cc4b82cb64e040cb4905c86092ff24288aa4d0c0",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/tts/omnitts.py",
+      "source_sha256": "e8a7ed1d1e43acfc93796ed71a41aade7369cbc9c8f8e49580199a980c5b740c",
+      "final_sha256": "e8a7ed1d1e43acfc93796ed71a41aade7369cbc9c8f8e49580199a980c5b740c",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/tts/qwentts.py",
+      "source_sha256": "62da54cf30e1a5cd20e968fcc46f17e679ef376c79d6f788dc2d3546a267524d",
+      "final_sha256": "62da54cf30e1a5cd20e968fcc46f17e679ef376c79d6f788dc2d3546a267524d",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/tts/sovits.py",
+      "source_sha256": "54611363ee66d51fc2402411c006a7e99a9d8612835a50f91458af9e2d51083d",
+      "final_sha256": "54611363ee66d51fc2402411c006a7e99a9d8612835a50f91458af9e2d51083d",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/tts/tencent.py",
+      "source_sha256": "4c9d28577d777c0f53bb40fa3ef2ec26bd50764454a720acf20654b4c2aff920",
+      "final_sha256": "4c9d28577d777c0f53bb40fa3ef2ec26bd50764454a720acf20654b4c2aff920",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/tts/xtts.py",
+      "source_sha256": "1714f50a752217d6aa8c76b855b3bdb1142964b7cd426bd7fd6e3a6b54c3db6a",
+      "final_sha256": "1714f50a752217d6aa8c76b855b3bdb1142964b7cd426bd7fd6e3a6b54c3db6a",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/utils/__init__.py",
+      "source_sha256": "362680eec6a3f32328d757ba772ee5c881c4ede81ffccd4bd695e151fe5e06f6",
+      "final_sha256": "362680eec6a3f32328d757ba772ee5c881c4ede81ffccd4bd695e151fe5e06f6",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/utils/async_utils.py",
+      "source_sha256": "89b1be70739449cbcced7ca92cac5c3e440b9331efa72deeaa08b34a8f08859f",
+      "final_sha256": "89b1be70739449cbcced7ca92cac5c3e440b9331efa72deeaa08b34a8f08859f",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/utils/audio.py",
+      "source_sha256": "5feba6940660d412f34836fb2582add7401d4eda4be7c1facaad965f6889cdb0",
+      "final_sha256": "5feba6940660d412f34836fb2582add7401d4eda4be7c1facaad965f6889cdb0",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/utils/audioutil.py",
+      "source_sha256": "cd5e7aee05ecb2ea2c236cc2b0525501ae9f0eaa48d82a1160774e58e6e3507d",
+      "final_sha256": "cd5e7aee05ecb2ea2c236cc2b0525501ae9f0eaa48d82a1160774e58e6e3507d",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/utils/device.py",
+      "source_sha256": "05c5178b4a816f95a0cac80e4d96ea44edc633a85aae15c7b35969500f585494",
+      "final_sha256": "05c5178b4a816f95a0cac80e4d96ea44edc633a85aae15c7b35969500f585494",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/utils/image.py",
+      "source_sha256": "c4c6a21154cce743728e5af116f2c30b35107bc430731a62fc5dec163b83d239",
+      "final_sha256": "c4c6a21154cce743728e5af116f2c30b35107bc430731a62fc5dec163b83d239",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/utils/logger.py",
+      "source_sha256": "d9b574b63a323539e514d526f678cb59379ad4b389e1365f9abff72089d7b5b1",
+      "final_sha256": "d9b574b63a323539e514d526f678cb59379ad4b389e1365f9abff72089d7b5b1",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/admin-en.html",
+      "source_sha256": "b3c6b8b0c46d4416f18aef737d5933cc3a05408b0ea653ef7bf07974fb1338bf",
+      "final_sha256": "b3c6b8b0c46d4416f18aef737d5933cc3a05408b0ea653ef7bf07974fb1338bf",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/admin.html",
+      "source_sha256": "81716a38a90190d7d315db9a0c571f47255ceff84475102112e3114a85fc607b",
+      "final_sha256": "81716a38a90190d7d315db9a0c571f47255ceff84475102112e3114a85fc607b",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/asr/index.html",
+      "source_sha256": "7006bffd406b1cd5192d7f3271a6fce7f100b7a97b8f919e17ef09c14b62d20d",
+      "final_sha256": "7006bffd406b1cd5192d7f3271a6fce7f100b7a97b8f919e17ef09c14b62d20d",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/asr/main.js",
+      "source_sha256": "773e247731138e999c1bb799e065f1229d6f08692301d62187d96c8f7128a46d",
+      "final_sha256": "773e247731138e999c1bb799e065f1229d6f08692301d62187d96c8f7128a46d",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/asr/pcm.js",
+      "source_sha256": "b0afc3c0e346995fe81daae7335e187ab3f2233307e45d3d72d42a67a576599b",
+      "final_sha256": "b0afc3c0e346995fe81daae7335e187ab3f2233307e45d3d72d42a67a576599b",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/asr/recorder-core.js",
+      "source_sha256": "bc011c625c2a9e780254b0f23ca388dc81c3d00502efb04fc78ba37d5e848fec",
+      "final_sha256": "bc011c625c2a9e780254b0f23ca388dc81c3d00502efb04fc78ba37d5e848fec",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/asr/wav.js",
+      "source_sha256": "63344c3e282b80349bdc64f7508f32346ce783609881dbfbc97827a36d594c35",
+      "final_sha256": "63344c3e282b80349bdc64f7508f32346ce783609881dbfbc97827a36d594c35",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/asr/wsconnecter.js",
+      "source_sha256": "a619a1cab5e111c5ff4b77ec8e68e47f9dde6ba5d7a62ca2db0c1b083c33e8ca",
+      "final_sha256": "a619a1cab5e111c5ff4b77ec8e68e47f9dde6ba5d7a62ca2db0c1b083c33e8ca",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/avatar-en.html",
+      "source_sha256": "66d4f0596c7282916a74c5771fd5f7c16adeab361eb649eea498c0e09b56dbc2",
+      "final_sha256": "66d4f0596c7282916a74c5771fd5f7c16adeab361eb649eea498c0e09b56dbc2",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/avatar.html",
+      "source_sha256": "1f12d4e27bd8a814560e445981bd1a12524662687799162dd1e25ed2bef3f274",
+      "final_sha256": "1f12d4e27bd8a814560e445981bd1a12524662687799162dd1e25ed2bef3f274",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/client.js",
+      "source_sha256": "57a8ab3852a84a94f6b4f49287dc0c0e1ebea90991acfddc199554ff1b1e0753",
+      "final_sha256": "57a8ab3852a84a94f6b4f49287dc0c0e1ebea90991acfddc199554ff1b1e0753",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/dashboard.html",
+      "source_sha256": "df8d05cd7a7d7151f6f20cddfda289eb2b4eafe305525f6e6704a8422e9901b7",
+      "final_sha256": "df8d05cd7a7d7151f6f20cddfda289eb2b4eafe305525f6e6704a8422e9901b7",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/index-en.html",
+      "source_sha256": "29cb10788c1b97f77499f59dedaaf07cdd1792842d5e37ce8683438a73bf96fd",
+      "final_sha256": "29cb10788c1b97f77499f59dedaaf07cdd1792842d5e37ce8683438a73bf96fd",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/index.html",
+      "source_sha256": "4af748846483d4033290bb89793e664fe0a3ccf2eb4f2889b781ddeb1919948c",
+      "final_sha256": "4af748846483d4033290bb89793e664fe0a3ccf2eb4f2889b781ddeb1919948c",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/mpegts-1.7.3.min.js",
+      "source_sha256": "b83dccba1525ae65763b373a85a6513f0b533359292a90083b25b29977a75f90",
+      "final_sha256": "b83dccba1525ae65763b373a85a6513f0b533359292a90083b25b29977a75f90",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/rtcpushapi.html",
+      "source_sha256": "ad05aec470e8911d9a32f73e3e8964553ae30d4e96333d88628e03b2a85c4b80",
+      "final_sha256": "ad05aec470e8911d9a32f73e3e8964553ae30d4e96333d88628e03b2a85c4b80",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/rtcpushchat.html",
+      "source_sha256": "4638bf7478be2c7dcfab1c046485b377f3138ada415db9933d6c80e46fd8ae68",
+      "final_sha256": "4638bf7478be2c7dcfab1c046485b377f3138ada415db9933d6c80e46fd8ae68",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/rtmpapi.html",
+      "source_sha256": "567bddfb26b5a67e11ae3fb5de850bbf200836738adcaa24ad97231969b31bd5",
+      "final_sha256": "567bddfb26b5a67e11ae3fb5de850bbf200836738adcaa24ad97231969b31bd5",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/rtmpchat.html",
+      "source_sha256": "07bae88f638f0ccb667ac15fd8636c431197a4579454da5aa080b88476ffa54f",
+      "final_sha256": "07bae88f638f0ccb667ac15fd8636c431197a4579454da5aa080b88476ffa54f",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/srs.sdk.js",
+      "source_sha256": "79b95f67bf09193460f035e11589e1a1420522656201c6120806cf15b4f5d9cb",
+      "final_sha256": "79b95f67bf09193460f035e11589e1a1420522656201c6120806cf15b4f5d9cb",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/tts/index-en.html",
+      "source_sha256": "068e8de977e98a71fe478464c59d07056e7c7f4c6864d9ad87c4be93b41fdaa9",
+      "final_sha256": "068e8de977e98a71fe478464c59d07056e7c7f4c6864d9ad87c4be93b41fdaa9",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/tts/index.html",
+      "source_sha256": "3ff4ea142088387cbdaab695ba4250210e4c678fe898ece1ab5c3f3fd8fddfed",
+      "final_sha256": "3ff4ea142088387cbdaab695ba4250210e4c678fe898ece1ab5c3f3fd8fddfed",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/virtualcam.html",
+      "source_sha256": "c0ea21138f28789fbfd6191af685c8c9050ece1d55fa0c6a98c6772b286f1dbe",
+      "final_sha256": "c0ea21138f28789fbfd6191af685c8c9050ece1d55fa0c6a98c6772b286f1dbe",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/webrtcapi-asr.html",
+      "source_sha256": "bd733b388ec04819fadcfecdb2c68b787f78a9adfa1d30487a9091899e1f71cf",
+      "final_sha256": "bd733b388ec04819fadcfecdb2c68b787f78a9adfa1d30487a9091899e1f71cf",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/webrtcapi.html",
+      "source_sha256": "ff44ed668886cd66b82b04da77b310ea9e9da04ec3f07916e87d3ee2245fb843",
+      "final_sha256": "ff44ed668886cd66b82b04da77b310ea9e9da04ec3f07916e87d3ee2245fb843",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/avatar/app/web/whep.js",
+      "source_sha256": "beafd7f51079fc598867729905525eb74438058eb89a8a2f33c11de9e9236072",
+      "final_sha256": "beafd7f51079fc598867729905525eb74438058eb89a8a2f33c11de9e9236072",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/character/__init__.py",
+      "source_sha256": "5a72a6f22b0667be3e2a8a2de2a8a5d36126c279333d3838d5fa9908fd04e56a",
+      "final_sha256": "5a72a6f22b0667be3e2a8a2de2a8a5d36126c279333d3838d5fa9908fd04e56a",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/character/analysis_rules.json",
+      "source_sha256": "94588d5f03d4725de90b86d4145da79b0e34d7235c810bd894110c4fbd0bd560",
+      "final_sha256": "94588d5f03d4725de90b86d4145da79b0e34d7235c810bd894110c4fbd0bd560",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/character/analyzer.py",
+      "source_sha256": "c7fadef509658e65a408c98bf3116c886cf0d4627a9ea01c4676589d85e5d741",
+      "final_sha256": "c7fadef509658e65a408c98bf3116c886cf0d4627a9ea01c4676589d85e5d741",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/character/bundle.py",
+      "source_sha256": "f9a01331a779bce3296ced8c44bcd2c8596a3d17032337f120e21f720b354b72",
+      "final_sha256": "f9a01331a779bce3296ced8c44bcd2c8596a3d17032337f120e21f720b354b72",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/character/canon.py",
+      "source_sha256": "a895cf665f47f9159315fadcf9cbcd7bc82c6f905be077b24426b09d4dca03d4",
+      "final_sha256": "a895cf665f47f9159315fadcf9cbcd7bc82c6f905be077b24426b09d4dca03d4",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/character/context_builder.py",
+      "source_sha256": "6b4e68320032e4b306c828f34dceeb17fff269c108edbbaf19be5bfbf566663a",
+      "final_sha256": "6b4e68320032e4b306c828f34dceeb17fff269c108edbbaf19be5bfbf566663a",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/character/context_policy.json",
+      "source_sha256": "3a58a1faef694cbeb196259342b3287b56bb1c37f71a457bc1c95138fb5933e6",
+      "final_sha256": "3a58a1faef694cbeb196259342b3287b56bb1c37f71a457bc1c95138fb5933e6",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/character/importer.py",
+      "source_sha256": "1fbf2d2d46549d7d977e5e036b5cd524c121e0b7334fcd5494e5ab2e8f02caa0",
+      "final_sha256": "1fbf2d2d46549d7d977e5e036b5cd524c121e0b7334fcd5494e5ab2e8f02caa0",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/character/role_state_bridge.py",
+      "source_sha256": "c20f884912fb744ac2149c634ae561c8e0bb4631fb391e9cefd6124ea2d22610",
+      "final_sha256": "c20f884912fb744ac2149c634ae561c8e0bb4631fb391e9cefd6124ea2d22610",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/character/rules.py",
+      "source_sha256": "d083c162a53329ab781dded1037531d107f7b17857c9e81e9e1cd15d67fe0d0d",
+      "final_sha256": "d083c162a53329ab781dded1037531d107f7b17857c9e81e9e1cd15d67fe0d0d",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/character/search.py",
+      "source_sha256": "7fceaac50dc73c3ca370640733781bee846cd80997617b5db2ed4da1e2cc3798",
+      "final_sha256": "7fceaac50dc73c3ca370640733781bee846cd80997617b5db2ed4da1e2cc3798",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/character/store.py",
+      "source_sha256": "cc6f0556159e694a6a3f0002d3802b7d615da5b2154bdee32eb2ea0ebf1e03a1",
+      "final_sha256": "cc6f0556159e694a6a3f0002d3802b7d615da5b2154bdee32eb2ea0ebf1e03a1",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/character/style_rules.json",
+      "source_sha256": "ba1a8e111f93a05495b3ea684e38a4d30ccbd22f82b753087e78e6b128d146e6",
+      "final_sha256": "ba1a8e111f93a05495b3ea684e38a4d30ccbd22f82b753087e78e6b128d146e6",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/pip-module-arguments-base.py",
+      "source_sha256": "5a108370e84664b2af47a2908fe71a15dc49db3347950b125e24abd46137f8e7",
+      "final_sha256": "5a108370e84664b2af47a2908fe71a15dc49db3347950b125e24abd46137f8e7",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/pip-s2s-pipeline-base.py",
+      "source_sha256": "fe5df26065dad95bd652c3b4c4608e5f22d4638361880468c49664986ac78738",
+      "final_sha256": "fe5df26065dad95bd652c3b4c4608e5f22d4638361880468c49664986ac78738",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/__init__.py",
+      "source_sha256": "7ed5adff0495e6774eee5b767752e9624254b395fc355706c9865bf60bdf72d5",
+      "final_sha256": "7ed5adff0495e6774eee5b767752e9624254b395fc355706c9865bf60bdf72d5",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/adapters/__init__.py",
+      "source_sha256": "c7acd574670ad336cec081907739c90511697affe16aa9b45831f901039852d1",
+      "final_sha256": "c7acd574670ad336cec081907739c90511697affe16aa9b45831f901039852d1",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/adapters/fake_llm_adapter.py",
+      "source_sha256": "d81dcb2b462c53eaced10f446bcc33ad1dc23b114cbcc550cf05c051df60ed12",
+      "final_sha256": "d81dcb2b462c53eaced10f446bcc33ad1dc23b114cbcc550cf05c051df60ed12",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/adapters/fake_tts_adapter.py",
+      "source_sha256": "ea87388fa9046e5f7b65508ff4e9e46501c0110335c1afe20a69c5b3fdb8861a",
+      "final_sha256": "ea87388fa9046e5f7b65508ff4e9e46501c0110335c1afe20a69c5b3fdb8861a",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/adapters/qwen3_tts_adapter.py",
+      "source_sha256": "8ca9f2a21890d9be91094e1b0567f91ae512d0726ec35b78d747ea298953f491",
+      "final_sha256": "8ca9f2a21890d9be91094e1b0567f91ae512d0726ec35b78d747ea298953f491",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/adapters/recorder.py",
+      "source_sha256": "709d37a4fc581bf7a20df6eb05d7bfb3dcfef49a0a7d2f186469165ec3130403",
+      "final_sha256": "709d37a4fc581bf7a20df6eb05d7bfb3dcfef49a0a7d2f186469165ec3130403",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/bootstrap.py",
+      "source_sha256": "bffdb7e705f06bcf190440368457fed39e281a01f56cee84171365e7368b3473",
+      "final_sha256": "bffdb7e705f06bcf190440368457fed39e281a01f56cee84171365e7368b3473",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/capabilities.py",
+      "source_sha256": "9be911fb0330332345e353d96d4d705e3dbba87e9e4b9bbf39b2fd797f135e4f",
+      "final_sha256": "9be911fb0330332345e353d96d4d705e3dbba87e9e4b9bbf39b2fd797f135e4f",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/contracts.py",
+      "source_sha256": "ee66b5a0732a0d554b263a6fd5c034816b923e4f7662da5675bf8a92accd087f",
+      "final_sha256": "ee66b5a0732a0d554b263a6fd5c034816b923e4f7662da5675bf8a92accd087f",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/delivery.py",
+      "source_sha256": "c3855ab0613cbf33dfc3fb7f6683217acdb34cc52cedcf09bc5ed7510e1ff2bf",
+      "final_sha256": "c3855ab0613cbf33dfc3fb7f6683217acdb34cc52cedcf09bc5ed7510e1ff2bf",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/manifests/avatar.json",
+      "source_sha256": "190d9ddd8878b489d413a762c7df30309172f48cdfdf486e6e23ccf9cc422c2f",
+      "final_sha256": "190d9ddd8878b489d413a762c7df30309172f48cdfdf486e6e23ccf9cc422c2f",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/manifests/handler_overrides.json",
+      "source_sha256": "29634e1c7c9d5dbdb230950c74a5c53b9c760a5af8fbc4f0f1d161c68d2896c4",
+      "final_sha256": "29634e1c7c9d5dbdb230950c74a5c53b9c760a5af8fbc4f0f1d161c68d2896c4",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/manifests/llm.json",
+      "source_sha256": "30236138a5afc22fc0a2c97d9accd82cb446ff21dbb563066bebec8d9dc72aa8",
+      "final_sha256": "30236138a5afc22fc0a2c97d9accd82cb446ff21dbb563066bebec8d9dc72aa8",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/manifests/stt.json",
+      "source_sha256": "35988cc19d88ee368bc17ed7b04368ddee1bb544b36ee240018c7e1ca669fca8",
+      "final_sha256": "35988cc19d88ee368bc17ed7b04368ddee1bb544b36ee240018c7e1ca669fca8",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/manifests/tool.json",
+      "source_sha256": "afb429ae849af78c10ca49d830a28ae5fbcf02cc78d0cefe67aad1a48c6a6200",
+      "final_sha256": "afb429ae849af78c10ca49d830a28ae5fbcf02cc78d0cefe67aad1a48c6a6200",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/manifests/tts.json",
+      "source_sha256": "37b75c1973ec400ca6af51feb6e8ceb4fae3ed7d57c7fd60cf5a291e39f4d5df",
+      "final_sha256": "1386101b4a70422231aff9392e9662da1918d513d58f8aee74db3c9cec7cf0c5",
+      "changed_for_archive": true
+    },
+    {
+      "path": "runtime/core/providers/reading_strategy.py",
+      "source_sha256": "d409026cf3532722769f87348ecfaddaac5cfc6decdcef3fa1009ef47e17e789",
+      "final_sha256": "d409026cf3532722769f87348ecfaddaac5cfc6decdcef3fa1009ef47e17e789",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/registry.py",
+      "source_sha256": "d111cc28221d09b0752dae0a32a3f85b61e2cb3ea28c132e91b076ed260dfa84",
+      "final_sha256": "d111cc28221d09b0752dae0a32a3f85b61e2cb3ea28c132e91b076ed260dfa84",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/stt_factory.py",
+      "source_sha256": "440f7184b07eb7025a141411988452a58317e985b0d514c525248b395da23cfe",
+      "final_sha256": "440f7184b07eb7025a141411988452a58317e985b0d514c525248b395da23cfe",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/tool_layer/__init__.py",
+      "source_sha256": "5295ff6fa31c33b82abd2135b2f24df4e5eda70a3f813c0894633fd93acf3347",
+      "final_sha256": "5295ff6fa31c33b82abd2135b2f24df4e5eda70a3f813c0894633fd93acf3347",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/tool_layer/arguments.py",
+      "source_sha256": "5729fb7a60a7c990d8bfa74a7b7b3fd82ce69a1250fc13dbe6cb50f21cadc998",
+      "final_sha256": "5729fb7a60a7c990d8bfa74a7b7b3fd82ce69a1250fc13dbe6cb50f21cadc998",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/tool_layer/executor.py",
+      "source_sha256": "ddfeef437522cdda50ec07795ae8746a6392935434eb5e747b96373da786690f",
+      "final_sha256": "ddfeef437522cdda50ec07795ae8746a6392935434eb5e747b96373da786690f",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/tool_layer/fakes.py",
+      "source_sha256": "b2c2a8bc5671b49c7ccc5b0f9586e0957376d56cd83d981a388e1bbf4324fae9",
+      "final_sha256": "b2c2a8bc5671b49c7ccc5b0f9586e0957376d56cd83d981a388e1bbf4324fae9",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/tool_layer/fs_guard.py",
+      "source_sha256": "42910c4d98cab8d143322280ee50690dc97812fb8bac92923a6deee7f13610c5",
+      "final_sha256": "42910c4d98cab8d143322280ee50690dc97812fb8bac92923a6deee7f13610c5",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/tool_layer/fs_tools.py",
+      "source_sha256": "46b9dc9ffd5a96f70639201bbdd521f22a5a3d3dd1b2028bdb850c82b75088bc",
+      "final_sha256": "46b9dc9ffd5a96f70639201bbdd521f22a5a3d3dd1b2028bdb850c82b75088bc",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/tool_layer/orchestrator.py",
+      "source_sha256": "7ba5a3d22879f4fd1f4ac73b91f070bc41e068c0a672378e142d151f08350f4b",
+      "final_sha256": "7ba5a3d22879f4fd1f4ac73b91f070bc41e068c0a672378e142d151f08350f4b",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/tool_layer/roots.json",
+      "source_sha256": "f6d91a36df0f6f5be2547e5661df5a61c456263d984edb0e4d77bc689c99dafb",
+      "final_sha256": "f6d91a36df0f6f5be2547e5661df5a61c456263d984edb0e4d77bc689c99dafb",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/tool_layer/roots.py",
+      "source_sha256": "d7568e831a0b142339eea724432e65ffcd8d23927ad30de2cf35faa86dff9895",
+      "final_sha256": "d7568e831a0b142339eea724432e65ffcd8d23927ad30de2cf35faa86dff9895",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/tool_layer/spec.py",
+      "source_sha256": "baa03ae58080e88ba6524fd5a8c598318b7522c1441ab526f6438dac20a28549",
+      "final_sha256": "baa03ae58080e88ba6524fd5a8c598318b7522c1441ab526f6438dac20a28549",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/tool_layer/transport.py",
+      "source_sha256": "98a8d78706b3b9526b3a6eb365412aceb588a6c2c6c244025323af233fa90391",
+      "final_sha256": "98a8d78706b3b9526b3a6eb365412aceb588a6c2c6c244025323af233fa90391",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/tts_client.py",
+      "source_sha256": "aa18e80532a0f8650dda0f8069b239bf075f6331c9fa2e0334b17b54baa75812",
+      "final_sha256": "aa18e80532a0f8650dda0f8069b239bf075f6331c9fa2e0334b17b54baa75812",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/tts_factory.py",
+      "source_sha256": "5ec851c704f8c809b2dc6245f8ffac313b833b4958a422beef802f2e27b5635b",
+      "final_sha256": "5ec851c704f8c809b2dc6245f8ffac313b833b4958a422beef802f2e27b5635b",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/vendor_fixes/__init__.py",
+      "source_sha256": "b21dba27ad729439f8a90dbbd4abfb4b9449644d28f09a8b001fac99836b2be6",
+      "final_sha256": "b21dba27ad729439f8a90dbbd4abfb4b9449644d28f09a8b001fac99836b2be6",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/vendor_fixes/turn_terminator.py",
+      "source_sha256": "1401197911dd09f1367a1a28647ea47a3bd09309fefc9b758c5d08187e84a884",
+      "final_sha256": "1401197911dd09f1367a1a28647ea47a3bd09309fefc9b758c5d08187e84a884",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/vendor_fixes/unit_drain_release.py",
+      "source_sha256": "2163333e2ed2762d30462417e016fb6c1a1f77be2a8cf67034fdda93a531642b",
+      "final_sha256": "2163333e2ed2762d30462417e016fb6c1a1f77be2a8cf67034fdda93a531642b",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/providers/voice_text.py",
+      "source_sha256": "7113b0d5d441422e0674514d09c2c2c7b584f6b9dd78ebf4c51beae77b1358ae",
+      "final_sha256": "7113b0d5d441422e0674514d09c2c2c7b584f6b9dd78ebf4c51beae77b1358ae",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/windows-production-requirements.txt",
+      "source_sha256": "57824d3916fb19ff41ac7d7bd772731a115eac9ca2d1f29bcde7fc65d40243ce",
+      "final_sha256": "57824d3916fb19ff41ac7d7bd772731a115eac9ca2d1f29bcde7fc65d40243ce",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/wsl-f_launch.sh",
+      "source_sha256": "8012b8585f53fb08283e92e2291baaee68bc0dc6e0239789f3d15b013b36d840",
+      "final_sha256": "5f61368ac00d26322aa8274d5c5c9c35949dcc09bb9a550b4ee71ce0b54627e5",
+      "changed_for_archive": true
+    },
+    {
+      "path": "runtime/core/wsl-higgs-handler.py",
+      "source_sha256": "bc6943e8821f94e043cd69297372873ca947c198e8136d930c2173e75475829d",
+      "final_sha256": "eb8ed5866607c2805a5b3eb833a1fd75624fef1f49bb6eee63458396e085a1ab",
+      "changed_for_archive": true
+    },
+    {
+      "path": "runtime/core/wsl-module-arguments.py",
+      "source_sha256": "a8047e6d7a7da73c2e923d34ce1439c51c151b748a9f81673cdf4d390184984f",
+      "final_sha256": "a8047e6d7a7da73c2e923d34ce1439c51c151b748a9f81673cdf4d390184984f",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/wsl-production-pip-freeze.txt",
+      "source_sha256": "319f4b0b4e3e49844c893acdd3de1f909e7bed77d7d9cb13d6706dfb74899062",
+      "final_sha256": "319f4b0b4e3e49844c893acdd3de1f909e7bed77d7d9cb13d6706dfb74899062",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/wsl-production-python-version.txt",
+      "source_sha256": "5b3e43dc38ca01e3f5a7854ba50d4330864b0c1e0f646650b2c78cf072acc366",
+      "final_sha256": "5b3e43dc38ca01e3f5a7854ba50d4330864b0c1e0f646650b2c78cf072acc366",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/wsl-production-torch-cuda.txt",
+      "source_sha256": "3a5f778ca8f4f666ab86a018b1a9b495af5fa4556284b5892e2d6079a1fc1a71",
+      "final_sha256": "3a5f778ca8f4f666ab86a018b1a9b495af5fa4556284b5892e2d6079a1fc1a71",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/core/wsl-s2s-pipeline.py",
+      "source_sha256": "6faf6ca779c96025c84aecb7c44d43eea81f9f02948de811f268c8af0853e9e9",
+      "final_sha256": "6faf6ca779c96025c84aecb7c44d43eea81f9f02948de811f268c8af0853e9e9",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/mode/__init__.py",
+      "source_sha256": "08facc2dc59c5fe411f58a02687492ed23c1ecd4483f59e71761a3731aaabe86",
+      "final_sha256": "08facc2dc59c5fe411f58a02687492ed23c1ecd4483f59e71761a3731aaabe86",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/mode/mode_authority.py",
+      "source_sha256": "62ccea7b5028044f551936390abefbd9feca11c3360a0a202ac1c3a4ab9c666b",
+      "final_sha256": "62ccea7b5028044f551936390abefbd9feca11c3360a0a202ac1c3a4ab9c666b",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/mode/mode_config.json",
+      "source_sha256": "3ef94eb2c277f52525f29d45e69ce48c786fcd700aec82f3d9a12bf9f89de3a8",
+      "final_sha256": "24eb4adbbedf401988ec08aee6965ea2bb3982b10782a8246e4ea3a70f180a10",
+      "changed_for_archive": true
+    },
+    {
+      "path": "runtime/mode/prompts/reading_answer_mode.txt",
+      "source_sha256": "7e167614161b905eb26bc05b129740d109bc38d2ddf923b383b18de133c28928",
+      "final_sha256": "7e167614161b905eb26bc05b129740d109bc38d2ddf923b383b18de133c28928",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/mode/prompts/roleplay_output_format.txt",
+      "source_sha256": "e2ddb3811afd3eb608a55a454ebaa3922066b80e1fae786dbb85ecb522d718c2",
+      "final_sha256": "e2ddb3811afd3eb608a55a454ebaa3922066b80e1fae786dbb85ecb522d718c2",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/reading/__init__.py",
+      "source_sha256": "31da6912c5f164b9b166a909404c23d77f2ea74d6112a678a9bfc3f6af94001a",
+      "final_sha256": "31da6912c5f164b9b166a909404c23d77f2ea74d6112a678a9bfc3f6af94001a",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/reading/documents.py",
+      "source_sha256": "125f68c961f25d7805a3dbe324bc2372e0276bc0e60a841e1eec2d0f53d8f56d",
+      "final_sha256": "125f68c961f25d7805a3dbe324bc2372e0276bc0e60a841e1eec2d0f53d8f56d",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/reading_v2/install_reading_bridge.py",
+      "source_sha256": "6bdf2cd323b5a8fa87e4453b4af240f2a9ccbc7538f8871a6ab0b58e5ed5bf77",
+      "final_sha256": "6bdf2cd323b5a8fa87e4453b4af240f2a9ccbc7538f8871a6ab0b58e5ed5bf77",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/reading_v2/reading_bridge.py",
+      "source_sha256": "d5040d42a2bbe9c29b6b49d6a9c722e936e7be2d1762622b9a11532fa187ffb6",
+      "final_sha256": "d5040d42a2bbe9c29b6b49d6a9c722e936e7be2d1762622b9a11532fa187ffb6",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/s2s_business/__init__.py",
+      "source_sha256": "984637e76ad24706ab20e480b80344b30f27251c745f68765cebe774c46dc8fd",
+      "final_sha256": "984637e76ad24706ab20e480b80344b30f27251c745f68765cebe774c46dc8fd",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/s2s_business/fish_tts_handler.py",
+      "source_sha256": "e3f243de5205c8cc706a7b840fef4e3167a5f21f7960d7ce7e53d267af5adc70",
+      "final_sha256": "d7216e6de90b78244ca3e5846c55ab2e3caca25be297dd1e8027fad8227cfdf7",
+      "changed_for_archive": true
+    },
+    {
+      "path": "runtime/s2s_business/higgs_tts_handler.py",
+      "source_sha256": "9108d9886865f52227bc4902b0c43d70a25936ec81d6ea9bd2f6ce1a4e76b855",
+      "final_sha256": "0c7ac07f8dbe7b220003d1d028438f6287c55a223500633dc6f065b72d1e71ed",
+      "changed_for_archive": true
+    },
+    {
+      "path": "runtime/s2s_business/manual_voice_mode.py",
+      "source_sha256": "fdf6053f596d68a01abb6b0365a5db1ea31c6b72a628b811f109cd47c2454246",
+      "final_sha256": "fdf6053f596d68a01abb6b0365a5db1ea31c6b72a628b811f109cd47c2454246",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/.dockerignore",
+      "source_sha256": "8381058dae0b27a5db3d15d558c57d461fcb35da0ba3ed45beb1b0210221b9df",
+      "final_sha256": "8381058dae0b27a5db3d15d558c57d461fcb35da0ba3ed45beb1b0210221b9df",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/.gitattributes",
+      "source_sha256": "11ad7efa24975ee4b0c3c3a38ed18737f0658a5f75a0a96787b576a78a023361",
+      "final_sha256": "11ad7efa24975ee4b0c3c3a38ed18737f0658a5f75a0a96787b576a78a023361",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/.gitignore",
+      "source_sha256": "55b0b1672c29855e8aafc54785dde9463a9bca6cc1be5c63ae267b46632bed69",
+      "final_sha256": "55b0b1672c29855e8aafc54785dde9463a9bca6cc1be5c63ae267b46632bed69",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/.npmrc",
+      "source_sha256": "a3f616aee8bd117cf9e57981261462588bcbc4060bcec2c00ac09ba1cb010bfd",
+      "final_sha256": "a3f616aee8bd117cf9e57981261462588bcbc4060bcec2c00ac09ba1cb010bfd",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/Dockerfile",
+      "source_sha256": "9cfcf5f6bb5e276b6580504958482bd67c4dd93bf37a0166f894b512b9d44e81",
+      "final_sha256": "9cfcf5f6bb5e276b6580504958482bd67c4dd93bf37a0166f894b512b9d44e81",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/README.md",
+      "source_sha256": "e7c0183033f2d6ad330cca7a7d5cf83ff7700c71b5b8e3ab7d1178c302eb2538",
+      "final_sha256": "e7c0183033f2d6ad330cca7a7d5cf83ff7700c71b5b8e3ab7d1178c302eb2538",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/audio-router.js",
+      "source_sha256": "a9038df0910789f190bbc66dc687ef3873d46a3db1f4ccad32753c30e5d46ba8",
+      "final_sha256": "a9038df0910789f190bbc66dc687ef3873d46a3db1f4ccad32753c30e5d46ba8",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/auth.py",
+      "source_sha256": "f3478cc8034a9cef2b91b51f8f58d5e9ae479fedaaeb7a55c9cd23022f99484c",
+      "final_sha256": "f3478cc8034a9cef2b91b51f8f58d5e9ae479fedaaeb7a55c9cd23022f99484c",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/avatar_admin.py",
+      "source_sha256": "2fbe5fd85e0dfa07b5693ac160880adabda30a765d15aea34074a029f36600a1",
+      "final_sha256": "2fbe5fd85e0dfa07b5693ac160880adabda30a765d15aea34074a029f36600a1",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/avatar_assets.py",
+      "source_sha256": "a88f9f4d29f3342af57a47060ece55786cc996f33177a447f0d514d380a1644f",
+      "final_sha256": "a88f9f4d29f3342af57a47060ece55786cc996f33177a447f0d514d380a1644f",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/avatar_layout.css",
+      "source_sha256": "447a0b3926bc7bf1fa26acabfe14438a48b8450d3e9ec6dcd4eaf59bebc746d6",
+      "final_sha256": "447a0b3926bc7bf1fa26acabfe14438a48b8450d3e9ec6dcd4eaf59bebc746d6",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/avatar_layout.js",
+      "source_sha256": "1a2f6c27e484afa8df4a0505f1af8c3bfed30907a1c0bf375e6cb10b110dcf29",
+      "final_sha256": "1a2f6c27e484afa8df4a0505f1af8c3bfed30907a1c0bf375e6cb10b110dcf29",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/avatar_panel.css",
+      "source_sha256": "121626c66e52bb6cefcacee0a918906f39732db245165b6b5a312238c3f194bb",
+      "final_sha256": "121626c66e52bb6cefcacee0a918906f39732db245165b6b5a312238c3f194bb",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/avatar_panel.js",
+      "source_sha256": "ecd1ec797cc6a2bfed6dcd1964dffa9af708e73dd38ad99857cda44b474aa2c9",
+      "final_sha256": "ecd1ec797cc6a2bfed6dcd1964dffa9af708e73dd38ad99857cda44b474aa2c9",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/character_admin.py",
+      "source_sha256": "02fa61dfdd929648df9803e734126b60895e9e08ba4d25297bf90b67b88e1cb5",
+      "final_sha256": "02fa61dfdd929648df9803e734126b60895e9e08ba4d25297bf90b67b88e1cb5",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/character_panel.css",
+      "source_sha256": "01137e0cc9774805b46065d08f66563e9b0855d882866c457f1e438d1de17bb6",
+      "final_sha256": "01137e0cc9774805b46065d08f66563e9b0855d882866c457f1e438d1de17bb6",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/character_panel.js",
+      "source_sha256": "9ef1f4ed88aab4061ad01d03033bfd9c8641892d280971e4c8bd4a140a604276",
+      "final_sha256": "9ef1f4ed88aab4061ad01d03033bfd9c8641892d280971e4c8bd4a140a604276",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/character_panel_fragment.html",
+      "source_sha256": "ed3a9011d03f23ed331ae8d0f316980ffb851dd5f64cbf00849e14f41fcfca8a",
+      "final_sha256": "ed3a9011d03f23ed331ae8d0f316980ffb851dd5f64cbf00849e14f41fcfca8a",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/conn_trace.js",
+      "source_sha256": "6637ded4c66ef20ddad481fc845bd17e97596030c2446f9e1fdeb06f6cba5a8b",
+      "final_sha256": "6637ded4c66ef20ddad481fc845bd17e97596030c2446f9e1fdeb06f6cba5a8b",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/console_layout.css",
+      "source_sha256": "739cbdd8d0bcff95f0b2e420a2b8f3852703dbd0aa3b636fad7712945a428742",
+      "final_sha256": "739cbdd8d0bcff95f0b2e420a2b8f3852703dbd0aa3b636fad7712945a428742",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/docs/adr/0001-docker-space-with-search-proxy.md",
+      "source_sha256": "26498c658caa9075d1aa1339ecbdb4028f462a35a6d98d60028ebd38504602d7",
+      "final_sha256": "26498c658caa9075d1aa1339ecbdb4028f462a35a6d98d60028ebd38504602d7",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/gf_dock.css",
+      "source_sha256": "723a193fe3e9559b47f981d81dceed6c9cf958bf81af6fe4eb719c5297c1ca56",
+      "final_sha256": "723a193fe3e9559b47f981d81dceed6c9cf958bf81af6fe4eb719c5297c1ca56",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/gf_workspace.css",
+      "source_sha256": "dc48d5001881bd8e2c4b475a9ca5b683da42c2dd603babfec79fcec3d1d359a0",
+      "final_sha256": "dc48d5001881bd8e2c4b475a9ca5b683da42c2dd603babfec79fcec3d1d359a0",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/index.html",
+      "source_sha256": "03eff9e8831fce0ea04d8bb7b838f2547a8b96373546c8db6144d23d67111b45",
+      "final_sha256": "03eff9e8831fce0ea04d8bb7b838f2547a8b96373546c8db6144d23d67111b45",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/limiter.py",
+      "source_sha256": "44ec0d3fb9471d378527cbfd4426d5a4cb29b981462c5479021faa492c5e9306",
+      "final_sha256": "44ec0d3fb9471d378527cbfd4426d5a4cb29b981462c5479021faa492c5e9306",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/live_interaction.js",
+      "source_sha256": "f5b492293c4489418b14e8204e0398c1634373d7a7b5c89a14182654e6dae396",
+      "final_sha256": "f5b492293c4489418b14e8204e0398c1634373d7a7b5c89a14182654e6dae396",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/local_api.py",
+      "source_sha256": "14e2a413699fc44162b01dfc2f635c99c6db0de49e96603e8fbe51d494d60098",
+      "final_sha256": "14e2a413699fc44162b01dfc2f635c99c6db0de49e96603e8fbe51d494d60098",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/main.js",
+      "source_sha256": "b4b9e687fcb1fbdd94b386c151d98a917450da5cfae3e0452728cc4f6afd57f6",
+      "final_sha256": "b4b9e687fcb1fbdd94b386c151d98a917450da5cfae3e0452728cc4f6afd57f6",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/models_admin.py",
+      "source_sha256": "4391e2d7f730145c80fba15c2b52d117487962ce48b1b7b9ad9591b5d1c020a8",
+      "final_sha256": "4391e2d7f730145c80fba15c2b52d117487962ce48b1b7b9ad9591b5d1c020a8",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/package-lock.json",
+      "source_sha256": "e65bdc3fe7f2cc3afd64a09f06856a4bde396eb292c8905c2ef445184c669106",
+      "final_sha256": "e65bdc3fe7f2cc3afd64a09f06856a4bde396eb292c8905c2ef445184c669106",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/package.json",
+      "source_sha256": "eb96b761a30a776bcc503e33e546a2c92d6b7702bd1bd19c37964e4c7b254413",
+      "final_sha256": "eb96b761a30a776bcc503e33e546a2c92d6b7702bd1bd19c37964e4c7b254413",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/pid_liveness.py",
+      "source_sha256": "b7479088bbd0de9869ba0797ac97bfa5d9d4b28b094638a430e455f9de51d138",
+      "final_sha256": "b7479088bbd0de9869ba0797ac97bfa5d9d4b28b094638a430e455f9de51d138",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/requirements.txt",
+      "source_sha256": "a469222e056fe86d9aeec6d3f5e637f720947c5264a8448b6aa2fbf6e7798898",
+      "final_sha256": "a469222e056fe86d9aeec6d3f5e637f720947c5264a8448b6aa2fbf6e7798898",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/s2s-realtime-client.js",
+      "source_sha256": "7e256e35801636380e5ed39d288cf4b62a6b6c3f00c605b563b8d2729504d4a8",
+      "final_sha256": "7e256e35801636380e5ed39d288cf4b62a6b6c3f00c605b563b8d2729504d4a8",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/server.py",
+      "source_sha256": "4c0f08fdd4e92e473121a7d9a952daa0e07587d16705f9186b5a86d91201d76e",
+      "final_sha256": "4c0f08fdd4e92e473121a7d9a952daa0e07587d16705f9186b5a86d91201d76e",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/style.css",
+      "source_sha256": "a43f659dc5b8556ba891e9099f1ba40f24213a73d74dc0badd42387945159ce8",
+      "final_sha256": "a43f659dc5b8556ba891e9099f1ba40f24213a73d74dc0badd42387945159ce8",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/ui/account.js",
+      "source_sha256": "a83837ca51a9064fd3b00427fd4fde743aabbeb838036aa1370513559dec794f",
+      "final_sha256": "a83837ca51a9064fd3b00427fd4fde743aabbeb838036aa1370513559dec794f",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/ui/chat.js",
+      "source_sha256": "6e19aa6f147d7cc0b6b2fbd300d0818fef9740798b140598870d4df1881774d4",
+      "final_sha256": "6e19aa6f147d7cc0b6b2fbd300d0818fef9740798b140598870d4df1881774d4",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/ui/dom.js",
+      "source_sha256": "f6e397ca974f291e1f9a32f3799d52e373ea30aac1a87626528eb8548b02dade",
+      "final_sha256": "f6e397ca974f291e1f9a32f3799d52e373ea30aac1a87626528eb8548b02dade",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/ui/girlfriend.css",
+      "source_sha256": "8f1e426ae82c6b758bf4b0c2599cee299748d2690aca37b11e3eee9a0ac0ec3d",
+      "final_sha256": "8f1e426ae82c6b758bf4b0c2599cee299748d2690aca37b11e3eee9a0ac0ec3d",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/ui/girlfriend.js",
+      "source_sha256": "e15daf970f887d4fff61ea5d1720588f2707531c353dd42f9179adaa79d51dae",
+      "final_sha256": "e15daf970f887d4fff61ea5d1720588f2707531c353dd42f9179adaa79d51dae",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/ui/reading.js",
+      "source_sha256": "b5f7a3b86fe288e09d0d5f75d6962358b45f916191624002f85cbae01231fd6e",
+      "final_sha256": "b5f7a3b86fe288e09d0d5f75d6962358b45f916191624002f85cbae01231fd6e",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/ui/zh_cn.js",
+      "source_sha256": "b52fae85b3f4d01cc5bd268174b726f1ccca18fede010208f07c4ebe2ece583d",
+      "final_sha256": "b52fae85b3f4d01cc5bd268174b726f1ccca18fede010208f07c4ebe2ece583d",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/ui_layout_modes.css",
+      "source_sha256": "0db071f563b0b17b959dfe2a347a421c2255cfb1a3942c53d99d37714c845098",
+      "final_sha256": "0db071f563b0b17b959dfe2a347a421c2255cfb1a3942c53d99d37714c845098",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/ui_layout_modes.js",
+      "source_sha256": "e038c7c3f27fad299adb23378e602da2dfbabbd9c7db6d9a079fd4c2e7ef4a28",
+      "final_sha256": "e038c7c3f27fad299adb23378e602da2dfbabbd9c7db6d9a079fd4c2e7ef4a28",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/vendor/openai-realtime-agents.umd.js",
+      "source_sha256": "a8e2b9134e215d67dee000e874216d930f9daf76a9c1616bdc4844316edbba44",
+      "final_sha256": "a8e2b9134e215d67dee000e874216d930f9daf76a9c1616bdc4844316edbba44",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/voice_models_admin.py",
+      "source_sha256": "f1bf75d9677f6ce2b22b94df041d74864ce709134a90285b7e0d695ef4717560",
+      "final_sha256": "f1bf75d9677f6ce2b22b94df041d74864ce709134a90285b7e0d695ef4717560",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/worklets/audio-playback.js",
+      "source_sha256": "638091d162c5ca35915f94ab3cc77d2ea79dc665d35d8eedc05ff28fc689bbdf",
+      "final_sha256": "638091d162c5ca35915f94ab3cc77d2ea79dc665d35d8eedc05ff28fc689bbdf",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/worklets/mic-capture.js",
+      "source_sha256": "eb7d2fd33cb96ab17099d14cefa98dac4d9e0402f5dff207d51c667f387067de",
+      "final_sha256": "eb7d2fd33cb96ab17099d14cefa98dac4d9e0402f5dff207d51c667f387067de",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/ws/codec.js",
+      "source_sha256": "d3290502d228925140e7b35e078db1772d95166fe6c2e3ba4d2e6eafca7b9da6",
+      "final_sha256": "d3290502d228925140e7b35e078db1772d95166fe6c2e3ba4d2e6eafca7b9da6",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/ws/orb-visualizer.js",
+      "source_sha256": "9ca18a565ba535a92d0b3919ddcbfefcc9ed53cdc7735c6b22529c85ad9ed683",
+      "final_sha256": "9ca18a565ba535a92d0b3919ddcbfefcc9ed53cdc7735c6b22529c85ad9ed683",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/ws/reading-instructions.js",
+      "source_sha256": "3e452f51eba1650847c2deaafe7d5b663524d67db826bedc60f8e7362b241f08",
+      "final_sha256": "3e452f51eba1650847c2deaafe7d5b663524d67db826bedc60f8e7362b241f08",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/ui/app/ws/user-audio-recorder.js",
+      "source_sha256": "874f018c5f621a35fa520aebdf184b46cd7c66cb3334712c82290320c0dff4cf",
+      "final_sha256": "874f018c5f621a35fa520aebdf184b46cd7c66cb3334712c82290320c0dff4cf",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/windows/Avatar-Supervisor.ps1",
+      "source_sha256": "e292746e1a3cc560ac99314b96a459755b4b9ee3e01ce19b192770aa314c1669",
+      "final_sha256": "e292746e1a3cc560ac99314b96a459755b4b9ee3e01ce19b192770aa314c1669",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/windows/Run-Girlfriend-Avatar8010.ps1",
+      "source_sha256": "63824e7f205057010ac1e3b5ff0de646631d289d0ab5b6a2dce578e69949d86f",
+      "final_sha256": "63824e7f205057010ac1e3b5ff0de646631d289d0ab5b6a2dce578e69949d86f",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/windows/Switch-Girlfriend-Avatar.ps1",
+      "source_sha256": "e67ba4ed3b3f1f231f1bc34e6a41f3c70b23a4578104e03660cf82c0bd341b95",
+      "final_sha256": "e67ba4ed3b3f1f231f1bc34e6a41f3c70b23a4578104e03660cf82c0bd341b95",
+      "changed_for_archive": false
+    },
+    {
+      "path": "runtime/windows/Switch-Girlfriend-Voice.ps1",
+      "source_sha256": "299c57ea05f5da4705df7c1949c8032c554a0dc21d4f0ea24292b032c977253c",
+      "final_sha256": "72e3da7b7fd36f7f3f393e4970b58420b8121fb8e5c8293ecbbe977ace53b6da",
+      "changed_for_archive": true
+    },
+    {
+      "path": "scripts/Avatar-Launch-Common.ps1",
+      "source_sha256": "621f84392f824c910af278a48fd43bc2ee529dbb35d7aca81d5f62e4a2badd1a",
+      "final_sha256": "621f84392f824c910af278a48fd43bc2ee529dbb35d7aca81d5f62e4a2badd1a",
+      "changed_for_archive": false
+    },
+    {
+      "path": "scripts/ReplayLiveComments.ps1",
+      "source_sha256": "33578e2476fb0e842fa78d4b464b4c3edb01d1f47865b2ace4fa64b1919b820e",
+      "final_sha256": "33578e2476fb0e842fa78d4b464b4c3edb01d1f47865b2ace4fa64b1919b820e",
+      "changed_for_archive": false
+    },
+    {
+      "path": "scripts/Runtime-Common.ps1",
+      "source_sha256": "c5c47075dbc0b1d8e883ad05166b3fb143eade2fd2bd5c891b302d2c1025cf01",
+      "final_sha256": "cd42a90c82f80797b1b69a9833476e339dd9025a879639280b42b1b74d260196",
+      "changed_for_archive": true
+    },
+    {
+      "path": "scripts/Start-AI-Girlfriend.ps1",
+      "source_sha256": "531ae28983e718266c0437f073f92285bbe26cca3436ad5545e7a5b2c32c61bf",
+      "final_sha256": "531ae28983e718266c0437f073f92285bbe26cca3436ad5545e7a5b2c32c61bf",
+      "changed_for_archive": false
+    },
+    {
+      "path": "scripts/Start-Live-Interaction.ps1",
+      "source_sha256": "a0a441478e7869cdc56a1eeefe57e7f41391e5e061fd1e7ce50126359f5891e6",
+      "final_sha256": "a0a441478e7869cdc56a1eeefe57e7f41391e5e061fd1e7ce50126359f5891e6",
+      "changed_for_archive": false
+    },
+    {
+      "path": "scripts/Status-AI-Girlfriend.ps1",
+      "source_sha256": "a6825f417c4d861b26fe42ba0d46329757210ef5ff72f145212fe2766a19afd1",
+      "final_sha256": "a6825f417c4d861b26fe42ba0d46329757210ef5ff72f145212fe2766a19afd1",
+      "changed_for_archive": false
+    },
+    {
+      "path": "scripts/Status-Live-Interaction.ps1",
+      "source_sha256": "672b7715a28da2295fc32751f5cefc13804b3b6c76404e1d43ac4cedae49c26d",
+      "final_sha256": "672b7715a28da2295fc32751f5cefc13804b3b6c76404e1d43ac4cedae49c26d",
+      "changed_for_archive": false
+    },
+    {
+      "path": "scripts/Stop-AI-Girlfriend.ps1",
+      "source_sha256": "3dad8c17a4f313022e169b81c95a14aeea3fbd4ad30776b726d2ebb3b134ae5a",
+      "final_sha256": "3dad8c17a4f313022e169b81c95a14aeea3fbd4ad30776b726d2ebb3b134ae5a",
+      "changed_for_archive": false
+    },
+    {
+      "path": "scripts/Stop-Live-Interaction.ps1",
+      "source_sha256": "9e55cf58bfe95d848f3d2c4ca2f697174f4ef5baf95626d5234bc5af2cad94d3",
+      "final_sha256": "9e55cf58bfe95d848f3d2c4ca2f697174f4ef5baf95626d5234bc5af2cad94d3",
+      "changed_for_archive": false
+    },
+    {
+      "path": "scripts/Switch-Girlfriend-Avatar.ps1",
+      "source_sha256": "77217e280982da24d8e8ee21ff078e13458a7c3f58813570913ac531a22ebfb4",
+      "final_sha256": "77217e280982da24d8e8ee21ff078e13458a7c3f58813570913ac531a22ebfb4",
+      "changed_for_archive": false
+    },
+    {
+      "path": "third_party_modified/speech_to_speech_0.2.11/api/openai_realtime/reading_bridge.py",
+      "source_sha256": "01e70b2aa260098300b86d7a27ee4e8f3509818006499f327a62111aefde7781",
+      "final_sha256": "01e70b2aa260098300b86d7a27ee4e8f3509818006499f327a62111aefde7781",
+      "changed_for_archive": false
+    },
+    {
+      "path": "third_party_modified/speech_to_speech_0.2.11/api/openai_realtime/websocket_router.py",
+      "source_sha256": "fd0378aab37f362525bd55d63e142f918594e0b52db9bd21b6a6d16f983ba361",
+      "final_sha256": "fd0378aab37f362525bd55d63e142f918594e0b52db9bd21b6a6d16f983ba361",
+      "changed_for_archive": false
+    }
+  ]
+}

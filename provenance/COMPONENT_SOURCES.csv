@@ -1,0 +1,26 @@
+﻿component_id,component,version,evidence_grade,confidence,repo_or_source,license,redistribute_weights,notes
+S2S,speech-to-speech,0.2.11,F1,HIGH_CONFIDENCE_FUNCTIONAL_BASELINE,https://github.com/huggingface/speech-to-speech,REVIEW_REQUIRED,RECORD_ONLY,
+LIVETALKING,LiveTalking,,F1,,https://github.com/lipku/LiveTalking,Apache-2.0 (upstream; local fork modified),RECORD_ONLY,
+LIUW_DERIVATIVE,liuw8233-cell/ai_girlfriend,,F2,,https://github.com/liuw8233-cell/ai_girlfriend,REVIEW_REQUIRED,RECORD_ONLY,
+FRONTEND,hf-realtime-voice (浏览器前端),,F2,,,REVIEW_REQUIRED,RECORD_ONLY,
+PYTHON_S2S,Python 解释器（语音链路）,3.12,F2,,,REVIEW_REQUIRED,RECORD_ONLY,
+PYTHON_LIVETALKING,Python 解释器（数字人链路）,3.10,F0,,,REVIEW_REQUIRED,RECORD_ONLY,
+OS_WSL,WSL2 发行版,Ubuntu 24.04,F0,,,REVIEW_REQUIRED,RECORD_ONLY,
+TORCH,PyTorch 三件套（LiveTalking 用）,,F0,,,REVIEW_REQUIRED,RECORD_ONLY,
+STT,faster-whisper,,F0,,https://github.com/SYSTRAN/faster-whisper,MIT (check at publication),RECORD_ONLY,
+VAD,Silero VAD v5 via speech-to-speech VADHandler,,F0,,https://github.com/snakers4/silero-vad,MIT (check at publication),RECORD_ONLY,
+TTS,Qwen3-TTS 声音克隆,,F0,,,REVIEW_REQUIRED,RECORD_ONLY,
+LLM_MODEL,Qwen3 14B,,F0,,,REVIEW_REQUIRED,NO,
+LLM_LAUNCH,llama.cpp 启动基线,,F0,,,REVIEW_REQUIRED,RECORD_ONLY,
+WAV2LIP_WEIGHT,Wav2Lip 权重,,F0/local,,https://github.com/Rudrabha/Wav2Lip,NON-COMMERCIAL (original Wav2Lip research license),NO,
+AVATAR,官方示例形象,,F0/local,,,REVIEW_REQUIRED,NO,
+S3FD,Wav2Lip 人脸检测器,,local,,https://github.com/Rudrabha/Wav2Lip (s3fd detector bundled),NON-COMMERCIAL,NO,
+LLAMACPP_BINARY,llama.cpp Windows 二进制,,PROBE_ONLY,,,REVIEW_REQUIRED,RECORD_ONLY,
+APT,Ubuntu 系统包,,F2,,,REVIEW_REQUIRED,RECORD_ONLY,
+FASTER_QWEN3_TTS_EXTRA,faster-qwen3-tts GGML wheel,,F1(文档),,,REVIEW_REQUIRED,RECORD_ONLY,
+LIVETALKING_CODE,LiveTalking 源码（runtime/avatar/app，169 文件逐字）,c963ad409c556918b7d23999bf87c47a7c05c932,F1,GIT_BLOB_DIFF_VERIFIED,https://github.com/lipku/LiveTalking,Apache-2.0,"YES (code only, LICENSE preserved)",2026-10-12 git-blob 逐文件核验
+LIVETALKING_MODIFIED,LiveTalking 修改派生（8 文件：app.py/base_avatar.py/base_asr.py/wav2lip_avatar.py/routes.py/rtc_manager.py/session_manager.py/webrtc.py）,c963ad409c + 本地修改,F2,GIT_BLOB_DIFF_VERIFIED,https://github.com/lipku/LiveTalking,Apache-2.0,YES (with NOTICE attribution),修改面=V3/D组工作
+S2S_DEMO_UI,speech-to-speech demo 前端派生（main.js/index.html/server.py/style.css/s2s-realtime-client.js）,5ac2730e88a111229c5b56b94b515a1bd4d30c65,F2,LINE_LEVEL_DIFF_VERIFIED,https://github.com/huggingface/speech-to-speech (demo/; smolagents/hf-realtime-voice Space 为其副本),Apache-2.0,YES (with NOTICE attribution),逐字保留 73%-96%
+OPENAI_REALTIME_AGENTS_UMD,openai-realtime-agents UMD bundle（runtime/ui/app/vendor/）,0.14.3,F1,EMBEDDED_VERSION_STRING,https://github.com/openai/openai-realtime-agents,MIT,YES (verbatim vendor file),SHA256 a8e2b9134e215d67dee000e874216d930f9daf76a9c1616bdc4844316edbba44
+S2S_PACKAGE,speech-to-speech 包（pip 安装，不随仓库分发）,0.2.11 (wheel sha256 ac33e2e8…),F1,WHEEL_SHA256_PINNED,https://github.com/huggingface/speech-to-speech,Apache-2.0,NO (install via pip),third_party_modified/ 携带 reading_bridge.py(自研新增)+websocket_router.py(修改派生)
+AVATAR_SYNC_JS,avatar-sync.js（数字人同步层）,派生自 liuw8233-cell/ai_girlfriend@699f7fe,F2,LINE_LEVEL_DIFF_VERIFIED (56% verbatim),https://github.com/liuw8233-cell/ai_girlfriend,NO LICENSE (all rights reserved),NO — QUARANTINED,需上游授权或重写；见 NOTICE §5

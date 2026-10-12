@@ -1,0 +1,32 @@
+{
+  "schema": "ai-girlfriend-mode/1",
+  "modes": {
+    "ROLEPLAY": {
+      "label": "互动聊天",
+      "implemented": true,
+      "order": 1,
+      "sola_v2_ember": false,
+      "human_interaction": true,
+      "include_reading_context": false,
+      "prompt_file": "roleplay_output_format.txt"
+    },
+    "READING": {
+      "label": "陪读朗读",
+      "implemented": true,
+      "order": 2,
+      "sola_v2_ember": false,
+      "human_interaction": false,
+      "include_reading_context": true,
+      "prompt_file": "reading_answer_mode.txt"
+    },
+    "THIRD": {
+      "label": "第三个模式",
+      "implemented": false,
+      "order": 3,
+      "sola_v2_ember": false,
+      "human_interaction": false,
+      "include_reading_context": false,
+      "prompt_file": ""
+    }
+  }
+}

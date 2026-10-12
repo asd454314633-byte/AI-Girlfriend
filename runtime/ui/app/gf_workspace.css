@@ -1,0 +1,321 @@
+/* ============================================================================
+ * gf_workspace.css — AI_GIRLFRIEND_FRONTEND_V3_WORKSPACE_01
+ *
+ * V3 固定工作区排布层，必须排在所有既有样式之后（含 console_layout.css）：
+ *   1) 顶栏：人物名按钮（一级入口）+ 模式切换（互动聊天/陪读朗读）。
+ *   2) 右侧固定工作区 #gf-workspace：当前模式的实际操作区，
+ *      宽度固定、自身滚动，不随内容增长改变整页布局。
+ *   3) 中央 stage 只留给人物画面（body 级 #av-layer），保持自然比例；
+ *      直播 9:16 取景（ui_layout_modes / avatar_layout.js）不受影响。
+ *   4) 陪读面板从弹层改为工作区常驻（.reading-inline）。
+ *   5) 设置弹层六分组标签页（.settings-tabs）。
+ *
+ * 不做（越界即停）：
+ *   · 不写任何 #av-video / #av-layer 的几何规则（唯一 owner 是 avatar_layout.js）。
+ *   · 不改任何控件内部交互样式，只做位置与容器排布。
+ * ==========================================================================*/
+
+/* ------------------------------------------------------------- 1) 顶栏 */
+/* 人物名按钮：一级入口「人物与形象」 */
+.persona-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 10px;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  background: color-mix(in srgb, var(--bg-elev) 80%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.persona-btn:hover {
+  border-color: var(--accent, #7c8cff);
+  background: color-mix(in srgb, var(--accent, #7c8cff) 12%, transparent);
+}
+.persona-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent, #7c8cff);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent, #7c8cff) 70%, transparent);
+  flex: none;
+}
+.persona-name {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.persona-caret { opacity: 0.6; flex: none; }
+
+/* 模式切换：更大更明显（一级入口） */
+.topbar-mode .gf-mode-btn {
+  padding: 9px 20px;
+  font-size: 14px;
+  min-height: 38px;
+}
+
+/* Real-time controls occupy the existing side workspace, never the preview. */
+.topbar-mode, #gf-mode-row { min-width: max-content; }
+#gf-mode-row > button, #gf-layout-open { white-space: nowrap; flex-shrink: 0; }
+#gf-layout-open { min-height: 38px; }
+.reading-strategies { display: flex; gap: 6px; flex-wrap: wrap; }
+.reading-strategies button { flex: 1; white-space: nowrap; padding: 8px 10px; }
+.reading-strategies [aria-pressed="true"] { background: #3d3564; border-color: #9a8bdf; color: #fff; }
+.reading-strategy-hint { margin: 0 0 8px; font-size: 12px; color: var(--text-faint); line-height: 1.5; }
+body #gf-workspace #uivm-panel.uivm-preview-controls {
+  position: static; width: auto; max-height: 38vh; overflow: auto;
+  flex: 0 1 auto; margin: 10px; padding: 12px;
+  transform: none; box-shadow: none; background: #12151c;
+}
+body #gf-workspace #uivm-panel[data-collapsed="1"] { display: none; }
+#gf-workspace .uivm-head { gap: 8px; }
+#gf-workspace .uivm-collapse { width: auto; white-space: nowrap; padding: 5px 8px; }
+body[data-preview-adjusting="true"] #gf-workspace .uivm-note { margin: 6px 0; }
+body[data-view-mode="detail"] #gf-workspace .uivm-sec-detail { display: grid !important; grid-template-columns: 1fr 1fr; column-gap: 14px; }
+#gf-workspace .uivm-sec-detail > .uivm-note,
+#gf-workspace .uivm-sec-detail > .uivm-row,
+#gf-workspace .uivm-sec-detail > .uivm-reset { grid-column: 1 / -1; }
+body[data-view-mode="detail"] #uivm-divider.uivm-divider { display: none !important; }
+@media (max-width: 1100px) {
+  .topbar-mode .gf-mode-btn, #live-interaction-open { padding: 7px 10px; font-size: 13px; }
+  .topbar-status { display: none; }
+}
+
+/* ------------------------------------------- 2) 右侧固定工作区 */
+@supports (display: grid) {
+  @media (min-width: 861px) {
+    body[data-view-mode="detail"] #app#app {
+      grid-template-columns: minmax(0, 1fr) clamp(380px, 42vw, 650px);
+      grid-template-areas:
+        "topbar topbar"
+        "stage workspace"
+        "footer footer";
+    }
+    /* 设置已内嵌，不再为旧浮动面板保留右侧空列。取景框尺寸仍由原 owner 管理。 */
+    body[data-view-mode="live-portrait"] #app#app {
+      margin-left: calc(var(--uivm-stage-w) + var(--uivm-stage-gap) * 2);
+      width: calc(100% - var(--uivm-stage-w) - var(--uivm-stage-gap) * 2);
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "topbar" "workspace" "footer";
+    }
+    body[data-view-mode="live-portrait"] #app#app > .stage { display: none; }
+    .topbar  { grid-area: topbar; }
+    .stage   { grid-area: stage; }
+    #gf-workspace { grid-area: workspace; }
+    #app#app > footer.footer { grid-area: footer; }
+  }
+}
+
+.gf-workspace {
+  position: relative;
+  z-index: 150;                 /* 高于人物层(z 1)/顶栏(300 之下、抽屉 200 之上按需)；
+                                   抽屉面板(z 200+)与画面布局手柄(z 10500)仍在其上 */
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  margin: 12px 14px 10px 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--bg-elev) 82%, transparent);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.gf-view {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  flex: 1;
+  padding: 14px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+/* display:flex 会压过 UA 的 [hidden]{display:none}，必须显式收口，
+   否则「切换模式后旧视图仍然可见」（首轮真实浏览器实测）。 */
+.gf-view[hidden] { display: none !important; }
+
+/* 互动聊天视图 */
+.gf-view-chat .orb-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0 2px;
+}
+/* 语音球在工作区内压缩到可用尺寸（原 Dock 内的等比思路沿用） */
+.gf-view-chat .orb-wrap { --orb-size: 120px; }
+.gf-view-chat .orb-wrap .circle {
+  width: var(--orb-size, 120px);
+  height: var(--orb-size, 120px);
+}
+.gf-view-chat .circle-caption { font-size: 12px; }
+
+#gf-view-chat .gf-live-conversation {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 120px;
+  max-height: none;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md, 14px);
+  background: color-mix(in srgb, var(--bg-elev) 55%, transparent);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+#gf-view-chat .gf-composer {
+  width: 100%;
+  flex: none;
+  padding: 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md, 14px);
+  background: color-mix(in srgb, var(--bg-elev) 72%, transparent);
+}
+
+/* 陪读视图 */
+#gf-view-reading { padding: 0; overflow: hidden; }
+
+/* 陪读面板内嵌化：原来是全屏弹层（.reading-panel），现在常驻工作区 */
+.reading-panel.reading-inline,
+.reading-inline .reading-inner {
+  position: static;
+  inset: auto;
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  transition: none;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+  background: transparent;
+  backdrop-filter: none;
+  padding: 14px;
+  gap: 10px;
+  pointer-events: auto;   /* 压过原 .reading-panel 的 pointer-events:none */
+  z-index: auto;
+}
+.reading-inline .reading-inner { overflow-y: auto; overscroll-behavior: contain; }
+body[data-preview-adjusting="true"] .reading-inline .reading-inner { padding: 10px; gap: 8px; }
+body[data-preview-adjusting="true"] .reading-inline .reading-text { min-height: 80px; }
+.reading-inline .reading-header { margin: 0; flex: none; }
+.reading-inline .reading-strategies, .reading-inline .reading-strategy-hint { flex: none; }
+.reading-inline .reading-library { display: flex; gap: 10px; flex: none; }
+.reading-inline .reading-library .gf-field { flex: 1; min-width: 0; }
+.reading-inline .reading-text {
+  flex: 1 1 auto;
+  min-height: 160px;
+  max-height: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md, 14px);
+  background: color-mix(in srgb, var(--bg-elev) 55%, transparent);
+  padding: 12px 14px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.reading-inline .reading-progress { flex: none; }
+.reading-inline .reading-controls { flex: none; flex-wrap: wrap; }
+.reading-inline .reading-import-box { flex: none; }
+.reading-inline .reading-import-box summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-faint);
+  user-select: none;
+}
+.reading-inline .reading-import-box[open] summary { margin-bottom: 8px; }
+
+/* 窄窗口（<=860px）：工作区回归文档流，垫在画面下方 */
+@media (max-width: 860px) {
+  body[data-view-mode="live-portrait"] #app#app {
+    margin-left: 0; width: 100%;
+    padding-top: calc(var(--uivm-stage-h) + var(--uivm-stage-gap) * 2);
+    grid-template-columns: minmax(0, 1fr);
+  }
+  body[data-view-mode="live-portrait"] #app#app > .stage { display: none; }
+  .gf-workspace {
+    margin: 0 10px 10px;
+    max-height: 62vh;
+  }
+}
+
+/* ------------------------------------------- 4) 设置弹层六分组 */
+.settings-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 20px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.settings-tab {
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  background: color-mix(in srgb, var(--bg-elev) 70%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.settings-tab:hover { border-color: var(--accent, #7c8cff); }
+.settings-tab.is-active {
+  background: color-mix(in srgb, var(--accent, #7c8cff) 24%, transparent);
+  border-color: var(--accent, #7c8cff);
+}
+.settings-modal-scroll { max-height: min(72vh, 720px); }
+#settings-modal .tab-panels {
+  max-height: min(64vh, 640px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 14px 20px;
+}
+#settings-modal .tab-panel { display: none; }
+#settings-modal .tab-panel.active { display: block; }
+.settings-hint {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: var(--text-faint);
+}
+.tools-advanced-entry { margin-top: 4px; }
+
+/* 设置内直接操作，继承原管理器及唯一布局状态。 */
+#settings-modal { width: min(760px, calc(100vw - 28px)); max-width: calc(100vw - 28px); }
+#settings-modal .modal-content { display: flex; flex-direction: column; max-height: calc(100dvh - 48px); }
+#settings-modal .tab-panels { min-height: 0; flex: 1 1 auto; }
+#settings-modal .modal-header, #settings-modal .settings-tabs, #settings-modal .modal-footer { flex: none; }
+#live-interaction-panel[hidden] { display: none !important; }
+#chat-panel.chat-panel { position: fixed; inset: 0; z-index: 12000; overflow: hidden; visibility: hidden; }
+#chat-panel.chat-panel.open { visibility: visible; }
+#settings-modal .av-panel, #settings-modal .char-panel { width: 100%; margin: 0; }
+body #settings-modal #uivm-panel.uivm-inline {
+  position: static; width: 100%; max-height: none; transform: none;
+  overflow: visible; box-shadow: none; margin: 0; font-size: 13px;
+}
+#settings-modal .uivm-inline .uivm-collapse { display: none; }
+#settings-modal .char-advanced { margin: 12px 0; padding: 10px; border: 1px solid var(--border); border-radius: 10px; }
+#settings-modal .char-advanced summary { cursor: pointer; color: var(--text-faint); }
+#settings-modal .char-advanced[open] summary { margin-bottom: 12px; }
+#settings-modal .char-row-add { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
+#settings-modal .char-row-add > label { min-width: 0; }
+
+/* 模式按钮窄窗显隐（沿用 console_layout 的双入口规则） */
+/* LIVE 的工作区扣除了竖屏预览宽度，按实际可用空间收起辅助状态。 */
+body[data-view-mode="live-portrait"] .topbar-status,
+body[data-view-mode="live-portrait"] .topbar-mode .gf-mode-status { display: none; }
+body[data-view-mode="live-portrait"] .topbar { gap: 10px; }
+body[data-view-mode="live-portrait"] .topbar-mode .gf-mode-btn { padding-inline: 10px; }
+body[data-view-mode="live-portrait"] .topbar-right { gap: 6px; flex: none; }
+@media (min-width: 861px) { .about-btn-mobile { display: none; } }
+@media (max-width: 860px) { .about-btn-desktop { display: none; } }

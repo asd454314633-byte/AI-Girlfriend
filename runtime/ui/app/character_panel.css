@@ -1,0 +1,335 @@
+/* 人物与「记住的事」面板的样式（任务 §10 / §16）。
+ *
+ * 单独一个文件，不去动上游那份 72 KB 的总样式：只消费它的 :root 设计变量，
+ * 暗底、细边框、颜色只留给「需要注意的地方」，跟女友版其余控件一个调性。
+ * 100% / 120% / 窄窗口都不许互相压住：全部用流式布局，没有固定定位的浮层，
+ * 只有确认框是覆盖层（它本来就是模态的）。 */
+
+.char-panel {
+  display: block;
+  box-sizing: border-box;
+  width: min(560px, 100%);
+  margin: 14px auto 0;
+  padding: 12px 14px 16px;
+  border: 1px solid var(--border-strong, #3a3a44);
+  border-radius: var(--radius-md, 14px);
+  background: var(--bg-elev-1, #17171d);
+  color: var(--text, #e8e8ef);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.char-panel * {
+  box-sizing: border-box;
+}
+
+.char-head {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.char-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.char-sub {
+  margin: 0;
+  color: var(--text-dim, #9a9aa8);
+  font-size: 12px;
+}
+
+.char-bar,
+.char-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.char-row-tools {
+  padding-top: 6px;
+  border-top: 1px dashed var(--border, #2c2c36);
+}
+
+.char-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.char-field-label {
+  font-size: 11px;
+  color: var(--text-dim, #9a9aa8);
+}
+
+.char-field-hint {
+  font-size: 11px;
+  color: var(--text-dim, #8b8b98);
+}
+
+.char-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border-strong, #3a3a44);
+  border-radius: var(--radius-sm, 8px);
+  background: var(--bg-elev-2, #1f1f27);
+  color: var(--text, #e8e8ef);
+  font: inherit;
+  font-size: 13px;
+}
+
+.char-input:focus-visible {
+  outline: 2px solid var(--accent, #6f7dff);
+  outline-offset: 1px;
+}
+
+.char-area {
+  resize: vertical;
+  min-height: 54px;
+}
+
+.char-select {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 128px;
+}
+
+.char-btn {
+  padding: 8px 12px;
+  border: 1px solid var(--border-strong, #3a3a44);
+  border-radius: var(--radius-sm, 8px);
+  background: var(--bg-elev-2, #1f1f27);
+  color: var(--text, #e8e8ef);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.char-btn:hover {
+  border-color: var(--accent, #6f7dff);
+}
+
+.char-btn-main {
+  background: var(--accent, #6f7dff);
+  border-color: var(--accent, #6f7dff);
+  color: #fff;
+  font-weight: 600;
+}
+
+.char-btn-danger {
+  color: var(--danger, #ff6b6b);
+  border-color: var(--danger, #ff6b6b);
+}
+
+.char-btn-small {
+  padding: 4px 9px;
+  font-size: 12px;
+}
+
+.char-btn:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
+
+.char-note {
+  margin-top: 8px;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm, 8px);
+  background: var(--bg-elev-2, #1f1f27);
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.char-note[data-kind="好消息"] {
+  color: var(--ok, #74d39a);
+}
+
+.char-note[data-kind="警示"] {
+  color: var(--warn, #ffb454);
+}
+
+.char-sec {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border, #2c2c36);
+}
+
+.char-sec[hidden] {
+  display: none;
+}
+
+.char-sec-title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.char-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.char-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.char-tab {
+  padding: 6px 10px;
+  border: 1px solid var(--border-strong, #3a3a44);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-dim, #9a9aa8);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.char-tab[data-on="true"] {
+  border-color: var(--accent, #6f7dff);
+  background: var(--bg-elev-2, #1f1f27);
+  color: var(--text, #e8e8ef);
+  font-weight: 600;
+}
+
+.char-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.char-list-head {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-dim, #9a9aa8);
+}
+
+.char-item {
+  padding: 8px 10px;
+  border: 1px solid var(--border, #2c2c36);
+  border-radius: var(--radius-sm, 8px);
+  background: var(--bg-elev-2, #1f1f27);
+}
+
+.char-item-text {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.char-item-meta,
+.char-item-lock {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--text-dim, #8b8b98);
+}
+
+.char-item-lock {
+  color: var(--warn, #ffb454);
+}
+
+.char-empty {
+  margin: 6px 0;
+  font-size: 12px;
+  color: var(--text-dim, #8b8b98);
+}
+
+.char-meter {
+  margin-top: 8px;
+}
+
+.char-meter-text {
+  font-size: 12px;
+  color: var(--text-dim, #9a9aa8);
+}
+
+.char-meter-rail {
+  height: 6px;
+  margin-top: 4px;
+  border-radius: 999px;
+  background: var(--bg-elev-2, #23232c);
+  overflow: hidden;
+}
+
+.char-meter-fill {
+  height: 100%;
+  width: 0;
+  background: var(--accent, #6f7dff);
+  transition: width 0.2s ease;
+}
+
+.char-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.char-dialog {
+  width: min(420px, 100%);
+  padding: 16px;
+  border: 1px solid var(--border-strong, #3a3a44);
+  border-radius: var(--radius-md, 14px);
+  background: var(--bg-elev-1, #17171d);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+}
+
+.char-dialog-title {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.char-dialog-ask {
+  margin: 0 0 4px;
+  font-size: 13px;
+}
+
+.char-dialog-detail,
+.char-dialog-count {
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: var(--text-dim, #9a9aa8);
+}
+
+.char-dialog-count {
+  color: var(--warn, #ffb454);
+  font-weight: 600;
+}
+
+.char-dialog .char-row {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.char-item-more { align-self: center; font-size: 12px; }
+.char-item-more > summary { cursor: pointer; color: var(--text-faint); }
+.char-item-more[open] > summary { margin-bottom: 6px; }
+
+/* 窄屏：按钮换行后也要点得到，不能压住聊天区。 */
+@media (max-width: 520px) {
+  .char-panel {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .char-field,
+  .char-btn {
+    flex: 1 1 100%;
+  }
+}

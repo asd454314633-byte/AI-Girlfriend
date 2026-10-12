@@ -1,0 +1,202 @@
+/* ============================================================================
+ * console_layout.css — AI_GIRLFRIEND_FRONTEND_CONSOLE_V1
+ *
+ * 本轮（前端重构 + 流水线 + 滚动修复）的排布层，必须排在所有既有样式之后：
+ *   1) 顶栏紧凑化：小夜品牌 + 模式选择（验收核心 #1，首页直接切换）
+ *      + 系统状态四行 + 原有图标按钮；HF 营销大块移除。
+ *   2) 页面级滚动收口（桌面宽度）：html/body/#app 固定视口高、不产生整页滚动，
+ *      所有滚动都发生在各容器内部 —— 生成事件再多，页面位置也不会被顶走。
+ *   3) 中央主区控制台条 #stage-console：本轮对话 + 聊天输入贴底居中。
+ *   4) 聊天面板「有新消息 · 回到底部」浮标（chat.js SCROLL_FIX_V1）。
+ *
+ * 不做（越界即停）：
+ *   · 不写任何 #av-video / #av-layer 的几何规则（唯一 owner 是 avatar_layout.js）。
+ *   · 不改 Dock 内控件内部样式（gf_dock.css / girlfriend.css 继续生效）。
+ *   · 不用全局禁止滚动换省事 —— 桌面宽度才收口，窄窗口保持自然文档流。
+ * ==========================================================================*/
+
+/* ------------------------------------------------------------- 1) 顶栏 */
+.topbar {
+  align-items: center;
+  gap: 18px;
+  padding: 8px 16px;
+  min-height: 52px;
+  background: color-mix(in srgb, var(--bg-elev) 88%, #000);
+  border-bottom: 1px solid var(--border);
+  /* 盖过人物层(z 0 / body>* z 1)，让出抽屉面板(z 200)与画面布局手柄(z 10500)。 */
+  position: relative;
+  z-index: 300;
+}
+
+.topbar .brand .ident-head { display: flex; align-items: center; gap: 8px; }
+.topbar .ident-title {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  border-bottom: none;
+}
+
+/* 模式选择：顶栏最显眼的一组。三颗按钮 + 状态行。 */
+.topbar-mode {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.topbar-mode-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  flex: none;
+}
+.topbar-mode .gf-mode-row { flex-wrap: nowrap; gap: 6px; }
+.topbar-mode .gf-mode-btn {
+  flex: 0 0 auto;
+  padding: 8px 16px;
+  font-size: 13px;
+  border-radius: 999px;
+  min-height: 36px;
+}
+.topbar-mode .gf-mode-btn.is-active {
+  background: color-mix(in srgb, var(--accent, #7c8cff) 26%, transparent);
+  font-weight: 700;
+}
+.topbar-mode .gf-mode-status {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 240px;
+}
+
+/* 系统状态四行：压成顶栏里的一小列，右对齐，宽文本省略。 */
+.topbar-status {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-left: auto;
+  max-width: 340px;
+  min-width: 0;
+  padding: 4px 10px;
+  border-left: 1px solid var(--border);
+}
+/* 上游 style.css 把 #gf-status-container 写成 position:fixed 钉在视口左下角
+   （带 !important）。它已整体迁入顶栏，这里必须以 !important 压回去，
+   否则会脱离顶栏继续悬浮在左下角（首轮回归截图实测）。 */
+#gf-status-container.topbar-status {
+  position: static !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  top: auto !important;
+  z-index: auto !important;
+  max-height: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  pointer-events: auto !important;
+}
+.topbar-status .gf-status {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.topbar-status .gf-status:empty { display: none; }
+
+/* ------------------------------------------------- 2) 页面级滚动收口（桌面） */
+@media (min-width: 861px) {
+  html, body {
+    height: 100%;
+    overflow: hidden;      /* 整页不再滚动：滚动只发生在容器内部 */
+  }
+  #app#app {
+    height: 100vh;
+    min-height: 0;         /* 压过上游 min-height:100vh 的可增长语义 */
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+  /* footer 压成贴边细条，不占纵向空间 */
+  #app#app > footer.footer { padding: 2px 16px; font-size: 10px; }
+}
+
+/* ------------------------------------------- 3) 中央主区控制台条 */
+.stage { position: relative; }
+
+.stage-console {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-58%);   /* 人物贴右，控制台条略偏左，不压人物躯干 */
+  width: min(560px, calc(100% - 32px));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: auto;          /* 上游 .stage 是 pointer-events:none */
+  z-index: 2;                    /* 在 body>*:not(#av-layer) 的 z 1 之上 */
+}
+
+#stage-console .gf-live-conversation {
+  width: 100%;
+  max-height: 20vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 10px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md, 14px);
+  background: color-mix(in srgb, var(--bg-elev) 86%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.35);
+}
+
+#stage-console .gf-composer {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md, 14px);
+  background: color-mix(in srgb, var(--bg-elev) 86%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.35);
+}
+#stage-console .gf-composer-input { font-size: 14px; }
+
+/* Dock 里不再有对话分组；把上游为它写的 max-height 约束留在原地无害。
+   窄窗口（<=860px）单列模式下，控制台条回归文档流，不再绝对定位。 */
+@media (max-width: 860px) {
+  .stage-console {
+    position: static;
+    transform: none;
+    width: 100%;
+    margin: 0 auto 12px;
+  }
+  .stage { display: flex; flex-direction: column; justify-content: flex-end; }
+}
+
+/* ------------------------------------------- 4) 聊天面板回底浮标 */
+.chat-jump-chip {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent, #7c8cff) 82%, #000);
+  border: none;
+  border-radius: 999px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+  z-index: 5;
+}
+.chat-jump-chip:hover { filter: brightness(1.1); }
+
+/* 模式按钮桌面端隐藏 about 重复入口：两个 about 按钮其一按宽度显隐 */
+@media (min-width: 861px) { .about-btn-mobile { display: none; } }
+@media (max-width: 860px) { .about-btn-desktop { display: none; } }

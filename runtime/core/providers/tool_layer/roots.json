@@ -1,0 +1,72 @@
+{
+  "config_version": 1,
+  "note_zh": "本地文件权限的唯一系统级白名单（任务 §23）。工具行 allowed_roots 只能收窄它，永远不能扩大它。文件缺失或不可读时工具层回落到『零白名单』而不是沿用上一次的好配置。",
+  "enabled": true,
+  "confine_to_project": true,
+  "allow_write_tools": false,
+  "allow_write_note_zh": "总开关，默认关。改成 true 之后，写能力仍需 工具行 capabilities.writable=true 且 下面某个 root 标了 write:true 三把钥匙同时成立才可写——这就是『默认只读，写需显式声明』。",
+  "read_only_by_default": true,
+  "follow_symlinks": false,
+  "max_read_bytes": 200000,
+  "max_list_entries": 200,
+  "roots": [
+    {
+      "path": "incoming/library",
+      "read": true,
+      "write": false,
+      "note_zh": "小说/资料导入的落地区（tool.json 里两条文档工具声明过它）"
+    },
+    {
+      "path": "runtime/character/library",
+      "read": true,
+      "write": false,
+      "note_zh": "人物原文库（tool.json 声明）"
+    },
+    {
+      "path": "runtime/character",
+      "read": true,
+      "write": false,
+      "note_zh": "人物设定/原著事实（character_canon_search 声明）。代码文件由 forbidden_globs 排除。"
+    },
+    {
+      "path": "runtime/memory/data",
+      "read": true,
+      "write": false,
+      "note_zh": "长期记忆数据目录（memory_search 声明）"
+    },
+    {
+      "path": "runtime/tooling/agent_scratch",
+      "read": true,
+      "write": true,
+      "note_zh": "工具层唯一的可写目录：模型生成的草稿/导出片段。即使如此，写仍被 allow_write_tools=false 挡着。"
+    }
+  ],
+  "forbidden_globs": [
+    "**/venv/**",
+    "**/site-packages/**",
+    "**/__pycache__/**",
+    "**/.git/**",
+    "**/*.py",
+    "**/*.pth",
+    "**/*.dll",
+    "**/*.exe",
+    "**/*.gguf",
+    "**/*.safetensors",
+    "**/*.bin",
+    "**/*.db",
+    "**/*.sqlite",
+    "**/*.sqlite3",
+    "**/*.wav",
+    "**/*.mp3",
+    "**/*.mp4",
+    "**/*.log",
+    "**/*.pem",
+    "**/*.key",
+    "**/*.env",
+    "**/id_rsa*",
+    "**/credentials*",
+    "**/secrets*"
+  ],
+  "audit_log": "runtime/audit/tool_layer/calls.jsonl",
+  "audit_note_zh": "每次工具调用一行 JSON（含判决码、路径裁决、耗时）。写失败只降级为 warning，绝不影响实时语音回合。"
+}

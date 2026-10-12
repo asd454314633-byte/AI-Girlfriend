@@ -1,0 +1,99 @@
+{
+  "_说明": "小说人物分析的词表与阈值（任务 §11）。分析器只做「按这份表去原文里找证据 + 做统计」，不猜没有证据的东西；表里没有的维度会如实报『书里没写到』。",
+  "_为什么是数据不是代码": "换一本书、想加一类线索，改这里就行，不用动 Python，也不用碰任何模型。",
+
+  "max_sentences_per_dimension": 3,
+  "evidence_max_chars": 90,
+  "min_evidence_chars": 8,
+  "max_entries_per_dimension": 4,
+
+  "quote_brackets": [["“", "”"], ["「", "」"], ["『", "』"], ["\"", "\""]],
+  "speech_verbs": ["说", "道", "问", "答", "笑", "低声", "开口", "喊", "嘟囔", "念", "应", "斥", "叹"],
+  "addressee_patterns": ["(对|向|朝|看着|望向|盯着)([\\u4e00-\\u9fff]{2,4})(说|道|问|答|念)"],
+  "_pronoun_aliases_说明": "中文小说多半用代称写她，只认本名会漏掉一大半台词和性格线索。这些代称只用来「认定这句话是在说她」，结论照样要带原句出处。",
+  "pronoun_aliases": ["她", "他"],
+
+  "dimensions": {
+    "identity": {
+      "patterns": ["{name}(是|身为|作为|当了|做了|就是)", "((人称|外号|都叫她|自称)){1}.{0,12}", "(守灯人|灯守|船工|掌柜|东家|老人|少爷|小姐|丫鬟|先生|大夫|队长|站长)"],
+      "kind": "setting", "weight": 160, "confidence": 0.95, "basis": "canon"
+    },
+    "background": {
+      "patterns": ["(从小|小时候|出生|故里|老家|家里|爹|娘|父亲|母亲|长大|孤身|无亲)(.{0,20})"],
+      "name_must_appear": true,
+      "kind": "setting", "weight": 140, "confidence": 0.9, "basis": "canon"
+    },
+    "relationship": {
+      "patterns": ["(妻子|丈夫|夫君|娘子|女儿|儿子|父亲|母亲|师兄|师妹|师姐|弟弟|妹妹|姐姐|哥哥|朋友|旧识|恩人|仇人|主子|丫头|同门|搭档|未婚)"],
+      "name_must_appear": true,
+      "kind": "relationship", "weight": 150, "confidence": 0.92, "basis": "canon"
+    },
+    "experience": {
+      "patterns": ["(救|死|离开|回来|发现|答应|拒绝|失去|烧|塌|沉|找了三|守了|等了三|没能|已经不再)"],
+      "name_must_appear": true,
+      "min_clause_chars": 12,
+      "kind": "timeline", "weight": 135, "confidence": 0.88, "basis": "canon"
+    },
+    "personality": {
+      "lexicon": {
+        "沉得住气": ["不吭声", "没接话", "沉默", "慢慢", "稳稳", "不慌"],
+        "嘴硬心软": ["嘴上", "冷哼", "别理", "还是", "到底"],
+        "警觉": ["警惕", "盯", "没敢", "先问", "打量"],
+        "利落": ["转身就走", "不必多说", "干脆", "直接"],
+        "倔": ["不肯", "非要", "偏要", "谁都劝不动"],
+        "温和": ["轻声", "笑了笑", "耐心", "慢慢说"]
+      },
+      "kind": "style", "weight": 120, "confidence": 0.6, "basis": "inferred"
+    },
+    "values": {
+      "lexicon": {
+        "看重承诺": ["答应", "说过的事", "不算数", "守诺", "一句话"],
+        "讲规矩": ["规矩", "该当", "本分", "不合体统", "分寸"],
+        "要自由": ["不想被", "受够", "想走", "没人管"],
+        "护短": ["我的人", "不许谁动", "轮不到", "我认"]
+      },
+      "kind": "setting", "weight": 110, "confidence": 0.58, "basis": "inferred"
+    },
+    "desire": {
+      "lexicon": {"想离开": ["想走", "离开这里", "早想"], "想找回": ["想找回", "还在等", "总有天", "一定要"], "想安稳": ["安生", "过两天", "别再"], "想知道真相": ["想知道", "为什么是", "到底是谁"]},
+      "kind": "setting", "weight": 108, "confidence": 0.58, "basis": "inferred"
+    },
+    "fear": {
+      "lexicon": {"怕再失去": ["怕", "不敢", "万一", "担心", "夜里"], "怕被看穿": ["别问", "没什么", "不用管"], "怕离开熟悉的地方": ["不敢走", "离不开", "走了就"]},
+      "kind": "setting", "weight": 106, "confidence": 0.55, "basis": "inferred"
+    },
+    "conflict_style": {
+      "lexicon": {"先顶回去": ["凭什么", "你才有脸", "冷笑", "反问"], "先沉默": ["没接话", "转过头", "不说话", "顿了顿"], "讲条件": ["那你要", "除非", "换你"], "退一步": ["罢了", "算了", "依你"]},
+      "kind": "style", "weight": 104, "confidence": 0.55, "basis": "inferred"
+    },
+    "thinking_style": {
+      "lexicon": {"先算后动": ["先", "再", "算过", "盘算", "想过一遍"], "凭直觉": ["感觉", "像是", "说不上来", "直觉"], "往坏处想": ["万一", "要是又", "早晚"], "爱追问": ["为什么", "凭什么", "是不是"]},
+      "kind": "style", "weight": 102, "confidence": 0.55, "basis": "inferred"
+    },
+    "stance": {
+      "lexicon": {"讽刺": ["是啊", "可真", "倒是", "还真", "好得很"], "直接": ["就是", "不是", "我告诉你", "直说"], "回避": ["随便", "懒得", "不必", "没什么", "算了", "不用"]},
+      "kind": "style", "weight": 100, "confidence": 0.5, "basis": "inferred"
+    }
+  },
+
+  "speech_stats": {
+    "mood_particles": ["呢", "吧", "啊", "嘛", "哼", "哦", "哟", "罢了"],
+    "short_line_chars": 6,
+    "long_line_chars": 30,
+    "trailing_marks": ["……", "…", "——"],
+    "question_ratio_direct": 0.28,
+    "question_ratio_indirect": 0.12,
+    "kind": "style", "weight": 130, "confidence": 0.85
+  },
+
+  "growth_stages": {
+    "buckets": 3,
+    "rise_label_zh": "故事前半她还在",
+    "peak_label_zh": "中段她摊上了那件事",
+    "fall_label_zh": "后半她的样子定下来了",
+    "min_hits": 3,
+    "kind": "timeline", "confidence": 0.6
+  },
+
+  "unknown_note_zh": "这本书里没写到这一项，先不编。"
+}

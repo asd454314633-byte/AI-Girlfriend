@@ -1,0 +1,48 @@
+{
+  "_说明": "上下文装配策略（任务 §18）。预算的总数来自 LLM 能力声明（manifests/llm.json 的 recommended_context_budget），这里只规定『这块最多能占多少比例』和『先丢谁』。",
+  "_禁止事项": "Python 里不再出现任何具体 token/字符数：所有长度都由 budget_total × share 现算。",
+
+  "token_estimate": {
+    "cjk_per_token": 1.0,
+    "ascii_per_token": 0.28,
+    "_说明": "中文一个字基本就是一个词元，英文按四个字母一个估；宁可估高也别估低。这不是模型参数，是长度估算器的口径。"
+  },
+
+  "section_shares": {
+    "policy": 0.08,
+    "profile": 0.05,
+    "persona": 0.20,
+    "canon_summary": 0.12,
+    "canon_passages": 0.14,
+    "relationship": 0.04,
+    "memories": 0.12,
+    "session_summary": 0.07,
+    "history": 0.16,
+    "tools": 0.02
+  },
+  "_shares_note": "加起来正好 1.0。谁超了自己那格就先被压，不许把整本小说塞进上下文（§18 原话）。",
+
+  "drop_order": ["history", "tool_note", "memory_lines", "canon_passages"],
+  "_drop_order_note": "§18 的保留优先级：系统规则 > 核心人格 > 当前消息 > 最近对话 > 相关设定 > 相关长期记忆 > 较老会话。丢的时候倒过来。",
+
+  "history_kept_on_trim": 2,
+  "passage_limit": 3,
+  "memory_limit": 5,
+  "tool_note_cap": 6,
+  "min_chars_per_section": 40,
+  "_limits_note": "条数上限是「取几条」而不是「占多少 token」，跟模型无关，所以放在这里而不是清单里；模型相关的那一半（能塞多少）永远来自能力声明。",
+
+  "block_caps": {
+    "quote_max_chars": 190,
+    "quote_cut_min_ratio": 0.55,
+    "fit_cut_min_ratio": 0.5,
+    "relationship_items": 3,
+    "profile_list_items": 4,
+    "retrieval_overfetch": 2,
+    "trim_guard_steps": 64,
+    "history_row_overhead": 2,
+    "_说明": "每一块内部的零碎口子：引原文一句最多多少字、关系取几条、多取几条再按格子砍、让位最多循环几次。这些以前写在 Python 里，现在全在这份文件，改口径不用动代码。"
+  },
+
+  "greeting_note_zh": "她在等你回话，一句就够。"
+}

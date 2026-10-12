@@ -1,0 +1,1234 @@
+{
+  "manifest_version": 1,
+  "provider_type": "TTS",
+  "task_id": "AI_GIRLFRIEND_SYSTEM_ARCH_AUDIT_PERSONA_MEMORY_V2",
+  "default_selection": "qwen3",
+  "read_by": [
+    "powershell lifecycle scripts",
+    "runtime/ui/app admin modules",
+    "browser UI via /api/voice-models",
+    "speech_to_speech adapters via runtime/core/providers"
+  ],
+  "capability_vocabulary": {
+    "emotion": "delivery emotion tag",
+    "style": "performance style tag",
+    "sound_effect": "non-verbal effect tag",
+    "speed": "speaking rate",
+    "pitch": "voice pitch",
+    "expressiveness": "expressiveness level",
+    "custom_style": "free-form delivery instruction",
+    "voice_clone": "reference-audio based timbre",
+    "streaming": "audio produced incrementally",
+    "continuation": "acoustic state carried across segments",
+    "seed": "deterministic sampling seed available",
+    "reference_cache": "reference prompt cached across turns"
+  },
+  "field_aliases": {
+    "effect": "sound_effect",
+    "custom": "custom_style"
+  },
+  "invariants": {
+    "max_resident_provider_instances": 1,
+    "note": "至少且至多一个 TTS 运行时持有音色模型；qwen3 常驻在 :8765 内，higgs/fish 各自有外部 worker 进程"
+  },
+  "providers": [
+    {
+      "id": "qwen3",
+      "provider_type": "TTS",
+      "display_name": "Qwen3 TTS",
+      "display_name_zh": "千问 TTS",
+      "version": "0.2.11-handler",
+      "enabled": true,
+      "ui_visible": true,
+      "handler": {
+        "module": "providers.adapters.qwen3_tts_adapter",
+        "class": "Qwen3DeliveryTTSHandler",
+        "cli_flag_value": "qwen3",
+        "cli_flag_aliases": [
+          "qwen"
+        ],
+        "cli_arguments_class": "Qwen3TTSHandlerArguments",
+        "project_override": "subclass of speech_to_speech.TTS.qwen3_tts_handler.Qwen3TTSHandler carrying this project's delivery/segmentation behaviour, so the wheel file stays pristine"
+      },
+      "resident": "in_proc_8765",
+      "worker": null,
+      "launch": {
+        "cli_args": [
+          "--tts",
+          "qwen3",
+          "--qwen3_tts_model_name",
+          "{QWEN3_MODEL_DIR}",
+          "--qwen3_tts_backend",
+          "torch",
+          "--qwen3_tts_language",
+          "zh",
+          "--qwen3_tts_ref_audio",
+          "{QWEN3_MODEL_DIR}/ref.wav",
+          "--qwen3_tts_ref_text",
+          "{QWEN3_REF_TEXT}"
+        ],
+        "placeholders": {
+          "QWEN3_MODEL_DIR": "runtime/../models/native/qwen3",
+          "QWEN3_REF_TEXT": "Configure your own reference transcript locally; none is distributed"
+        },
+        "requires": [
+          "{QWEN3_MODEL_DIR}",
+          "{QWEN3_MODEL_DIR}/ref.wav"
+        ]
+      },
+      "health": {
+        "scheme": "in_process_cli_probe",
+        "command_line_flag": "--tts",
+        "expected_value": "qwen3"
+      },
+      "runtime_controls": {},
+      "capabilities": {
+        "emotion": {
+          "supported": true,
+          "type": "enum",
+          "display_label_zh": "情绪/语气",
+          "ui_order": 10,
+          "default": "",
+          "runtime_change_requires_reload": false,
+          "allowed_values": [
+            {
+              "id": "",
+              "label_zh": "默认",
+              "emit": ""
+            },
+            {
+              "id": "happy",
+              "label_zh": "开心",
+              "emit": "请用开心的语气说话。"
+            },
+            {
+              "id": "sad",
+              "label_zh": "悲伤",
+              "emit": "请用悲伤的语气说话。"
+            },
+            {
+              "id": "angry",
+              "label_zh": "愤怒",
+              "emit": "请用愤怒的语气说话。"
+            },
+            {
+              "id": "gentle",
+              "label_zh": "温柔",
+              "emit": "请用温柔的语气说话。"
+            },
+            {
+              "id": "cold",
+              "label_zh": "冷淡",
+              "emit": "请用冷淡的语气说话。"
+            },
+            {
+              "id": "strict",
+              "label_zh": "严厉",
+              "emit": "请用严厉的语气说话。"
+            },
+            {
+              "id": "whisper",
+              "label_zh": "耳语",
+              "emit": "请用耳语、轻声说话。"
+            },
+            {
+              "id": "excited",
+              "label_zh": "兴奋",
+              "emit": "请用兴奋的语气说话。"
+            },
+            {
+              "id": "relaxed",
+              "label_zh": "轻松",
+              "emit": "请用轻松的语气说话。"
+            },
+            {
+              "id": "serious",
+              "label_zh": "认真",
+              "emit": "请用认真的语气说话。"
+            },
+            {
+              "id": "calm",
+              "label_zh": "平静",
+              "emit": "请用平静的语气说话。"
+            }
+          ]
+        },
+        "custom_style": {
+          "supported": true,
+          "type": "text",
+          "display_label_zh": "自定义语气",
+          "ui_order": 20,
+          "default": "",
+          "max_length": 160,
+          "placeholder_zh": "例如：温柔、轻声、带一点宠溺",
+          "runtime_change_requires_reload": false
+        },
+        "voice_clone": {
+          "supported": true,
+          "type": "bool",
+          "evidence": "--qwen3_tts_ref_audio 参考音克隆"
+        },
+        "streaming": {
+          "supported": true,
+          "type": "bool",
+          "evidence": "逐块 yield 512 样本到 send_audio_chunks_queue"
+        },
+        "continuation": {
+          "supported": false,
+          "type": "bool",
+          "evidence": "同一回复内 speaker/ref_audio 会被重设，段间声学状态不连续"
+        },
+        "seed": {
+          "supported": false,
+          "type": "bool",
+          "evidence": "客户端不可传种子；采样常量在 handler 内冻结"
+        },
+        "reference_cache": {
+          "supported": true,
+          "type": "bool",
+          "evidence": "参考音特征在进程内缓存"
+        },
+        "speed": {
+          "supported": false
+        },
+        "pitch": {
+          "supported": false
+        },
+        "style": {
+          "supported": false
+        },
+        "sound_effect": {
+          "supported": false
+        },
+        "expressiveness": {
+          "supported": false
+        }
+      },
+      "panel_note_zh": "千问 Base 参考音模式的语气指令属于实验功能，效果可能不稳定。",
+      "delivery": {
+        "placement": "instruction_field",
+        "separator": " ",
+        "attach": "",
+        "value_wrap": "{value}",
+        "max_chars": 96,
+        "text_field": "custom_style",
+        "sanitize": ""
+      }
+    },
+    {
+      "id": "higgs",
+      "provider_type": "TTS",
+      "display_name": "Higgs Audio v3",
+      "display_name_zh": "Higgs Audio v3",
+      "version": "studio-0.3.0-adapter",
+      "enabled": true,
+      "ui_visible": true,
+      "handler": {
+        "module": "s2s_business.higgs_tts_handler",
+        "class": "HiggsTTSHandler",
+        "cli_flag_value": "higgs",
+        "cli_arguments_class": null
+      },
+      "resident": "external_worker",
+      "worker": {
+        "pid_key": "higgs",
+        "command_marker": "higgs_worker.py",
+        "executable_suffix": "runtime\\core\\venv\\scripts\\python.exe"
+      },
+      "launch": {
+        "cli_args": [
+          "--tts",
+          "higgs"
+        ],
+        "worker_cli_args": [
+          "{HIGGS_WORKER_PY}"
+        ],
+        "placeholders": {
+          "HIGGS_WORKER_PY": "runtime/higgs/higgs_worker.py"
+        },
+        "requires": [
+          "runtime/higgs/higgs_api_key.txt"
+        ]
+      },
+      "health": {
+        "scheme": "http",
+        "base_url": "http://127.0.0.1:7077",
+        "endpoints": [
+          {
+            "path": "/health",
+            "method": "get",
+            "auth": "none",
+            "true_when": [
+              "ok"
+            ]
+          },
+          {
+            "path": "/v1/status",
+            "method": "get",
+            "auth": "bearer:{HIGGS_KEY_FILE}",
+            "true_when": [
+              "engineLoaded",
+              "modelLoaded"
+            ]
+          }
+        ],
+        "credentials_file": "runtime/higgs/higgs_api_key.txt",
+        "ready_timeout_s": 900
+      },
+      "runtime_controls": {
+        "delivery_preset": {
+          "display_label_zh": "默认表演预设",
+          "state_file": "runtime/windows/voice_preset.json",
+          "legacy_state_files": [
+            "runtime/llm/higgs_emotion.json",
+            "runtime/windows/higgs_emotion.json"
+          ],
+          "default": "auto",
+          "runtime_change_requires_reload": false,
+          "allowed_values": [
+            {
+              "id": "auto",
+              "label_zh": "自动",
+              "emit": ""
+            },
+            {
+              "id": "normal",
+              "label_zh": "平常",
+              "emit": ""
+            },
+            {
+              "id": "excited",
+              "label_zh": "兴奋",
+              "emit": "<|emotion:enthusiasm|>"
+            },
+            {
+              "id": "angry",
+              "label_zh": "生气",
+              "emit": "<|emotion:anger|>"
+            },
+            {
+              "id": "shout",
+              "label_zh": "喊",
+              "emit": "<|emotion:anger|><|style:shouting|>"
+            },
+            {
+              "id": "whisper",
+              "label_zh": "耳语",
+              "emit": "<|style:whispering|>"
+            }
+          ]
+        }
+      },
+      "capabilities": {
+        "emotion": {
+          "supported": true,
+          "type": "enum",
+          "display_label_zh": "情绪",
+          "ui_order": 10,
+          "default": "",
+          "runtime_change_requires_reload": false,
+          "allowed_values": [
+            {
+              "id": "",
+              "label_zh": "默认",
+              "emit": ""
+            },
+            {
+              "id": "elation",
+              "label_zh": "喜悦",
+              "emit": "<|emotion:elation|>"
+            },
+            {
+              "id": "amusement",
+              "label_zh": "欢乐",
+              "emit": "<|emotion:amusement|>"
+            },
+            {
+              "id": "enthusiasm",
+              "label_zh": "热情",
+              "emit": "<|emotion:enthusiasm|>"
+            },
+            {
+              "id": "determination",
+              "label_zh": "坚定",
+              "emit": "<|emotion:determination|>"
+            },
+            {
+              "id": "pride",
+              "label_zh": "自豪",
+              "emit": "<|emotion:pride|>"
+            },
+            {
+              "id": "contentment",
+              "label_zh": "满足",
+              "emit": "<|emotion:contentment|>"
+            },
+            {
+              "id": "affection",
+              "label_zh": "喜爱",
+              "emit": "<|emotion:affection|>"
+            },
+            {
+              "id": "relief",
+              "label_zh": "释然",
+              "emit": "<|emotion:relief|>"
+            },
+            {
+              "id": "contemplation",
+              "label_zh": "沉思",
+              "emit": "<|emotion:contemplation|>"
+            },
+            {
+              "id": "confusion",
+              "label_zh": "困惑",
+              "emit": "<|emotion:confusion|>"
+            },
+            {
+              "id": "surprise",
+              "label_zh": "惊讶",
+              "emit": "<|emotion:surprise|>"
+            },
+            {
+              "id": "awe",
+              "label_zh": "敬畏",
+              "emit": "<|emotion:awe|>"
+            },
+            {
+              "id": "longing",
+              "label_zh": "渴望",
+              "emit": "<|emotion:longing|>"
+            },
+            {
+              "id": "arousal",
+              "label_zh": "激动",
+              "emit": "<|emotion:arousal|>"
+            },
+            {
+              "id": "anger",
+              "label_zh": "愤怒",
+              "emit": "<|emotion:anger|>"
+            },
+            {
+              "id": "fear",
+              "label_zh": "恐惧",
+              "emit": "<|emotion:fear|>"
+            },
+            {
+              "id": "disgust",
+              "label_zh": "厌恶",
+              "emit": "<|emotion:disgust|>"
+            },
+            {
+              "id": "bitterness",
+              "label_zh": "苦涩",
+              "emit": "<|emotion:bitterness|>"
+            },
+            {
+              "id": "sadness",
+              "label_zh": "悲伤",
+              "emit": "<|emotion:sadness|>"
+            },
+            {
+              "id": "shame",
+              "label_zh": "羞愧",
+              "emit": "<|emotion:shame|>"
+            },
+            {
+              "id": "helplessness",
+              "label_zh": "无助",
+              "emit": "<|emotion:helplessness|>"
+            }
+          ]
+        },
+        "style": {
+          "supported": true,
+          "type": "enum",
+          "display_label_zh": "表演风格",
+          "ui_order": 20,
+          "default": "",
+          "runtime_change_requires_reload": false,
+          "allowed_values": [
+            {
+              "id": "",
+              "label_zh": "默认",
+              "emit": ""
+            },
+            {
+              "id": "singing",
+              "label_zh": "唱歌",
+              "emit": "<|style:singing|>"
+            },
+            {
+              "id": "shouting",
+              "label_zh": "喊叫",
+              "emit": "<|style:shouting|>"
+            },
+            {
+              "id": "whispering",
+              "label_zh": "耳语",
+              "emit": "<|style:whispering|>"
+            }
+          ]
+        },
+        "sound_effect": {
+          "supported": true,
+          "type": "enum",
+          "display_label_zh": "音效",
+          "ui_order": 30,
+          "default": "",
+          "runtime_change_requires_reload": false,
+          "allowed_values": [
+            {
+              "id": "",
+              "label_zh": "默认",
+              "emit": ""
+            },
+            {
+              "id": "laughter",
+              "label_zh": "笑",
+              "emit": "<|sfx:laughter|>"
+            },
+            {
+              "id": "crying",
+              "label_zh": "哭",
+              "emit": "<|sfx:crying|>"
+            },
+            {
+              "id": "cough",
+              "label_zh": "咳嗽",
+              "emit": "<|sfx:cough|>"
+            },
+            {
+              "id": "screaming",
+              "label_zh": "尖叫",
+              "emit": "<|sfx:screaming|>"
+            },
+            {
+              "id": "burping",
+              "label_zh": "打嗝",
+              "emit": "<|sfx:burping|>"
+            },
+            {
+              "id": "humming",
+              "label_zh": "哼唱",
+              "emit": "<|sfx:humming|>"
+            },
+            {
+              "id": "sigh",
+              "label_zh": "叹气",
+              "emit": "<|sfx:sigh|>"
+            },
+            {
+              "id": "sniff",
+              "label_zh": "抽鼻子",
+              "emit": "<|sfx:sniff|>"
+            },
+            {
+              "id": "sneeze",
+              "label_zh": "打喷嚏",
+              "emit": "<|sfx:sneeze|>"
+            }
+          ]
+        },
+        "speed": {
+          "supported": true,
+          "type": "enum",
+          "display_label_zh": "语速",
+          "ui_order": 40,
+          "default": "",
+          "runtime_change_requires_reload": false,
+          "allowed_values": [
+            {
+              "id": "",
+              "label_zh": "默认",
+              "emit": ""
+            },
+            {
+              "id": "very_slow",
+              "label_zh": "很慢",
+              "emit": "<|prosody:speed_very_slow|>"
+            },
+            {
+              "id": "slow",
+              "label_zh": "慢",
+              "emit": "<|prosody:speed_slow|>"
+            },
+            {
+              "id": "normal",
+              "label_zh": "正常",
+              "emit": ""
+            },
+            {
+              "id": "fast",
+              "label_zh": "快",
+              "emit": "<|prosody:speed_fast|>"
+            },
+            {
+              "id": "very_fast",
+              "label_zh": "很快",
+              "emit": "<|prosody:speed_very_fast|>"
+            }
+          ]
+        },
+        "pitch": {
+          "supported": true,
+          "type": "enum",
+          "display_label_zh": "音高",
+          "ui_order": 50,
+          "default": "",
+          "runtime_change_requires_reload": false,
+          "allowed_values": [
+            {
+              "id": "",
+              "label_zh": "默认",
+              "emit": ""
+            },
+            {
+              "id": "low",
+              "label_zh": "低",
+              "emit": "<|prosody:pitch_low|>"
+            },
+            {
+              "id": "normal",
+              "label_zh": "正常",
+              "emit": ""
+            },
+            {
+              "id": "high",
+              "label_zh": "高",
+              "emit": "<|prosody:pitch_high|>"
+            }
+          ]
+        },
+        "expressiveness": {
+          "supported": true,
+          "type": "enum",
+          "display_label_zh": "表现力",
+          "ui_order": 60,
+          "default": "",
+          "runtime_change_requires_reload": false,
+          "allowed_values": [
+            {
+              "id": "",
+              "label_zh": "默认",
+              "emit": ""
+            },
+            {
+              "id": "weak",
+              "label_zh": "弱",
+              "emit": "<|prosody:expressive_low|>"
+            },
+            {
+              "id": "normal",
+              "label_zh": "正常",
+              "emit": ""
+            },
+            {
+              "id": "strong",
+              "label_zh": "强",
+              "emit": "<|prosody:expressive_high|>"
+            }
+          ]
+        },
+        "voice_clone": {
+          "supported": true,
+          "type": "bool",
+          "evidence": "/v1/higgs/voice-clone + reference_audio_path"
+        },
+        "streaming": {
+          "supported": false,
+          "type": "bool",
+          "evidence": "整段 WAV 一次性返回后重采样"
+        },
+        "continuation": {
+          "supported": false,
+          "type": "bool",
+          "evidence": "每段独立请求，无 KV 续接"
+        },
+        "seed": {
+          "supported": true,
+          "type": "bool",
+          "evidence": "seed = crc32(turn_id:turn_revision)，同一回复内稳定"
+        },
+        "reference_cache": {
+          "supported": false,
+          "type": "bool",
+          "evidence": "每次请求都带 reference_audio_path"
+        }
+      },
+      "panel_note_zh": "未选择时保留原有生成行为。",
+      "delivery": {
+        "placement": "text_prefix",
+        "separator": "",
+        "attach": "",
+        "value_wrap": "{value}",
+        "max_chars": 160,
+        "text_field": "custom_style",
+        "sanitize": "[\\[\\]\\r\\n]+",
+        "fallback_to_runtime_control": "delivery_preset"
+      }
+    },
+    {
+      "id": "fish",
+      "provider_type": "TTS",
+      "display_name": "Fish S2 Pro",
+      "display_name_zh": "Fish S2 Pro",
+      "version": "s2.cpp-cuda-adapter",
+      "enabled": true,
+      "ui_visible": true,
+      "handler": {
+        "module": "s2s_business.fish_tts_handler",
+        "class": "FishTTSHandler",
+        "cli_flag_value": "fish",
+        "cli_arguments_class": null
+      },
+      "resident": "external_worker",
+      "worker": {
+        "pid_key": "fish",
+        "command_marker": null,
+        "executable_suffix": "s2.exe"
+      },
+      "launch": {
+        "cli_args": [
+          "--tts",
+          "fish"
+        ],
+        "worker_cli_args": [
+          "--model",
+          "{FISH_MODEL}",
+          "--tokenizer",
+          "{FISH_TOKENIZER}",
+          "--threads",
+          "14",
+          "--cuda",
+          "0",
+          "--gpu-layers",
+          "32",
+          "--voice-dir",
+          "{FISH_VOICES}",
+          "--server",
+          "-H",
+          "127.0.0.1",
+          "-P",
+          "3030"
+        ],
+        "placeholders": {
+          "FISH_ROOT": "external/fish-s2-pro",
+          "FISH_EXE_DIR": "external/fish-s2-pro/s2.cpp/build-cuda",
+          "FISH_EXE": "external/fish-s2-pro/s2.cpp/build-cuda/s2.exe",
+          "FISH_MODEL": "external/fish-s2-pro/models/s2-pro-q4_k_m.gguf",
+          "FISH_TOKENIZER": "external/fish-s2-pro/models/tokenizer.json",
+          "FISH_VOICES": "external/fish-s2-pro/voices",
+          "FISH_VOICE_SAMPLE": "external/fish-s2-pro/voices/configure-your-voice.s2voice"
+        },
+        "requires": [
+          "{FISH_EXE}",
+          "{FISH_MODEL}",
+          "{FISH_TOKENIZER}",
+          "{FISH_VOICE_SAMPLE}"
+        ]
+      },
+      "health": {
+        "scheme": "tcp",
+        "host": "127.0.0.1",
+        "port": 3030,
+        "timeout_s": 0.5
+      },
+      "runtime_controls": {},
+      "capabilities": {
+        "emotion": {
+          "supported": true,
+          "type": "enum",
+          "display_label_zh": "常用情绪/语气",
+          "ui_order": 10,
+          "default": "",
+          "runtime_change_requires_reload": false,
+          "allowed_values": [
+            {
+              "id": "",
+              "label_zh": "默认",
+              "emit": ""
+            },
+            {
+              "id": "happy",
+              "label_zh": "开心",
+              "emit": "happy"
+            },
+            {
+              "id": "sad",
+              "label_zh": "悲伤",
+              "emit": "sad"
+            },
+            {
+              "id": "angry",
+              "label_zh": "愤怒",
+              "emit": "angry"
+            },
+            {
+              "id": "excited",
+              "label_zh": "兴奋",
+              "emit": "excited"
+            },
+            {
+              "id": "surprised",
+              "label_zh": "惊讶",
+              "emit": "surprised"
+            },
+            {
+              "id": "gentle",
+              "label_zh": "温柔",
+              "emit": "soft and gentle voice"
+            },
+            {
+              "id": "strict",
+              "label_zh": "严厉",
+              "emit": "strict, cold and authoritative voice"
+            },
+            {
+              "id": "cold",
+              "label_zh": "冷淡",
+              "emit": "cold and restrained voice"
+            },
+            {
+              "id": "whisper",
+              "label_zh": "耳语",
+              "emit": "whisper"
+            },
+            {
+              "id": "low_voice",
+              "label_zh": "低声",
+              "emit": "low voice"
+            },
+            {
+              "id": "shouting",
+              "label_zh": "喊叫",
+              "emit": "shouting"
+            },
+            {
+              "id": "laughing",
+              "label_zh": "大笑",
+              "emit": "laughing"
+            },
+            {
+              "id": "sigh",
+              "label_zh": "叹气",
+              "emit": "sigh"
+            },
+            {
+              "id": "crying",
+              "label_zh": "哭泣",
+              "emit": "crying"
+            },
+            {
+              "id": "panting",
+              "label_zh": "喘息",
+              "emit": "panting"
+            }
+          ]
+        },
+        "custom_style": {
+          "supported": true,
+          "type": "text",
+          "display_label_zh": "自定义表现",
+          "ui_order": 20,
+          "default": "",
+          "max_length": 160,
+          "placeholder_zh": "例如：生气但不要喊叫",
+          "runtime_change_requires_reload": false
+        },
+        "voice_clone": {
+          "supported": true,
+          "type": "bool",
+          "evidence": "voice + voice_dir 指向 .s2voice 预置音色"
+        },
+        "streaming": {
+          "supported": false,
+          "type": "bool",
+          "evidence": "声明 stream/chunked 但客户端 response.content 一次性读完 ⇒ TTFA = 整句生成时间"
+        },
+        "continuation": {
+          "supported": false,
+          "type": "bool",
+          "evidence": "worker 不暴露声学 KV 续接"
+        },
+        "seed": {
+          "supported": false,
+          "type": "bool",
+          "evidence": "请求字段里没有 seed"
+        },
+        "reference_cache": {
+          "supported": true,
+          "type": "bool",
+          "evidence": "同一请求内复用已解析 prompt codes"
+        }
+      },
+      "panel_note_zh": "自定义表现按原文作为 Fish 文本提示发送，实际表现由模型决定。",
+      "delivery": {
+        "placement": "text_prefix",
+        "separator": " ",
+        "attach": " ",
+        "value_wrap": "[{value}]",
+        "max_chars": 160,
+        "text_field": "custom_style",
+        "sanitize": "[\\[\\]\\r\\n]+"
+      }
+    },
+    {
+      "id": "test_fake",
+      "provider_type": "TTS",
+      "display_name": "TEST FAKE TTS",
+      "display_name_zh": "测试假语音",
+      "version": "1",
+      "enabled": false,
+      "ui_visible": false,
+      "purpose": "capability-driven UI 验收夹具：只声明 emotion + pitch，不声明 speed。前端不得为它写任何新分支。",
+      "handler": {
+        "module": "providers.adapters.fake_tts_adapter",
+        "class": "FakeTTSHandler",
+        "cli_flag_value": "test_fake",
+        "cli_arguments_class": null
+      },
+      "resident": "in_proc_8765",
+      "worker": null,
+      "launch": {
+        "cli_args": [
+          "--tts",
+          "test_fake"
+        ],
+        "worker_cli_args": [],
+        "placeholders": {},
+        "requires": []
+      },
+      "health": {
+        "scheme": "none"
+      },
+      "runtime_controls": {},
+      "capabilities": {
+        "emotion": {
+          "supported": true,
+          "type": "enum",
+          "display_label_zh": "情绪",
+          "ui_order": 10,
+          "default": "",
+          "runtime_change_requires_reload": false,
+          "allowed_values": [
+            {
+              "id": "",
+              "label_zh": "默认",
+              "emit": ""
+            },
+            {
+              "id": "calm",
+              "label_zh": "平静",
+              "emit": "calm"
+            },
+            {
+              "id": "loud",
+              "label_zh": "响亮",
+              "emit": "loud"
+            }
+          ]
+        },
+        "pitch": {
+          "supported": true,
+          "type": "enum",
+          "display_label_zh": "音高",
+          "ui_order": 30,
+          "default": "",
+          "runtime_change_requires_reload": false,
+          "allowed_values": [
+            {
+              "id": "",
+              "label_zh": "默认",
+              "emit": ""
+            },
+            {
+              "id": "low",
+              "label_zh": "低",
+              "emit": "pitch_low"
+            },
+            {
+              "id": "high",
+              "label_zh": "高",
+              "emit": "pitch_high"
+            }
+          ]
+        },
+        "speed": {
+          "supported": false
+        },
+        "style": {
+          "supported": false
+        },
+        "sound_effect": {
+          "supported": false
+        },
+        "expressiveness": {
+          "supported": false
+        },
+        "custom_style": {
+          "supported": false
+        },
+        "streaming": {
+          "supported": true,
+          "type": "bool"
+        },
+        "continuation": {
+          "supported": true,
+          "type": "bool"
+        },
+        "seed": {
+          "supported": false
+        },
+        "voice_clone": {
+          "supported": false
+        },
+        "reference_cache": {
+          "supported": false
+        }
+      },
+      "panel_note_zh": "这是验收夹具，不会出现在真实下拉里。",
+      "delivery": {
+        "placement": "text_prefix",
+        "separator": " ",
+        "attach": " ",
+        "value_wrap": "<fake:{value}>",
+        "max_chars": 48,
+        "text_field": "custom_style",
+        "sanitize": "[\\[\\]\\r\\n]+"
+      }
+    },
+    {
+      "id": "chatTTS",
+      "provider_type": "TTS",
+      "display_name": "ChatTTS",
+      "display_name_zh": "ChatTTS",
+      "version": "upstream-0.2.11",
+      "enabled": true,
+      "ui_visible": false,
+      "purpose": "上游 speech-to-speech 自带后端：为了『不删除现有功能』而登记进注册表，不在女友产品界面中暴露。",
+      "handler": {
+        "module": "speech_to_speech.TTS.chatTTS_handler",
+        "class": "ChatTTSHandler",
+        "cli_flag_value": "chatTTS",
+        "cli_arguments_class": "ChatTTSHandlerArguments",
+        "cli_argument_prefix": "chat_tts",
+        "install_hint": "pip install \"speech-to-speech[chattts]\""
+      },
+      "resident": "in_proc_8765",
+      "worker": null,
+      "launch": {
+        "cli_args": [
+          "--tts",
+          "chatTTS"
+        ],
+        "worker_cli_args": [],
+        "placeholders": {},
+        "requires": []
+      },
+      "health": {
+        "scheme": "in_process_cli_probe",
+        "command_line_flag": "--tts",
+        "expected_value": "chatTTS"
+      },
+      "runtime_controls": {},
+      "capabilities": {
+        "streaming": {
+          "supported": true,
+          "type": "bool",
+          "evidence": "上游逐块输出实现，本产品未做验收"
+        },
+        "voice_clone": {
+          "supported": false
+        },
+        "continuation": {
+          "supported": false
+        },
+        "seed": {
+          "supported": false
+        },
+        "reference_cache": {
+          "supported": false
+        }
+      },
+      "delivery": {
+        "placement": "none"
+      },
+      "panel_note_zh": ""
+    },
+    {
+      "id": "facebookMMS",
+      "provider_type": "TTS",
+      "display_name": "Facebook MMS TTS",
+      "display_name_zh": "Facebook MMS TTS",
+      "version": "upstream-0.2.11",
+      "enabled": true,
+      "ui_visible": false,
+      "purpose": "上游 speech-to-speech 自带后端：为了『不删除现有功能』而登记进注册表，不在女友产品界面中暴露。",
+      "handler": {
+        "module": "speech_to_speech.TTS.facebookmms_handler",
+        "class": "FacebookMMSTTSHandler",
+        "cli_flag_value": "facebookMMS",
+        "cli_arguments_class": "FacebookMMSTTSHandlerArguments",
+        "cli_argument_prefix": "facebook_mms",
+        "install_hint": ""
+      },
+      "resident": "in_proc_8765",
+      "worker": null,
+      "launch": {
+        "cli_args": [
+          "--tts",
+          "facebookMMS"
+        ],
+        "worker_cli_args": [],
+        "placeholders": {},
+        "requires": []
+      },
+      "health": {
+        "scheme": "in_process_cli_probe",
+        "command_line_flag": "--tts",
+        "expected_value": "facebookMMS"
+      },
+      "runtime_controls": {},
+      "capabilities": {
+        "streaming": {
+          "supported": true,
+          "type": "bool",
+          "evidence": "上游逐块输出实现，本产品未做验收"
+        },
+        "voice_clone": {
+          "supported": false
+        },
+        "continuation": {
+          "supported": false
+        },
+        "seed": {
+          "supported": false
+        },
+        "reference_cache": {
+          "supported": false
+        }
+      },
+      "delivery": {
+        "placement": "none"
+      },
+      "panel_note_zh": ""
+    },
+    {
+      "id": "pocket",
+      "provider_type": "TTS",
+      "display_name": "Pocket TTS",
+      "display_name_zh": "Pocket TTS",
+      "version": "upstream-0.2.11",
+      "enabled": true,
+      "ui_visible": false,
+      "purpose": "上游 speech-to-speech 自带后端：为了『不删除现有功能』而登记进注册表，不在女友产品界面中暴露。",
+      "handler": {
+        "module": "speech_to_speech.TTS.pocket_tts_handler",
+        "class": "PocketTTSHandler",
+        "cli_flag_value": "pocket",
+        "cli_arguments_class": "PocketTTSHandlerArguments",
+        "cli_argument_prefix": "pocket_tts",
+        "install_hint": "pip install \"speech-to-speech[pocket]\""
+      },
+      "resident": "in_proc_8765",
+      "worker": null,
+      "launch": {
+        "cli_args": [
+          "--tts",
+          "pocket"
+        ],
+        "worker_cli_args": [],
+        "placeholders": {},
+        "requires": []
+      },
+      "health": {
+        "scheme": "in_process_cli_probe",
+        "command_line_flag": "--tts",
+        "expected_value": "pocket"
+      },
+      "runtime_controls": {},
+      "capabilities": {
+        "streaming": {
+          "supported": true,
+          "type": "bool",
+          "evidence": "上游逐块输出实现，本产品未做验收"
+        },
+        "voice_clone": {
+          "supported": false
+        },
+        "continuation": {
+          "supported": false
+        },
+        "seed": {
+          "supported": false
+        },
+        "reference_cache": {
+          "supported": false
+        }
+      },
+      "delivery": {
+        "placement": "none"
+      },
+      "panel_note_zh": ""
+    },
+    {
+      "id": "kokoro",
+      "provider_type": "TTS",
+      "display_name": "Kokoro TTS",
+      "display_name_zh": "Kokoro TTS",
+      "version": "upstream-0.2.11",
+      "enabled": true,
+      "ui_visible": false,
+      "purpose": "上游 speech-to-speech 自带后端：为了『不删除现有功能』而登记进注册表，不在女友产品界面中暴露。",
+      "handler": {
+        "module": "speech_to_speech.TTS.kokoro_handler",
+        "class": "KokoroTTSHandler",
+        "cli_flag_value": "kokoro",
+        "cli_arguments_class": "KokoroTTSHandlerArguments",
+        "cli_argument_prefix": "kokoro",
+        "install_hint": "pip install \"speech-to-speech[kokoro]\""
+      },
+      "resident": "in_proc_8765",
+      "worker": null,
+      "launch": {
+        "cli_args": [
+          "--tts",
+          "kokoro"
+        ],
+        "worker_cli_args": [],
+        "placeholders": {},
+        "requires": []
+      },
+      "health": {
+        "scheme": "in_process_cli_probe",
+        "command_line_flag": "--tts",
+        "expected_value": "kokoro"
+      },
+      "runtime_controls": {},
+      "capabilities": {
+        "streaming": {
+          "supported": true,
+          "type": "bool",
+          "evidence": "上游逐块输出实现，本产品未做验收"
+        },
+        "voice_clone": {
+          "supported": false
+        },
+        "continuation": {
+          "supported": false
+        },
+        "seed": {
+          "supported": false
+        },
+        "reference_cache": {
+          "supported": false
+        }
+      },
+      "delivery": {
+        "placement": "none"
+      },
+      "panel_note_zh": ""
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "manifest_version": 1,
+  "provider_type": "TOOL",
+  "note": "工具属于系统，不属于模型。模型适配器只能看到统一 ToolContract，不得自己实现检索/读文件。",
+  "defaults": {
+    "enabled": false,
+    "require_explicit_root": true
+  },
+  "forbidden_roots": [
+    "C:\\Users",
+    "C:\\Windows",
+    "D:\\$RECYCLE.BIN",
+    "**/.ssh",
+    "**/AppData",
+    "*.key", "*_api_key.txt", "*.pem", "*/.env"
+  ],
+  "providers": [
+    {
+      "id": "local_document_search",
+      "provider_type": "TOOL",
+      "display_name": "本地文档检索",
+      "display_name_zh": "本地文档检索",
+      "version": "1",
+      "enabled": true,
+      "ui_visible": false,
+      "implementation": "runtime.character.search",
+      "entrypoint": "search_documents",
+      "allowed_roots": [
+        "incoming\\library",
+        "runtime\\character\\library"
+      ],
+      "capabilities": {
+        "whole_disk_read": {"supported": false, "policy": "FORBIDDEN"},
+        "writable": {"supported": false},
+        "max_results": 8,
+        "timeout_s": 1.5
+      },
+      "arguments_schema": {
+        "query": {"type": "string", "required": true},
+        "character_id": {"type": "string", "required": false},
+        "limit": {"type": "integer", "required": false, "default": 5, "max": 8}
+      }
+    },
+    {
+      "id": "local_document_read",
+      "provider_type": "TOOL",
+      "display_name": "本地文档按段读取",
+      "display_name_zh": "本地文档按段读取",
+      "version": "1",
+      "enabled": true,
+      "ui_visible": false,
+      "implementation": "runtime.character.search",
+      "entrypoint": "read_document_window",
+      "allowed_roots": [
+        "incoming\\library",
+        "runtime\\character\\library"
+      ],
+      "capabilities": {
+        "whole_disk_read": {"supported": false, "policy": "FORBIDDEN"},
+        "writable": {"supported": false},
+        "max_chars": 3000,
+        "timeout_s": 1.5
+      },
+      "arguments_schema": {
+        "document_id": {"type": "string", "required": true},
+        "offset": {"type": "integer", "required": false, "default": 0},
+        "chars": {"type": "integer", "required": false, "default": 1200, "max": 3000}
+      }
+    },
+    {
+      "id": "character_canon_search",
+      "provider_type": "TOOL",
+      "display_name": "人物设定检索",
+      "display_name_zh": "人物设定检索",
+      "version": "1",
+      "enabled": true,
+      "ui_visible": false,
+      "implementation": "runtime.character.search",
+      "entrypoint": "search_canon",
+      "allowed_roots": ["runtime\\character"],
+      "capabilities": {"writable": {"supported": false}, "max_results": 6, "timeout_s": 1.0},
+      "arguments_schema": {
+        "character_id": {"type": "string", "required": true},
+        "query": {"type": "string", "required": true},
+        "limit": {"type": "integer", "required": false, "default": 5, "max": 6}
+      }
+    },
+    {
+      "id": "memory_search",
+      "provider_type": "TOOL",
+      "display_name": "长期记忆检索",
+      "display_name_zh": "长期记忆检索",
+      "version": "1",
+      "enabled": true,
+      "ui_visible": false,
+      "implementation": "runtime.memory.service",
+      "entrypoint": "search",
+      "allowed_roots": ["runtime\\memory\\data"],
+      "capabilities": {"writable": {"supported": false}, "timeout_s": 1.0},
+      "arguments_schema": {
+        "character_id": {"type": "string", "required": true},
+        "query": {"type": "string", "required": true},
+        "limit": {"type": "integer", "required": false, "default": 6, "max": 12}
+      }
+    },
+    {
+      "id": "web_search",
+      "provider_type": "TOOL",
+      "display_name": "联网搜索",
+      "display_name_zh": "联网搜索",
+      "version": "disabled",
+      "enabled": false,
+      "ui_visible": false,
+      "implementation": null,
+      "entrypoint": null,
+      "allowed_roots": [],
+      "disabled_reason": "本轮不开网；:7860 的 /api/search 只是 Serper 代理，未接入统一 Tool Layer",
+      "capabilities": {},
+      "arguments_schema": {}
+    },
+    {
+      "id": "web_read",
+      "provider_type": "TOOL",
+      "display_name": "网页读取",
+      "display_name_zh": "网页读取",
+      "version": "disabled",
+      "enabled": false,
+      "ui_visible": false,
+      "implementation": null,
+      "entrypoint": null,
+      "allowed_roots": [],
+      "disabled_reason": "本轮不开网",
+      "capabilities": {},
+      "arguments_schema": {}
+    }
+  ]
+}

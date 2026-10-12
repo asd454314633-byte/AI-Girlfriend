@@ -1,0 +1,12 @@
+{
+  "_purpose": "project adapters that must be used even if manifests/tts.json still binds a provider to a class inside the speech_to_speech wheel",
+  "_applies_to": "rows whose handler.module starts with a wheel root only",
+  "_repair": "runtime/audit/system_v2/tools/migrate_out_of_site_packages.py",
+  "TTS": {
+    "qwen3": {
+      "module": "providers.adapters.qwen3_tts_adapter",
+      "class": "Qwen3DeliveryTTSHandler",
+      "reason": "the wheel's Qwen3TTSHandler is vendor bytes, so this project's per-turn delivery instruction and delimiter-aware segmentation live in a subclass instead"
+    }
+  }
+}

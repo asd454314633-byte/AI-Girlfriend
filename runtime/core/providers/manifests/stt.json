@@ -1,0 +1,44 @@
+{
+  "manifest_version": 1,
+  "provider_type": "STT",
+  "default_selection": "faster_whisper",
+  "read_by": [
+    "runtime/core/providers/stt_factory.py (fills the pipeline's STT slot via providers.bootstrap)",
+    "runtime/windows/Switch-Girlfriend-Voice.ps1 (assembles --stt argv through Get-ProviderSpec/Expand-ProviderLaunch)",
+    "runtime/core/providers/registry.py:active_id (no selection file: default_selection IS the authority)"
+  ],
+  "invariants": {
+    "default_selection_must_be_declared": "there is no active_stt.txt by design; row order must never choose a recognizer",
+    "cli_flag_value_must_be_a_vendor_cli_token": "--stt is parsed by speech_to_speech's own Literal, so a row may name a handler but not invent a token",
+    "model_path_block_must_agree_with_launch_cli_args": "handler.model_path.cli_flag/placeholder must be the pair actually present in launch.cli_args"
+  },
+  "providers": [
+    {
+      "id": "faster_whisper",
+      "provider_type": "STT",
+      "display_name": "faster-whisper large-v3",
+      "display_name_zh": "本地 Whisper",
+      "version": "faster_whisper 1.2.1 / model whisper-large-v3",
+      "enabled": true,
+      "ui_visible": false,
+      "handler": {
+        "module": "speech_to_speech.STT.faster_whisper_handler",
+        "class": "FasterWhisperSTTHandler",
+        "cli_flag_value": "faster-whisper",
+        "cli_arguments_class": "FasterWhisperSTTHandlerArguments",
+        "model_path": {"placeholder": "STT_MODEL_DIR", "cli_flag": "--faster_whisper_stt_model_name", "setup_kwarg": "model_name"}
+      },
+      "resident": "in_proc_8765",
+      "worker": null,
+      "launch": {"cli_args": ["--stt", "faster-whisper", "--faster_whisper_stt_gen_language", "zh", "--faster_whisper_stt_model_name", "{STT_MODEL_DIR}"], "worker_cli_args": [], "placeholders": {"STT_MODEL_DIR": "models/native/whisper-large-v3"}, "requires": ["models/native/whisper-large-v3"]},
+      "health": {"scheme": "in_process_cli_probe", "command_line_flag": "--stt", "expected_value": "faster-whisper"},
+      "capabilities": {
+        "language_zh": {"supported": true},
+        "partial_transcripts": {"supported": false, "evidence": "只在 VAD 语音段结束后出整段 Transcription"},
+        "timestamps": {"supported": true},
+        "runtime_switch": {"supported": false, "runtime_change_requires_reload": true}
+      },
+      "notes": {"model_path_source": "--faster_whisper_stt_model_name -> models/native/whisper-large-v3"}
+    }
+  ]
+}

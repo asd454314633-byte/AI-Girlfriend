@@ -1,0 +1,419 @@
+/* 女友版新增控件的样式（AI_GIRLFRIEND_PRODUCT_UI_READING_V2）。
+ *
+ * 单独一个文件，不改上游那份 72 KB 的 style.css：这里只消费它的 :root 设计
+ * 变量，页面调性（暗底、细边框、色彩只留给"声音"）保持一致，以后上游更新
+ * style.css 也不会冲突。 */
+
+.gf-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 14px;
+  width: min(420px, 100%);
+}
+
+.gf-field {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+.gf-field select {
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elev-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+}
+
+.gf-field select:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+.gf-voice-performance {
+  width: min(520px, 100%);
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-elev);
+  color: var(--text);
+  text-align: left;
+}
+.stage { overflow-y: auto; justify-content: safe center; }
+.gf-performance-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px 12px;
+  font-size: 12px;
+}
+.gf-performance-head span { color: var(--text-dim); }
+.gf-performance-head button { margin-left: auto; padding: 4px 8px; font-size: 11px; }
+.gf-performance-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+  gap: 8px;
+  margin-top: 9px;
+}
+.gf-performance-field { display: grid; gap: 4px; min-width: 0; font-size: 11px; }
+.gf-performance-field select, .gf-performance-field input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 7px 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elev-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+}
+.gf-performance-field input::placeholder { color: var(--text-faint); }
+.gf-performance-note { margin: 7px 0 0; color: var(--text-dim); font-size: 10px; }
+
+.gf-switch-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+
+.gf-switch-name {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.gf-speak-state {
+  padding: 5px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(139, 125, 255, 0.2);
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.gf-status {
+  margin: 0;
+  min-height: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: #fff;
+  text-align: left;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+#gf-status-container {
+  position: fixed !important;
+  left: max(20px, env(safe-area-inset-left, 0px));
+  bottom: max(20px, env(safe-area-inset-bottom, 0px));
+  z-index: 10000 !important;
+  display: grid;
+  gap: 4px;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(35vw, calc(100vw - 40px));
+  max-height: min(36vh, calc(100vh - 40px));
+  overflow: auto;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.78);
+  box-shadow: 0 5px 24px rgba(0, 0, 0, 0.45);
+  color: #fff;
+  pointer-events: none;
+}
+
+.gf-live-conversation {
+  width: min(520px, 100%);
+  max-height: 19vh;
+  min-height: 66px;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 8px 11px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--bg-elev) 88%, transparent);
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.gf-turn-status {
+  margin-bottom: 4px;
+  color: var(--text-dim);
+  font-size: 10px;
+}
+
+.gf-turn-message {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 5px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.gf-turn-message + .gf-turn-message {
+  margin-top: 3px;
+}
+
+.gf-turn-message strong {
+  color: var(--text);
+}
+
+/* 文字聊天：贴在光球下方，尺寸克制，不让它抢走"语音是主角"的版面。 */
+.gf-composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  width: min(520px, 100%);
+}
+
+.gf-composer-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-height: 140px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-elev);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: none;
+  transition: border-color 0.15s;
+}
+
+.gf-composer-input:focus {
+  outline: none;
+  border-color: var(--border-strong);
+}
+
+.gf-composer-input::placeholder {
+  color: var(--text-faint);
+}
+
+.gf-composer-send {
+  flex: none;
+  white-space: nowrap;
+}
+
+/* ── 陪读面板 ──────────────────────────────────────────────────────────────
+ * 版式和上游的 .chat-panel 一致（右侧抽屉、同一套色），因为它就是同一个页面里
+ * 的另一块覆盖层；只是更宽一点，正文要能读。 */
+
+.gf-reading-open {
+  flex: none;
+}
+
+.reading-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 210;
+  pointer-events: none;
+}
+
+.reading-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 9, 13, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.reading-panel.open .reading-backdrop {
+  opacity: 1;
+}
+
+.reading-inner {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(470px, 96vw);
+  background: var(--bg-elev);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px 18px;
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+  pointer-events: auto;
+}
+
+.reading-panel.open .reading-inner {
+  transform: translateX(0);
+}
+
+.reading-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reading-header h3 {
+  margin: 0;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+}
+
+.reading-library,
+.reading-add {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.reading-add button {
+  flex: none;
+}
+
+.reading-path,
+.reading-paste-title {
+  flex: 1 1 180px;
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-elev-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+}
+
+.reading-paste-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reading-paste-text {
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-elev-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  resize: vertical;
+}
+
+.reading-text {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  line-height: 1.85;
+  font-size: 14px;
+}
+
+.reading-line {
+  margin: 0 0 0.75em;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+.reading-line:hover {
+  color: var(--text);
+}
+
+/* 正在出声的那一句：只借光球的紫色，页面别处不出现这个颜色。 */
+.reading-line.now {
+  color: var(--text);
+  background: rgba(139, 125, 255, 0.12);
+  box-shadow: inset 2px 0 0 var(--accent);
+  border-radius: 4px;
+  padding-left: 8px;
+}
+
+.reading-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.reading-controls button {
+  flex: 1 1 auto;
+  padding: 8px 6px;
+  font-size: 12px;
+}
+
+.reading-controls button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ---- 模式选择（AI_GIRLFRIEND_MODE_SYSTEM_V1）------------------------------
+   当前模式那一颗用实心点标出来，第三模式 disabled 就一直灰着；
+   状态行只说人话，不提接口、不提内部名词。 */
+.gf-mode-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.gf-mode-btn {
+  flex: 1 1 auto;
+  padding: 7px 6px;
+  font-size: 12px;
+}
+
+.gf-mode-btn.is-active {
+  font-weight: 600;
+  outline: 1px solid currentColor;
+}
+
+.gf-mode-btn.is-active::before {
+  content: "\25CF";
+  margin-right: 5px;
+}
+
+.gf-mode-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.gf-mode-status {
+  margin: 2px 0 0;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* ---- 朗读进度 / 状态（MODE_SYSTEM_V1 §21）------------------------------- */
+.reading-progress {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  padding: 4px 0;
+}
+
+.reading-state {
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(127, 127, 127, 0.18);
+}
+
+.reading-text .reading-line.now {
+  font-weight: 600;
+}

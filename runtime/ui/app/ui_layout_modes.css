@@ -1,0 +1,408 @@
+/* ============================================================================
+ * ui_layout_modes.css — AI_GIRLFRIEND_UI_DETAIL_COMPOSITION_REPAIR_01 (V2)
+ *
+ * 纯显示层：一套 DOM、两种 viewMode。本文件只负责"看起来怎么排"，
+ * 不碰任何业务逻辑、不碰媒体对象、不新建 video/audio/WebRTC/Session。
+ *
+ * 状态表达（由 ui_layout_modes.js 写在 body 上）：
+ *   body[data-view-mode="detail"]           横屏详情模式
+ *   body[data-view-mode="live-portrait"]    直播竖屏模式
+ *   body[data-uivm-boundary="off"]          DETAIL 下量不到人物（还没流）→ 藏起边界线
+ *
+ * V2 删掉的东西（这是本次纠偏的主体，不是顺手清理）：
+ *   body[data-view-mode="detail"][data-uivm-pane="custom"] #app     { width: … }
+ *   body[data-view-mode="detail"][data-uivm-pane="custom"] #av-video{ width:…; height:100%;
+ *                                                                     object-fit:contain; … }
+ *   这两条就是 V1 的"独立人物 pane"模型。实测它们把 DETAIL 钉死成
+ *   "盒子可以变宽 2.50 倍、人物只长 1.17 倍、剩下 711px 是黑"，并且让
+ *   avatar-sync 按盒子百分比画的黑雾在 x=1009 处就走完、人物 x=1283 才开始
+ *   （中间 274px 纯黑），这就是用户真实验收拒掉的构图。证据：
+ *   runtime/evidence/UI_DETAIL_COMPOSITION_REPAIR_01/PREFLIGHT_ROOT_CAUSE.md
+ *
+ * V2 之后 DETAIL 在本文件里【零几何覆盖】：
+ *   · #av-layer 继续是 avatar-sync.js 注入的 position:fixed;inset:0 全屏背景层
+ *     （§4 FULL_VIEWPORT_COMPOSITE：人物属于同一个全屏层）
+ *   · #av-video 继续是它的 height:100% / width:auto / object-fit:cover /
+ *     max-width:none —— 没有任何尺寸上限；人物要变大由 owner 的 transform 生长，
+ *     超出视口的部分交给 #av-layer{overflow:hidden} 裁切（§7）
+ *   · #app 永远全宽，不再随分隔线挤压主 UI（§14）
+ *
+ * 与既有模块的边界（刻意互不侵犯）：
+ *   · avatar-sync.js  注入 `#av-layer{position:fixed;inset:0;z-index:0}` 与
+ *     `#av-video{top:0;right:-4%;height:100%;width:auto;object-fit:cover}` +
+ *     左缘 mask 渐隐，并注入 `body > *:not(#av-layer){position:relative;z-index:1}`。
+ *     → 本文件所有覆盖都用 `body[data-view-mode=…] #target`（特异性 1,1,1 > 1,0,0），
+ *       因此不需要 !important 就能压过它；DETAIL 现在根本不用压。
+ *   · avatar_layout.js（唯一 transform owner）把 DETAIL 的
+ *     大小/宽度/左右/上下 写成 #av-video 的**内联 transform + 内联 mask**。
+ *     内联样式优先级高于任何选择器 ⇒
+ *       - DETAIL：本文件完全不写 transform、也不写 mask，全部让给它（§21）。
+ *       - LIVE  ：两模式参数必须彻底分开（§22），所以这里的 transform /
+ *                 transform-origin / mask 都用 !important 把 DETAIL 的内联值
+ *                 隔离在 LIVE 之外。mask 那两条在 V2 必须加 !important ——
+ *                 owner 现在会写内联 mask，不加就会漏进 LIVE 的取景框里。
+ *   · body 直挂元素会被 `body > *:not(#av-layer)`（1,0,1）压成 relative，
+ *     所以本文件新建元素的选择器一律写成 `#id.id`（1,1,0）——沿用
+ *     avatar_layout.css 已验证过的同一手法。
+ * ==========================================================================*/
+
+/* ---------------------------------------------------------------- 变量表 */
+body {
+  /* DETAIL：人物视觉边界线的位置（= 实测人物带左缘，由 JS 写入 px）。
+     V1 的 --uivm-content-w / --uivm-content-min 属于 pane 模型，已随本行注释退役。 */
+  --uivm-divider-x: 100%;
+  --uivm-divider-fade: 260px;      /* 与 owner 的接缝宽度同一参照，仅用于线的观感 */
+
+  /* 控制面板：DETAIL 停靠在左缘，宽度固定（§17 概念值 280px）。 */
+  --uivm-panel-w: 280px;
+  --uivm-panel-side: 16px;
+
+  /* LIVE：9:16 舞台。side-w = 舞台右侧的操作列宽度。 */
+  --uivm-side-w: 330px;
+  --uivm-stage-gap: 16px;
+  --uivm-stage-h: min(
+    calc(100vh - (var(--uivm-stage-gap) * 2)),
+    calc((100vw - var(--uivm-side-w) - (var(--uivm-stage-gap) * 3)) * 16 / 9)
+  );
+  --uivm-stage-w: calc(var(--uivm-stage-h) * 9 / 16);
+
+  /* LIVE：人物调节（独立于 DETAIL 的那一套）。无单位数值，由 calc() 乘百分比，
+     这样窗口尺寸变化时不需要 JS 重算。 */
+  --uivm-lv-s: 1;
+  --uivm-lv-x: 0;
+  --uivm-lv-y: 0;
+
+  /* 控制卡的纵向让位量 = header.topbar 的实测高度，由 ui_layout_modes.js 在
+     apply() 里写入（两种模式都写）。缺省 0 = 贴顶。 */
+  --uivm-topbar-h: 0px;
+}
+
+/* ============================================================================
+ * MODE_A — DETAIL 横屏详情模式（V2 = 全屏合成）
+ *
+ * 这里【没有】任何针对 #av-layer / #av-video / #app 的尺寸规则：
+ * 首屏与 avatar-sync.js 原生表现逐像素一致，人物放大走 owner 的 transform。
+ * §7 要求"真正取消 video 最大尺寸限制"——本文件过去的限制就来自那两条
+ * 已删除的 custom 规则（height:100% × object-fit:contain），现在既没有上限、
+ * 也没有容器宽度可以跟着拖动变。
+ * ==========================================================================*/
+
+/* ---- 人物视觉边界线（V2 §13）----
+ * 它代表"人物的左边界"，不是应用的分栏框：默认只有一条 1px 的淡线，
+ * hover / 拖动 / 键盘聚焦时才亮起来；命中区照样给到 18px 好抓。 */
+#uivm-divider.uivm-divider {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--uivm-divider-x) - 9px);
+  width: 18px;
+  z-index: 10500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: col-resize;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+body[data-view-mode="detail"] #uivm-divider.uivm-divider { display: flex; }
+/* 量不到人物（流还没来）就别把钩子摆出来 —— 一条钉在屏幕边的亮线最容易被
+ * 误认成"应用分栏框"，正是本次要洗掉的观感。 */
+body[data-view-mode="detail"][data-uivm-boundary="off"] #uivm-divider.uivm-divider {
+  display: none;
+}
+#uivm-divider.uivm-divider::before {
+  content: "";
+  width: 1px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.10);
+  transition: background 120ms linear;
+}
+#uivm-divider.uivm-divider::after {
+  /* 握把默认不可见：只有真正要动它的时候才出现（§13 默认弱化） */
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 40px;
+  margin: -20px 0 0 -1.5px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.10);
+  opacity: 0;
+  transition: opacity 120ms linear;
+}
+#uivm-divider.uivm-divider:hover::before,
+#uivm-divider.uivm-divider.uivm-dragging::before { background: rgba(78, 201, 176, 0.45); }
+#uivm-divider.uivm-divider:hover::after,
+#uivm-divider.uivm-divider:focus-visible::after,
+#uivm-divider.uivm-divider.uivm-dragging::after {
+  background: #4ec9b0;
+  opacity: 1;
+}
+#uivm-divider.uivm-divider:focus-visible { outline: 1px solid rgba(78, 201, 176, 0.55); outline-offset: 2px; }
+
+
+/* ============================================================================
+ * MODE_B — LIVE_PORTRAIT 直播竖屏模式
+ *
+ * 同一个 #av-layer / 同一个 #av-video，只是把背景层从"全屏舞台"改排成
+ * 一个 9:16 的取景框。不新建元素、不 cloneNode、不重新挂载。
+ * ==========================================================================*/
+body[data-view-mode="live-portrait"] #av-layer {
+  position: fixed;
+  top: var(--uivm-stage-gap);
+  right: auto;
+  bottom: auto;
+  left: var(--uivm-stage-gap);
+  width: var(--uivm-stage-w);
+  height: var(--uivm-stage-h);
+  aspect-ratio: 9 / 16;
+  /* 取景框提示线画在盒子外侧，不吃掉人物像素 */
+  outline: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+body[data-view-mode="live-portrait"] #av-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  /* §6.3：默认 contain，保持原始宽高比，禁止横/纵拉伸 */
+  object-fit: contain;
+  object-position: 50% 50%;
+  /* 舞台里不允许出现渐隐——那是"贴在页面右侧"的观感，不是取景框。
+   * V2 必须加 !important：DETAIL 的唯一 owner 现在会把 mask 写成【内联】样式，
+   * 内联优先级高于本条普通规则，不加 !important 就会让渐隐漏进直播取景框
+   * （V2 §22"DETAIL 参数不得污染 LIVE"）。 */
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  /* §7：直播模式有自己独立的一套参数，DETAIL 的内联 transform 必须被隔离。
+   * --uivm-lv-x / --uivm-lv-y 是【无单位数值】（§7 存的就是纯数字），
+   * 必须在这里用 calc() 乘出百分比再喂给 translate()。
+   *
+   * 这一层乘法原本是缺的（直接 translate(var(--uivm-lv-x), ...)），后果不是
+   * "没生效"这么简单：translate() 要求 <length-percentage>，拿到裸数字 25
+   * 会让整条 transform 声明在 computed-value 阶段作废 ⇒ transform 退成
+   * "none"，scale 也一起丢。零值时反而合法（0 可当长度），所以
+   * "默认看起来正常、一动就完全没反应"。判据见 shadow_acceptance 的 J/J2：
+   * 必须核对 computed transform 的矩阵元素，不能只看变量写没写进去。
+   * 百分比按人物盒自身宽高解析 ⇒ 窗口/舞台尺寸变化时无需 JS 重算。 */
+  transform: translate(calc(var(--uivm-lv-x) * 0.25%), calc(var(--uivm-lv-y) * 0.25%))
+             scale(var(--uivm-lv-s)) !important;
+  transform-origin: 50% 50% !important;
+}
+
+/* 聊天/控制整体挪到舞台右侧，捕获区内只留人物 */
+body[data-view-mode="live-portrait"] #app {
+  width: calc(100% - var(--uivm-stage-w) - (var(--uivm-stage-gap) * 3) - var(--uivm-side-w));
+  margin-left: calc(var(--uivm-stage-w) + (var(--uivm-stage-gap) * 2));
+  min-height: auto;
+}
+
+/* 舞台左下角原本压着两块常驻浮层，直播时挪出捕获区（只挪位置，不隐藏功能） */
+body[data-view-mode="live-portrait"] #gf-status-container {
+  left: auto;
+  right: var(--uivm-stage-gap);
+  bottom: calc(var(--uivm-stage-gap) + 222px);
+}
+body[data-view-mode="live-portrait"] #cam-pip {
+  left: auto;
+  right: var(--uivm-stage-gap);
+  top: auto;
+  bottom: var(--uivm-stage-gap);
+  width: 200px;
+}
+body[data-view-mode="live-portrait"] #uivm-divider.uivm-divider { display: none; }
+
+/* ============================================================================
+ * 布局控制面板（本任务新建，两种模式共用一块面板，内容按模式切换）
+ *
+ * V2 §15/§16：它过去靠 `top:50% + transform:translateY(-50%)` 悬浮在屏幕竖向
+ * 中心，而且默认展开 —— 实测（1920×1080，pane=70 时 #app 只有 572 宽）它的矩形
+ * 是 16..284 × 442.8..637.3，与 .orb-wrap(92..480 × 228..548) 和
+ * .gf-controls(76..496 × 604..724) 直接相交 —— 主 UI 被永久挡住。
+ * V2 换成：默认【收起】成左缘一条小标题条，展开时才出现完整面板，
+ * 且停靠位置从"视口中心"改成"页头下面"，不再有任何居中悬浮。
+ * ==========================================================================*/
+#uivm-panel.uivm-panel {
+  position: fixed;
+  z-index: 10600;
+  box-sizing: border-box;
+  width: var(--uivm-panel-w);
+  padding: 12px 14px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  background: rgba(10, 10, 12, 0.92);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  /* §13：不加动画、不加玻璃特效、不加 GPU 滤镜 */
+}
+/* DETAIL：停靠 viewport 左缘，纵向从"实测页头下沿 + 16px"开始（§17）。
+ * 底部留 120px 给 #gf-status-container(20..150 × 994..1060) 与输入区，
+ * 面板自己超高就内部滚动，绝不把页面向下顶。 */
+body[data-view-mode="detail"] #uivm-panel.uivm-panel {
+  left: var(--uivm-panel-side);
+  top: calc(var(--uivm-topbar-h) + var(--uivm-panel-side));
+  bottom: auto;
+  transform: none;
+  max-height: calc(100vh - var(--uivm-topbar-h) - var(--uivm-panel-side) - 120px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+/* LIVE：贴在舞台右侧操作列，且【让开既有页头】—— 直接 top:16px 会把
+   "实时语音女友 / 技术支持 / 作者"那几行压在面板下面（截图验收时一眼可见）。
+   --uivm-topbar-h 由 JS 现场量 header.topbar 得到（页头会随宽度换行，写死必错）。
+   这条 left 让面板永远落在 9:16 捕获区【外面】（§18）。 */
+body[data-view-mode="live-portrait"] #uivm-panel.uivm-panel {
+  left: calc(var(--uivm-stage-w) + (var(--uivm-stage-gap) * 2));
+  top: calc(var(--uivm-topbar-h) + (var(--uivm-stage-gap) * 2));
+  transform: none;
+}
+#uivm-panel.uivm-panel[hidden] { display: none; }
+
+.uivm-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.uivm-title { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; }
+/* 收起态也看得见"现在是哪个模式"，不然默认收起会让人以为模式按钮消失了 */
+.uivm-mode-tag {
+  flex: 1 1 auto;
+  text-align: right;
+  color: #4ec9b0;
+  font-size: 10.5px;
+  opacity: 0.85;
+}
+.uivm-collapse {
+  flex: 0 0 auto;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.62);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 3px;
+}
+.uivm-collapse:hover { color: #fff; }
+
+
+/* 模式切换：主页面常驻、一级入口、当前模式有明确选中态（任务 §15） */
+.uivm-modes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.uivm-mode {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.82);
+  font: inherit;
+  font-size: 12px;
+  padding: 7px 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.uivm-mode:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+.uivm-mode[aria-pressed="true"] {
+  border-color: #4ec9b0;
+  background: rgba(78, 201, 176, 0.16);
+  color: #4ec9b0;
+  font-weight: 700;
+}
+.uivm-mode[aria-pressed="true"]::before { content: "● "; font-size: 9px; }
+
+.uivm-section { display: none; }
+body[data-view-mode="detail"] #uivm-panel .uivm-sec-detail { display: block; }
+body[data-view-mode="live-portrait"] #uivm-panel .uivm-sec-live { display: block; }
+
+.uivm-note {
+  margin: 0 0 9px;
+  color: rgba(255, 255, 255, 0.46);
+  font-size: 10.5px;
+  line-height: 1.5;
+}
+.uivm-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 9px;
+}
+.uivm-btn {
+  flex: 1 1 auto;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font: inherit;
+  font-size: 11px;
+  padding: 5px 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.uivm-btn:hover { background: rgba(255, 255, 255, 0.14); }
+.uivm-btn.uivm-active { border-color: #4ec9b0; color: #4ec9b0; }
+.uivm-btn.uivm-reset { width: 100%; flex: 1 1 100%; background: transparent; }
+.uivm-btn.uivm-reset:hover { background: rgba(255, 255, 255, 0.1); }
+.uivm-btn:focus-visible { outline: 1px solid #4ec9b0; outline-offset: 2px; }
+
+.uivm-field { display: grid; gap: 4px; margin-bottom: 10px; }
+.uivm-field-label {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(255, 255, 255, 0.85);
+}
+.uivm-field-label output { color: #4ec9b0; font-variant-numeric: tabular-nums; }
+.uivm-field input[type="range"] { width: 100%; accent-color: #4ec9b0; cursor: pointer; }
+
+/* 折叠态（V2 默认，§16）：只剩一条标题 + 模式标签 + 展开按钮，
+ * 宽度按内容收缩，不再是一块 268×194.5 的常驻方块。 */
+#uivm-panel.uivm-panel[data-collapsed="1"] { width: auto; max-width: 320px; padding: 8px 10px; }
+#uivm-panel.uivm-panel[data-collapsed="1"] .uivm-body { display: none; }
+#uivm-panel.uivm-panel[data-collapsed="1"] .uivm-head { margin-bottom: 0; }
+
+/* ---------------------------------------------------------------- 窄屏兜底 */
+/* V2 §19：小窗不重构响应式系统，只保证两件事 ——
+ *   1) 面板默认收起时几乎不占地方（上面的折叠态已经做到）
+ *   2) 临时展开时它贴在左缘、自己内部滚动，不铺满屏幕、不长期压住输入框
+ * 旧的 `left:12px; right:12px; width:auto` 写法会把整块底部横条变成面板，
+ * 展开就直接盖住 #gf-composer —— 那正是 §16/§19 禁止的形态，已改掉。 */
+@media (max-width: 1100px) {
+  body { --uivm-panel-w: 248px; }
+  #uivm-panel.uivm-panel { font-size: 11.5px; }
+  body { --uivm-side-w: 260px; }
+}
+@media (max-width: 860px) {
+  body[data-view-mode="live-portrait"] {
+    --uivm-stage-h: min(45vh, calc((100vw - 32px) * 16 / 9));
+  }
+  body[data-view-mode="live-portrait"] #av-layer {
+    position: absolute;
+    left: calc((100vw - var(--uivm-stage-w)) / 2);
+  }
+  #uivm-panel.uivm-panel {
+    left: 12px;
+    right: auto;
+    width: var(--uivm-panel-w);
+    max-width: calc(100vw - 24px);
+    top: auto;
+    bottom: 12px;
+    transform: none;
+    max-height: 56vh;
+    overflow-y: auto;
+  }
+  body { --uivm-panel-w: 260px; }
+  body { --uivm-side-w: 220px; }
+}

@@ -1,0 +1,35 @@
+{
+  "manifest_version": 1,
+  "provider_type": "AVATAR",
+  "default_selection": "livetalking_webrtc",
+  "providers": [
+    {
+      "id": "livetalking_webrtc",
+      "provider_type": "AVATAR",
+      "display_name": "LiveTalking (wav2lip)",
+      "display_name_zh": "数字人",
+      "version": "app.py --model wav2lip --avatar_id wav2lip256_avatar1",
+      "enabled": true,
+      "ui_visible": false,
+      "resident": "external_worker",
+      "worker": {"pid_key": "avatar", "command_marker": "app.py", "executable_suffix": "python.exe", "port": 8010},
+      "transport": {
+        "signalling": "POST http://127.0.0.1:8010/offer",
+        "media": "WebRTC recvonly video+audio",
+        "audio_push": "POST http://127.0.0.1:8010/humanaudio (multipart: sessionid + file + response_id + segment_index)",
+        "interrupt": ["POST /interrupt_talk {sessionid, response_id, reason}", "POST /human {text:'',type:'echo',interrupt:true,sessionid,response_id,reason}"],
+        "speaking_probe": "GET http://127.0.0.1:8010/is_speaking?sessionid="
+      },
+      "health": {"scheme": "http", "base_url": "http://127.0.0.1:8010", "endpoints": [{"path": "/is_speaking", "method": "get", "auth": "none", "true_when": []}], "timeout_s": 2},
+      "launch": {"cli_args": ["-u", "app.py", "--transport", "webrtc", "--model", "wav2lip", "--avatar_id", "{AVATAR_ID}", "--stun", "stun:stun.l.google.com:19302", "--listenport", "8010"], "worker_cli_args": [], "placeholders": {"AVATAR_ID": "wav2lip256_avatar1"}, "requires": [], "env": {"AVATAR_SEGMENT_GATE": "enforce"}},
+      "audio_contract": {"sample_rate": 24000, "channels": 1, "encoding": "pcm_s16le", "container": "wav", "source_of_truth": "session.update output.audio_format / registry, 不是浏览器常量"},
+      "capabilities": {
+        "interrupt": {"supported": true, "evidence": "routes.py /interrupt_talk + /human echo interrupt"},
+        "speaking_probe": {"supported": true, "evidence": "/is_speaking"},
+        "per_turn_attribution": {"supported": true, "evidence": "routes.py:118-148 /humanaudio 与 44-92 /human 都把 form 字段 response_id 交给 server/idempotency.py:admit_turn 记账；tag 走 multipart 字段，不是 put_audio_file 的 datainfo（后者仍是空的）"},
+        "segment_dedupe": {"supported": true, "evidence": "server/idempotency.py SegmentGate：同一 (response_id, segment_index) 只 enqueue 一次，被点名 cancel 的 response 的迟到段判 STALE_RESPONSE。模式是本行 launch.env 的 AVATAR_SEGMENT_GATE（enforce=拦截，observe=只记账并照常渲染），由 Start-AvatarNative 展开后带进子进程"},
+        "runtime_switch": {"supported": false, "runtime_change_requires_reload": true}
+      }
+    }
+  ]
+}
