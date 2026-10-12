@@ -76,9 +76,9 @@ After `pip install speech-to-speech==0.2.11`, apply the project patches from
 `providers/vendor_fixes/*` are installed by `providers.bootstrap` at import
 time as wrappers; the vendor wheel stays pristine.
 
-## avatar-sync.js gap (known limitation)
+## Avatar front-end adapter (development preview)
 
-The frontend adapter is excluded because legacy redistribution permission remains unresolved. The experimental replacement and all acceptance artifacts are excluded too. Digital-human operation is incomplete in this source archive; no complete runtime acceptance is claimed.
+The legacy upstream-derived avatar-sync.js remains excluded due to unresolved redistribution rights. This public source tree now includes an independently implemented `runtime/ui/app/avatar-sync.js` with reading, session, ICE, cancellation and audio-routing contracts. Five offline tests in `runtime/ui/app/test_avatar_sync_*.cjs` passed in the release report. **Real GPU/LiveTalking WebRTC audio-video end-to-end verification was NOT performed**; full avatar operation is not guaranteed. Details: `provenance/AVATAR_SYNC_RESTORATION_AUDIT_20261012.md`.
 
 User data, current selections and voice references are intentionally absent. The configuration contains generic relative examples; configure your own local installation before running any lifecycle script. Do not run these scripts against an existing production installation merely to inspect this archive.
 

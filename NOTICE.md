@@ -72,16 +72,17 @@ faster-whisper, Silero VAD (via upstream VADHandler), llama.cpp — see
 
 ## 5. Quarantined for licensing (NOT in this tree)
 
-- `runtime/ui/app/avatar-sync.js` — derives from
+- **Legacy implementation excluded (not the publicly shipped replacement):** the original `runtime/ui/app/avatar-sync.js` derives from
   `liuw8233-cell/ai_girlfriend@699f7fe` `assets/avatar-sync.js`
   (https://github.com/liuw8233-cell/ai_girlfriend). That repository has **no
   LICENSE file** (all rights reserved by default). Line-level diff shows 201
   of its 357 lines (56%) retained verbatim in our heavily extended version
   (1105 lines, including this project's 24 kHz fix, per-segment receipts and
   D-mode integration). Until the upstream grants a redistribution license or
-  a separately reviewed replacement is authorized, this file stays out of the public
-  tree. `index.html` still references `/avatar-sync.js`; without it the UI
-  loads but the digital-human sync layer is absent.
+  a separately reviewed replacement is authorized, **that legacy implementation remains excluded**.
+  The repository now includes a separate independently implemented adapter
+  under the same `runtime/ui/app/avatar-sync.js` path; see §6–§7. Its offline
+  contracts pass, but real end-to-end operation remains NOT_TESTED.
   Re-verified 2026-10-12; see §7.
 
 ## 6. Private source archive scope
