@@ -215,7 +215,7 @@
       frameAdvancing = false;
     }
     if (connectionState === 'connected' && !suspended
-      && (statusEl.textContent === STATUS.waiting) && mediaReady()) {
+      && statusEl && (statusEl.textContent === STATUS.waiting) && mediaReady()) {
       setStatus(STATUS.live);
     }
   }
