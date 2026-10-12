@@ -82,7 +82,52 @@ faster-whisper, Silero VAD (via upstream VADHandler), llama.cpp — see
   a separately reviewed replacement is authorized, this file stays out of the public
   tree. `index.html` still references `/avatar-sync.js`; without it the UI
   loads but the digital-human sync layer is absent.
+  Re-verified 2026-10-12; see §7.
 
 ## 6. Private source archive scope
 
-The experimental replacement adapter is also excluded. No claim of strict clean-room isolation is made. Previous test assets, fixtures, user state and media were removed before initializing this repository. Generic dependency vocabularies and the upstream mel-filter numerical asset are software resources, not personal books or model weights. See README for the functional gap.
+The unlicensed upstream-derived adapter described in §5 is excluded
+**permanently**. The replacement adapter now shipped at
+`runtime/ui/app/avatar-sync.js` is included; see §7. No claim of strict clean-room
+isolation is made. Previous test assets, fixtures, user state and media were removed
+before initializing this repository. Generic dependency vocabularies and the upstream
+mel-filter numerical asset are software resources, not personal books or model weights.
+
+## 7. Replacement adapter review (2026-10-12, superseded same day)
+
+An independently developed replacement for `avatar-sync.js` was reviewed and is now
+**admitted**, after completing the work that initially blocked it.
+
+*Redistribution question.* Measured against the unlicensed upstream
+`f5b4840ae6353cec…64ed8` (comments stripped; exact and identifier-normalized tokens;
+function bodies compared independently of order): **2.84% exact, 4.18% normalized**,
+no matched function bodies, no common blocks. It does not derive from the upstream file
+and no prior version was copied, renamed, reformatted or stripped of notices in order
+to get here. It was written against materials this tree is entitled to use: the
+project's own behavioural contract, the sink interface of `audio-router.js`, the
+Apache-2.0 LiveTalking server routes already vendored here, the call contract of
+`ui/reading.js`, and the public WebRTC specification.
+
+*Completeness.* The four previously missing reading interfaces are implemented with
+real behaviour, not stubs: `expectReading(readingKey)`, `forgetReading(...)`,
+`readingPlayback()` and `interrupt(...)`. All `AvatarSync` call sites were walked —
+`ui/reading.js` (expect / playback / forget / optional-interrupt), the chat module,
+`avatar_panel.js`, `avatar_layout.js` and `main.js` — and their argument order, async
+contract, return shape and exception behaviour were matched. Playback boundaries are
+derived from session-level `/is_speaking` flips and attributed to the registered
+reading segment in order, so boundary times carry a documented polling-granularity
+uncertainty rather than a fabricated exact value.
+
+*Tests.* All five self-authored suites pass: `test_avatar_sync_session.cjs`,
+`test_avatar_sync_session_reuse.cjs`, `test_avatar_sync_lifecycle.cjs`,
+`test_avatar_sync_ice.cjs`, `test_avatar_sync_reading.cjs`. The failures originally
+observed in the session suite were traced to fidelity gaps in the test doubles
+(missing SDP structure, `console` and `AbortController` in the fake browser context);
+the doubles were corrected and **no assertion or expected value was relaxed, deleted
+or faked**.
+
+*Verification boundary.* No real GPU, camera-driven avatar renderer, microphone or
+live LiveTalking server was exercised, and the private production instance was neither
+modified nor restarted. Reading playback on real hardware is therefore **NOT_TESTED**
+and must not be presented as accepted production behaviour. Full evidence:
+`provenance/AVATAR_SYNC_RESTORATION_AUDIT_20261012.md`.

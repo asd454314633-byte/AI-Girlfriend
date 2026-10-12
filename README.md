@@ -2,7 +2,7 @@
 
 **一个以本地大语言模型为核心，整合实时语音交互、人物设定、智能陪读、可切换语音合成和 WebRTC 数字人的模块化 AI 陪伴项目。**
 
-> **当前仓库状态：私有源码整理版 / 非一键运行发行版。** 本仓库保留了经过隐私筛选的工程源码、必要的第三方代码、来源记录与部署说明，**不是完整生产环境的复制品**。由于原数字人前端同步适配层 `runtime/ui/app/avatar-sync.js` 的再分发授权未确认，该文件及实验替代方案均未包含；**直接克隆本仓库无法得到完整可用的数字人互动体验**。模型权重、人物、声音、书库和个人记录也不随源码提供。请先阅读[当前发布范围](#当前发布范围与可用性)和[安装说明](docs/INSTALL.md)。
+> **当前仓库状态：源码整理版 / 非一键运行发行版。** 本仓库保留经过隐私筛选的工程源码、第三方代码归属记录与部署说明，**不是完整生产环境的复制品**。数字人前端同步适配层 `runtime/ui/app/avatar-sync.js` 已随仓库发布，但它是**基于本仓库可授权材料重新实现的独立版本**，与原私有生产版本并非同一份代码：会话、投递、取消、阅读播放这些都是有的，也跑过离线契约测试，但**没有做过真实 GPU/摄像头的端到端验收**。模型权重、人物、声音、书库和个人记录不随源码提供。请先阅读[当前发布范围](#当前发布范围与可用性)和[安装说明](docs/INSTALL.md)。
 
 **项目状态（2026-10-12）**
 
@@ -131,7 +131,25 @@ AI Girlfriend（AI 女友）是一个面向**本地部署、自然对话和持�
 
 服务端相关代码保留在 `runtime/avatar/app/`，其中包括 WebRTC、会话管理、分段去重、取消和生命周期管理等模块。
 
-**重要限制：**负责将网页侧音频路由与数字人服务衔接起来的 `runtime/ui/app/avatar-sync.js` **当前没有随仓库发布**。所以即使你自行准备 LiveTalking 和模型，也不能把本仓库直接视为具备完整数字人前端功能的可运行版本。
+**前端同步适配层已补齐（2026-10-12）：**负责把网页侧音频路由与数字人服务衔接起来的 `runtime/ui/app/avatar-sync.js` **已随本仓库发布**，不再缺口。它是依据本仓库有权使用的材料（自研行为契约、`audio-router.js` 的 sink 接口、Apache-2.0 的 LiveTalking 服务端路由、`ui/reading.js` 的调用契约、公开 WebRTC 标准）重新实现的独立版本。会话建立与释放、音视频轨合流挂载、轮次音频分段投递、服务端回执、取消与打断、重连退避，以及读写界面依赖的四个朗读接口 `expectReading` / `forgetReading` / `readingPlayback` / `interrupt` 均已实现并通过离线契约测试。
+
+**为什么不是原版、以及当前验收边界：**
+
+- **原实现不可再分发**：它派生自 `liuw8233-cell/ai_girlfriend@699f7fe`，该上游无 LICENSE 文件，行级比对显示 357 行中 201 行（56%）逐字保留。本文件未沿用其代码，也不存在改名或删许可绕过的做法。
+- **表达层审查**：与锁定上游原件 `f5b4840a…64ed8` 相比，精确 token 相似 **2.84%**、标识符归一化 **4.18%**，无匹配函数体、无公共块。
+- **未做过的验收**：**没有**在真实 GPU / 数字人服务 / 麦克风环境下跑过端到端。现有依据是注入式离线契约测试与 mock 协商测试；阅读链路的出场与播完信号取自会话级 `/is_speaking` 的翻转并按登记顺序落到具体朗读段，这是离线可验证的粒度，尚未经真机交叉验证。
+
+离线测试共 5 组，全部通过（文件位于 `runtime/ui/app/`，用 `node test_avatar_sync_<name>.cjs` 直接运行，无需任何外部依赖或网络连接）：
+
+| 测试文件 | 覆盖内容 |
+| --- | --- |
+| `test_avatar_sync_session.cjs` | 一次点击只允许一个 `/offer`、MEDIA_READY 之前不接管音频、回执与失败 paths |
+| `test_avatar_sync_session_reuse.cjs` | 逐页单会话、single-flight、唯一重连定时器、每次拆除都释放 |
+| `test_avatar_sync_lifecycle.cjs` | 服务端错误原样透传、重复 id 幂等、模式切换隔离、会话循环、崩溃重连、pagehide 释放 |
+| `test_avatar_sync_ice.cjs` | mock 协商：成功 / 收集超时 / 无候选 / checking / 坏应答 / offer 超时 |
+| `test_avatar_sync_reading.cjs` | readingKey 绑定、逐段顺序边界、停止与断线后不再投递、拒收即把声音交回本机 |
+
+完整证据见 [provenance/AVATAR_SYNC_RESTORATION_AUDIT_20261012.md](provenance/AVATAR_SYNC_RESTORATION_AUDIT_20261012.md)。
 
 更多接口背景可参考：
 
@@ -459,8 +477,7 @@ python -m uvicorn server:app --host 127.0.0.1 --port 7860
 
 ### 8.2 仓库有意不包含的内容
 
-- **`runtime/ui/app/avatar-sync.js`**：原实现存在未解决的第三方再分发授权问题。
-- 尚未完成发布审计的数字人同步替代候选。
+- **`avatar-sync.js` 的原版派生实现**：该文件的历史血统指向上游 [liuw8233-cell/ai_girlfriend](https://github.com/liuw8233-cell/ai_girlfriend)，上游仓库未提供 LICENSE，默认保留所有权利；实测该版本与上游仍有约 56% 的逐字重合。因此**原版派生文件永久不随本仓库分发**，也不得通过删除许可声明、改名或重格式化等方式变相再分发。仓库中的 `runtime/ui/app/avatar-sync.js` 是另写的独立替代实现，不是该文件的复制品。
 - 用户的人物档案、当前人物选择、聊天及长期记忆数据库。
 - 用户书稿、小说、导入正文、阅读进度和相关检索索引。
 - 用户声音样本、参考音频、私人转录与数字人媒体素材。
@@ -481,9 +498,9 @@ python -m uvicorn server:app --host 127.0.0.1 --port 7860
 
 ### 8.4 已知功能缺口
 
-最明显的缺口是数字人前端同步适配层。缺失它时，WebRTC 服务端、音频路由及业务代码的存在，并不足以构成可供普通用户直接使用的完整数字人产品。
+前端同步适配层此前是唯一的运行时缺口，现已由上述独立替代实现补齐并通过离线契约测试，因此**不再是文件层面的缺口**。但它没有做过真实 GPU、摄像头与 LiveTalking 服务端的端到端验收，不能等同于已经跑通的真实数字人链路。
 
-此外，仓库还不含外部模型、用户配置及被排除的测试数据，所以即使不使用数字人，也仍需单独配置和集成验证。
+其余缺口仍然存在：仓库不含外部模型权重、用户配置及部分被排除的测试数据，所以无论是否使用数字人，都仍需单独安装、配置和集成验证。
 
 **后续如完成合法替代实现及全新安装验收，应通过新的版本提交和证据更新本说明；不能仅修改 README 中的状态文字就宣称问题解决。**
 
@@ -518,7 +535,7 @@ python -m uvicorn server:app --host 127.0.0.1 --port 7860
 | speech-to-speech | [huggingface/speech-to-speech](https://github.com/huggingface/speech-to-speech) | UI 血统与修改文件在 NOTICE 中登记，适用相应上游授权 |
 | OpenAI Realtime Agents 前端包 | [openai/openai-realtime-agents](https://github.com/openai/openai-realtime-agents) | 随带的已登记 UMD 包保留 MIT 许可信息 |
 | Wav2Lip 相关模型 | [Rudrabha/Wav2Lip](https://github.com/Rudrabha/Wav2Lip) | 原版仓库相关限制需独立遵守；相关模型权重不随本仓库分发 |
-| `avatar-sync.js` 的历史上游 | [liuw8233-cell/ai_girlfriend](https://github.com/liuw8233-cell/ai_girlfriend) | 因未确认可再分发授权，相关派生适配文件不随本仓库分发 |
+| `avatar-sync.js` 的历史上游 | [liuw8233-cell/ai_girlfriend](https://github.com/liuw8233-cell/ai_girlfriend) | 上游无 LICENSE 且仍有高比例逐字重合，**其派生适配文件不随本仓库分发**；仓库内的同名文件为独立重写实现 |
 
 ### 特别说明：MIT 与第三方代码
 
@@ -597,7 +614,7 @@ Wav2Lip 官方仓库与相关模型存在研究、非商业使用条款。**“�
 
 **Q：为什么有数字人源码，却不能直接使用数字人？**
 
-仓库保留了 LiveTalking 数字人服务端源码，但没有随仓库再分发授权存疑的 `avatar-sync.js` 前端同步层。相关核心连接因此不完整。
+仓库同时保留了 LiveTalking 数字人服务端源码和一个**另写的独立前端同步适配层** `runtime/ui/app/avatar-sync.js`，后者与原私有生产版本并非同一份代码。缺少的是真实运行环境：GPU、摄像头/嘴型驱动、模型权重与 LiveTalking 服务都需要自行部署对接。该适配层通过了离线契约测试，但没有真实端到端验收，因此仓库不宣称数字人链路已经跑通。
 
 **Q：项目是否支持完全离线？**
 
