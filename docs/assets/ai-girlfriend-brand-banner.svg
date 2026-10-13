@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="AI Girlfriend local AI companion open-source development preview banner">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1025"/><stop offset=".58" stop-color="#121338"/><stop offset="1" stop-color="#21133a"/></linearGradient>
+    <linearGradient id="main" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e8ecff"/><stop offset=".55" stop-color="#d3b8ff"/><stop offset="1" stop-color="#ff9ad4"/></linearGradient>
+    <linearGradient id="line" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#55c9ef"/><stop offset=".52" stop-color="#957dff"/><stop offset="1" stop-color="#ff8cc9"/></linearGradient>
+    <radialGradient id="halo"><stop offset="0" stop-color="#a072ff" stop-opacity=".22"/><stop offset="1" stop-color="#a072ff" stop-opacity="0"/></radialGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="8"/></filter>
+  </defs>
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <circle cx="980" cy="275" r="370" fill="url(#halo)"/>
+  <g fill="none" stroke="#a59bff" stroke-opacity=".13">
+    <path d="M0 92H1280M0 180H1280M0 268H1280M0 356H1280M0 444H1280M0 532H1280"/>
+    <path d="M720 0V640M850 0V640M980 0V640M1110 0V640"/>
+  </g>
+  <rect x="63" y="58" width="158" height="37" rx="18.5" fill="#ffffff" fill-opacity=".075" stroke="#bcb4ff" stroke-opacity=".3"/>
+  <circle cx="88" cy="76.5" r="5" fill="#70e0b9"/>
+  <text x="104" y="82" font-size="16" fill="#d5d7f6" font-family="Arial,sans-serif" letter-spacing="1">OPEN SOURCE</text>
+  <text x="62" y="206" font-size="78" font-weight="800" fill="url(#main)" font-family="Arial,sans-serif">AI GIRLFRIEND</text>
+  <text x="66" y="267" font-size="29" font-weight="600" fill="#ecedff" font-family="Noto Sans CJK SC,Microsoft YaHei,sans-serif">本地 AI 陪伴 · 实时语音 · 数字人 · 智能陪读</text>
+  <text x="67" y="312" font-size="20" fill="#b6c0dd" font-family="Arial,sans-serif">LOCAL LLM  /  VOICE &amp; TTS  /  WEBRTC  /  READING</text>
+  <rect x="65" y="363" width="300" height="50" rx="25" fill="#a990ff" fill-opacity=".14" stroke="#a9a0ff" stroke-opacity=".46"/>
+  <text x="91" y="394" font-size="19" fill="#e5dfff" font-family="Arial,sans-serif" letter-spacing="1.2">DEVELOPMENT PREVIEW</text>
+  <rect x="380" y="363" width="200" height="50" rx="25" fill="#81e1ed" fill-opacity=".095" stroke="#66d7e8" stroke-opacity=".42"/>
+  <text x="405" y="394" font-size="19" fill="#bbf4fa" font-family="Noto Sans CJK SC,Microsoft YaHei,sans-serif">本机真实联调</text>
+  <text x="66" y="538" font-size="17" fill="#929bb8" font-family="Arial,sans-serif">github.com/asd454314633-byte/AI-Girlfriend</text>
+  <g transform="translate(993 292)">
+    <circle r="202" fill="none" stroke="#d4a5ff" stroke-opacity=".13" stroke-width="1.5"/>
+    <circle r="159" fill="none" stroke="#89d9f6" stroke-opacity=".26" stroke-width="1.5" stroke-dasharray="7 10"/>
+    <circle r="115" fill="#9b80ff" fill-opacity=".11" stroke="#b099ff" stroke-opacity=".65" stroke-width="2"/>
+    <circle r="78" fill="#131b3d" stroke="#9ac9ff" stroke-opacity=".5" stroke-width="1.2"/>
+    <g stroke="url(#line)" stroke-width="10" stroke-linecap="round">
+      <path d="M-68 -11v22M-45 -37v74M-22 -62v124M0 -36v72M23 -84v168M45 -49v98M68 -19v38"/>
+    </g>
+    <circle cx="0" cy="0" r="95" fill="none" stroke="#dbacff" stroke-width="5" opacity=".45" filter="url(#glow)"/>
+    <circle cx="118" cy="-127" r="6" fill="#f4a1db"/>
+    <circle cx="-138" cy="79" r="5" fill="#68d6ef"/>
+  </g>
+  <rect x="0" y="607" width="1280" height="33" fill="#050919" fill-opacity=".6"/>
+  <text x="66" y="629" fill="#98a4c1" font-size="14" font-family="Arial,sans-serif" letter-spacing="1.1">BRAND ILLUSTRATION · NOT AN ACTUAL APP SCREENSHOT</text>
+</svg>
