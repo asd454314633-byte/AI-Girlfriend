@@ -5,6 +5,23 @@ This file records the per-file provenance classes verified on 2026-10-12 by:
 commit, and (b) line-level similarity checks of the UI files against their
 upstream sources. The classification follows the prior private source audit. This tree is a privacy-filtered subset of that audited staging tree; original counts describe the prior audit, not this upload.
 
+## 0. Public demonstration media — display-only permission (owner confirmation, 2026-10-14)
+
+Five files already in `docs/media/` (`AI_Girlfriend_Real_Demo_110s.mp4`,
+`AI_Girlfriend_Short_Demo_30s.mp4`, `cover_github.png`,
+`screenshot_avatar.png`, and `screenshot_reading.png`) are **demonstration
+media, not MIT-licensed source-code assets**. The project owner confirms that
+the real persons whose likenesses and voices appear in these media consented
+to **public display for this GitHub project only**, **not third-party reuse**.
+No permission to extract, reuse, republish, train on, modify, clone voices or
+redistribute these media or identifiable persona/voice assets is granted by
+this repository. The code's MIT and third-party licenses do not cover them.
+Public accessibility, including technical download or Fork capability, is
+not a license to reuse. Detailed bilingual notice: `docs/MEDIA_USAGE_POLICY.md`.
+
+This is an owner confirmation of display consent, not a claim of a publicly
+filed signed release or an independent frame-by-frame rights audit.
+
 ## 1. Self-developed (original) — top-level MIT license applies
 
 - Service lifecycle & TTS switch control plane: `runtime/windows/*.ps1`
@@ -90,8 +107,11 @@ faster-whisper, Silero VAD (via upstream VADHandler), llama.cpp — see
 The unlicensed upstream-derived adapter described in §5 is excluded
 **permanently**. The replacement adapter now shipped at
 `runtime/ui/app/avatar-sync.js` is included; see §7. No claim of strict clean-room
-isolation is made. Previous test assets, fixtures, user state and media were removed
-before initializing this repository. Generic dependency vocabularies and the upstream
+isolation is made. Previous private test assets, fixtures, user state and media were removed
+before initializing this repository. Five separately identified demo-media
+files were later published for project display only (see §0); their presence
+does not turn private raw avatar or voice-reference data into redistributable
+assets. Generic dependency vocabularies and the upstream
 mel-filter numerical asset are software resources, not personal books or model weights.
 
 ## 7. Replacement adapter review (2026-10-12, superseded same day)
