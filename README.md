@@ -6,7 +6,24 @@
 
 [**English**](README_EN.md) · [**快速开始 / Quick Start**](docs/QUICKSTART.md) · [**架构详解**](#三整体架构与数据流) · [**真实验收记录**](docs/AVATAR_SYNC_REAL_ACCEPTANCE_20261013.md) · [**贡献指南**](CONTRIBUTING.md) · [**许可与来源**](NOTICE.md)
 
-> **当前版本：开源开发预览（Development Preview），不是下载即用的成品。** 模型权重、人物/声音素材和私人数据库均不随代码分发。数字人独立适配层已据本机执行报告在既有 8010 服务上完成 T1–T6 真实联调；完整新环境安装、跨设备兼容和真实麦克风打断尚未验收。上方为**品牌插画**，不是实际界面截图；真实录屏素材待另行提供。
+> **当前版本：开源开发预览（Development Preview），不是下载即用的成品。** 模型权重、人物/声音素材和私人数据库均不随代码分发。数字人独立适配层已据本机执行报告在既有 8010 服务上完成 T1–T6 真实联调；完整新环境安装、跨设备兼容和真实麦克风打断尚未验收。上方为**品牌插画**，不是实际界面截图。本次首页优化尚未完成对仓库已有视频、截图的逐帧隐私及素材授权复核，因此暂不将这些文件嵌入首页或视为验收证据。
+
+## 三步了解与体验（开发预览）
+
+**只想看效果和设计？** 先看 [互动与陪读功能](#二主要功能与交互体验)、[架构与服务关系](#三整体架构与数据流)；本仓库未提供已验证的一键在线演示。首页封面为概念插画，不是实拍。
+
+**想自己验证代码？** 在 Windows PowerShell 安装 Git、Node.js 后，可先运行不依赖 GPU 和模型下载的数字人适配器契约测试：
+
+```powershell
+git clone https://github.com/asd454314633-byte/AI-Girlfriend.git
+cd AI-Girlfriend/runtime/ui/app
+node test_avatar_sync_session.cjs
+node test_avatar_sync_reading.cjs
+```
+
+其余三组及完整说明在 [快速开始](docs/QUICKSTART.md)。以上命令是**代码级离线验证，不会启动完整 AI 女友系统**；完整部署需要用户自行准备许可允许的模型、数字人素材和服务依赖。
+
+**想判断项目是否适合自己？** 查看 [真实联调与未测试范围](docs/AVATAR_SYNC_REAL_ACCEPTANCE_20261013.md)、[模型/素材来源](provenance/MODEL_AND_ASSET_SOURCES.csv) 和 [安装前须知](docs/INSTALL.md)。不要把作者现有环境中的 PASS 当作全新机器直接可用。
 
 ## 先看这四项能力
 
