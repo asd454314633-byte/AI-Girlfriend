@@ -1,5 +1,13 @@
 # AI Girlfriend — Local AI Companion
 
+![AI Girlfriend concept-brand illustration — not an application screenshot](docs/assets/ai-girlfriend-brand-banner.svg)
+
+**Open-source local AI companion research project:** local LLM integration, real-time voice, a WebRTC digital avatar, intelligent reading, and independently testable frontend session controls.
+
+**Choose a starting point:** [Feature overview](#what-is-in-the-repository) · [Quick verification](#quick-start-inspect-without-installing-large-models) · [Windows installation notes](docs/INSTALL.md) · [Validation limits](docs/TESTING.md) · [Chinese detailed README](README.md).
+
+> This cover is a **concept-brand illustration, not product footage**. Video and screenshot candidates exist in the repository, but this homepage revision has not completed a frame-by-frame privacy and usage-rights review. They are intentionally not embedded as demonstrations or acceptance evidence.
+
 **Local LLM · Real-time speech · WebRTC digital avatar · Intelligent reading**
 
 [中文 README](README.md) · [Quick start](docs/QUICKSTART.md) · [Architecture](README.md#三整体架构与数据流) · [Test scope](docs/TESTING.md) · [Contributing](CONTRIBUTING.md)
