@@ -4,15 +4,29 @@
 
 **Open-source local AI companion research project:** local LLM integration, real-time voice, a WebRTC digital avatar, intelligent reading, and independently testable frontend session controls.
 
-**Choose a starting point:** [Feature overview](#what-is-in-the-repository) · [Quick verification](#quick-start-inspect-without-installing-large-models) · [Windows installation notes](docs/INSTALL.md) · [Validation limits](docs/TESTING.md) · [Chinese detailed README](README.md).
+**Choose a starting point:** [View real demonstrations](#real-demonstrations-display-only-no-reuse) · [Feature overview](#what-is-in-the-repository) · [Quick verification](#quick-start-inspect-without-installing-large-models) · [Demo media rights](docs/MEDIA_USAGE_POLICY.md) · [Windows installation notes](docs/INSTALL.md) · [Chinese detailed README](README.md).
 
-> This cover is a **concept-brand illustration, not product footage**. Video and screenshot candidates exist in the repository, but this homepage revision has not completed a frame-by-frame privacy and usage-rights review. They are intentionally not embedded as demonstrations or acceptance evidence.
+> The top cover is a **concept-brand illustration, not product footage**. The project owner has confirmed the real persons featured in the five previously published demonstration media files consented to **public display in this project only**, **not to third-party reuse of their likenesses or voices**. The videos and screenshots below are provided for viewing; independent frame-by-frame rights review and fresh-install end-to-end acceptance are **not** claimed.
 
 **Local LLM · Real-time speech · WebRTC digital avatar · Intelligent reading**
 
 [中文 README](README.md) · [Quick start](docs/QUICKSTART.md) · [Architecture](README.md#三整体架构与数据流) · [Test scope](docs/TESTING.md) · [Contributing](CONTRIBUTING.md)
 
 > **Development preview, not a turnkey application.** This is a privacy-filtered, open-source code archive for an AI companion. Model weights, private avatars, reference voices, personal books, and user memory/chat data are deliberately excluded. The original third-party-derived avatar adapter is not redistributed; this repository includes a separately implemented frontend adapter.
+
+## Real demonstrations — display only, no reuse
+
+**Viewing permission only.** The project owner confirmed consent for publicly displaying the people and voices shown below on this GitHub project. The subjects have **not** granted third parties permission to reuse their likenesses, voices, audio, footage, screenshots or extracts. These media are **not covered by the MIT source-code license**. See the [viewing-only media notice](docs/MEDIA_USAGE_POLICY.md).
+
+**Videos:** [~110-second demonstration](docs/media/AI_Girlfriend_Real_Demo_110s.mp4) · [~30-second short demonstration](docs/media/AI_Girlfriend_Short_Demo_30s.mp4)
+
+**Interface screenshots:**
+
+![Digital avatar interface — display only, not licensed for reuse](docs/media/screenshot_avatar.png)
+
+![Intelligent reading interface — display only, not licensed for reuse](docs/media/screenshot_reading.png)
+
+[Other showcase image](docs/media/cover_github.png). **No permission** is granted for reposting, remixing, model training, voice cloning, impersonation, commercial use or redistribution. Public access, cloning and the technical ability to download do not constitute a reuse license. These samples are not proof of complete application or fresh-install acceptance; see the [test report](docs/AVATAR_SYNC_REAL_ACCEPTANCE_20261013.md).
 
 ## What is in the repository?
 
@@ -58,12 +72,12 @@ These are offline contract tests, **not** proof that the complete system can sta
 
 ## Licensing and personal-data boundary
 
-Only code identified as original is offered under the top-level MIT license. Third-party components retain their respective terms and notices; the overall repository is **not** a blanket MIT relicense. Wav2Lip lineage includes non-commercial restrictions. See [LICENSE](LICENSE), [NOTICE](NOTICE.md) and [model/resource manifest](provenance/MODEL_AND_ASSET_SOURCES.csv).
+Only code identified as original is offered under the top-level MIT license. Third-party components retain their respective terms and notices; the overall repository is **not** a blanket MIT relicense. **The five `docs/media/` demonstration files are viewing-only; no reuse of the real persons' likenesses or voices is licensed.** Wav2Lip lineage includes non-commercial restrictions. See [LICENSE](LICENSE), [NOTICE](NOTICE.md), [demo media rights](docs/MEDIA_USAGE_POLICY.md) and [model/resource manifest](provenance/MODEL_AND_ASSET_SOURCES.csv).
 
-No genuine personal conversation archives, books, avatar assets, raw voice samples or model weights are included. Please do not submit such materials in issues or pull requests.
+No personal conversation archives, books, production avatar/reference assets, raw voice samples or model weights are included. **Exception:** the five explicitly identified demonstration media files are already public, with the owner's confirmed permission for project display only, not for third-party reuse. Please do not submit private materials in issues or pull requests.
 
 ## Contributing
 
-Bug reports and reproducible tests are welcome. Please see [CONTRIBUTING.md](CONTRIBUTING.md). Demo recordings and screenshots of the real app will be added only after consent and privacy/licensing checks; any existing banner is **illustrative branding, not a real screenshot**.
+Bug reports and reproducible tests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md). Existing real-app demo videos and screenshots are linked above with a **display-only / no-reuse** notice. The top branding illustration is not an application screenshot. New media still require separate consent, rights and privacy review.
 
 **Repository:** https://github.com/asd454314633-byte/AI-Girlfriend
