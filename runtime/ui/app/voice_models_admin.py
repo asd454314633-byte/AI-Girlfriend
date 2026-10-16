@@ -28,6 +28,7 @@ import json
 import os
 import re
 import socket
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -62,7 +63,7 @@ NATIVE_ROOT = RUNTIME_DIR / 'windows'
 PID_FILE = NATIVE_ROOT / 'service_pids.json'
 SWITCH_STATE_FILE = NATIVE_ROOT / 'tts_switch_state.json'
 SCRIPT = NATIVE_ROOT / 'Switch-Girlfriend-Voice.ps1'
-POWERSHELL = str(Path(os.environ.get('LOCALAPPDATA', '')) / 'Microsoft' / 'WindowsApps' / 'pwsh.exe')
+POWERSHELL = shutil.which('pwsh.exe') or 'pwsh.exe'
 
 # Fixed *product* topology, identical for every backend, and therefore not provider
 # coupling: this is the realtime pipeline process that hosts in-process handlers and

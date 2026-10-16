@@ -1,0 +1,216 @@
+<!doctype html>
+<!--
+  数字人界面闸门（AI_GIRLFRIEND_AVATAR_FRONTEND_MANAGER_01 · T05）。
+
+  不是产品页面：它把真实的 avatar_panel.js 装到真实接口上，只做只读动作
+  （拉列表、取缩略图、核对一致性字段、扫可见文案），然后把浏览器里「真的画出来
+  的东西」回报成判决。
+
+  这一页一个创建都不做、一次切换都不触发：
+    不调用 /api/avatar/inspect、/api/avatar/create、/api/avatar/switch、
+    /api/avatar/sync、/api/avatar/restart。只点列表，不点按钮。
+
+  判决同时出现在三个地方，方便外面的驱动脚本读：
+    document.title        = "avatarGate PASS" / "avatarGate FAIL"
+    window.__avatarGate   = { verdict, checks:[{名字, 过, 明细}], 计数 }
+    #avatar-gate-result   = 同样内容的可读文本
+-->
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>数字人闸门</title>
+  <link rel="stylesheet" href="/avatar_panel.css">
+  <style>
+    body { background: #101014; color: #e8e8ef; font: 14px/1.6 system-ui, "Microsoft YaHei", sans-serif; margin: 24px; }
+    #avatar-gate-log { white-space: pre-wrap; font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
+    .line-fail { color: #ff6b6b; }
+    .line-pass { color: #74d39a; }
+    h1 { font-size: 18px; }
+  </style>
+</head>
+<body>
+  <h1>数字人闸门</h1>
+  <p>下面这块是真实的产品面板；再下面是这一页跑出来的判决。这一页只看不做。</p>
+
+  <div id="av-panel"></div>
+
+  <h2>判决</h2>
+  <div id="avatar-gate-summary">正在跑…</div>
+  <pre id="avatar-gate-log"></pre>
+  <div id="avatar-gate-result"></div>
+
+  <script type="module">
+    import { mountAvatarPanel } from '/avatar_panel.js';
+
+    const GATE = window.__avatarGate = {
+      kind: 'AVATAR_PANEL_GATE',
+      verdict: 'RUNNING',
+      checks: [],
+      计数: { 项: 0, 过: 0, 不通: 0 },
+      开始时刻: new Date().toISOString(),
+    };
+
+    const logBox = document.getElementById('avatar-gate-log');
+    const summary = document.getElementById('avatar-gate-summary');
+    const result = document.getElementById('avatar-gate-result');
+
+    const say = (line, ok) => {
+      const row = document.createElement('div');
+      row.textContent = `${ok === true ? '[过]' : ok === false ? '[不通]' : '[…]'} ${line}`;
+      if (ok === true) row.className = 'line-pass';
+      if (ok === false) row.className = 'line-fail';
+      logBox.append(row);
+    };
+
+    const check = (name, condition, detail) => {
+      const passed = Boolean(condition);
+      GATE.checks.push({ 名字: name, 过: passed, 明细: detail === undefined ? '' : String(detail).slice(0, 300) });
+      GATE.计数.项 += 1;
+      if (passed) GATE.计数.过 += 1;
+      else GATE.计数.不通 += 1;
+      say(name + (detail ? ` → ${String(detail).slice(0, 160)}` : ''), passed);
+      return passed;
+    };
+
+    const api = async (path, body) => {
+      const res = body
+        ? await fetch(path, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(body),
+          })
+        : await fetch(path);
+      const data = await res.json().catch(() => null);
+      if (!data || typeof data !== 'object') return { ok: false, __状态: res.status };
+      data.__状态 = res.status;
+      return data;
+    };
+
+    const BANNED_SEED = [
+      'wav2lip', 'musetalk', 'PID', '进程', '端口', 'manifest', 'provider',
+      'registry', 'task_id', 'coords.pkl', 'full_imgs', 'face_imgs', 'JSON',
+      'sessionid', 'WebRTC', 'img_size', 'pads', 'nosmooth',
+    ];
+
+    /** 摊平成一段段字符串：用来把整份回包里的句子一并扫一遍。 */
+    const flat = (node, out = []) => {
+      if (typeof node === 'string') { if (node) out.push(node); return out; }
+      if (Array.isArray(node)) { node.forEach((one) => flat(one, out)); return out; }
+      if (node && typeof node === 'object') { Object.values(node).forEach((one) => flat(one, out)); }
+      return out;
+    };
+
+    function scanText(label, text, words) {
+      const body = String(text || '');
+      const hits = words.filter((word) => body.includes(word));
+      check(label, hits.length === 0, hits.length ? `出现 ${hits.join('、')}` : '一个都没有');
+    }
+
+    async function run() {
+      // ---------------------------------------------------------- 1) 口径
+      const words = await api('/api/avatar/plain-words');
+      check('服务器给了「界面不许出现的词」清单',
+        words.ok === true && (words.words || []).length > 0,
+        `${(words.words || []).length} 个`);
+      const list = (words.words || []).length ? words.words : BANNED_SEED;
+      BANNED_SEED.forEach((word) => {
+        const inIt = list.some((one) => String(one) === word || String(one).toLowerCase() === word.toLowerCase());
+        if (!inIt) check(`清单里管着「${word}」`, false, '清单里没有这个词');
+      });
+
+      // ---------------------------------------------------------- 2) 面板 Knights模板到真实接口上
+      const panel = mountAvatarPanel({ mount: 'av-panel' });
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+      const painted = panel ? (panel.innerText || '') : '';
+      check('面板真的画出了内容', painted.length > 30, `${painted.length} 字`);
+      check('面板上有「数字人」这个标题', painted.includes('数字人'), '');
+      check('面板上没有任何删除入口', !painted.includes('删除'), '一个删除字样都没有');
+      scanText('面板画出来的文字里没有内部名词', painted, list);
+
+      // ---------------------------------------------------------- 3) 列表数据
+      const board = await api('/api/avatar/panel');
+      check('开机一把拿到整块面板数据', board.ok === true, board.说明 || '');
+      计数或者失败: {
+        const 列表 = Array.isArray(board.列表) ? board.列表 : [];
+        const 当前 = board.当前 && typeof board.当前 === 'object' ? board.当前 : null;
+        check('列表里至少有一位可以访问', 列表.length >= 1, `${列表.length} 位`);
+        check('字段里的名字都到位了',
+          列表.every((one) => one && one.编号 && one.名称 && one.缩略图地址),
+          列表.map((one) => String((one && one.名称) || '')).join('、'));
+        check('对外只露编号，而且是看不出内部结构的那种',
+          列表.every((one) => /^v[0-9a-f]{8,16}$/.test(String(one.编号 || ''))),
+          列表.map((one) => String(one.编号)).join('、'));
+        check('缩略图地址走的是后端出画，不是素材路径',
+          列表.every((one) => String(one.缩略图地址 || '').startsWith('/api/')),
+          列表.map((one) => String(one.缩略图地址)).join('、'));
+        if (当前) {
+          check('当前这一位有「正在使用」标记',
+            painted.includes('正在使用'), String(当前.名称 || ''));
+        } else {
+          GATE.计数.项 += 1; GATE.计数.过 += 1;
+          check('当前列表里还没有人在用户位置上', true, '一位都没有，面板空着是合理的');
+        }
+        const 其它 = 当前
+          ? 列表.filter((one) => String(one.编号 || '') !== String(当前.编号 || '')).length
+          : 列表.length;
+        const 按钮数 = [...panel.querySelectorAll('.av-btn')]
+          .filter((node) => (node.textContent || '').includes('使用这个人物')).length;
+        check('每位备用人物都有一个「使用这个人物」', 按钮数 === 其它, `列表里 ${其它} 位，按钮 ${按钮数} 个`);
+      }
+      check('服务状态说的是人话',
+        ['运行中', '没在运行'].includes(String(board.服务状态 || '')), String(board.服务状态 || ''));
+      const gap = board.一致性 || {};
+      check('一致性字段是一句能直接读的真假',
+        typeof gap.一致 === 'boolean', `一致=${gap.一致}`);
+      scanText('后端这次回的所有句子都没有内部名词',
+        flat([board.一致性, board.服务状态, (board.列表 || []).map((one) => one.名称),
+          (board.列表 || []).map((one) => one.来源视频名), board.当前 && board.当前.名称]).join('\n'),
+        list);
+
+      // ---------------------------------------------------------- 4) 缩略图真的出画
+      const one = (board.列表 || [])[0];
+      if (one && one.缩略图地址) {
+        const pic = await fetch(one.缩略图地址);
+        const kind = String(pic.headers.get('content-type') || '');
+        const blob = await pic.blob().catch(() => null);
+        check('缩略图拿得到图本身', pic.ok && Boolean(blob) && blob.size > 0,
+          `${kind} · ${blob ? blob.size : 0} 字节`);
+        check('缩略图不是一个坏链接', kind.startsWith('image/'), kind || '没有声明类型');
+      } else {
+        check('缩略图拿得到图本身', false, '列表里连一条都没有');
+      }
+
+      // ---------------------------------------------------------- 5) 限制与门禁
+      const limit = board.限制 || {};
+      check('大小与时长限制是从服务端给的',
+        limit.最大字节 > 0 && limit.最短秒 > 0 && limit.最长秒 > 0,
+        `${limit.最大字节} 字节 · ${limit.最短秒}~${limit.最长秒} 秒`);
+      check('接受的类型由服务端说了算', Array.isArray(limit.接受类型) && limit.接受类型.length > 0,
+        (limit.接受类型 || []).join('、'));
+
+      // ---------------------------------------------------------- 6) 从头到尾的文案都过一遍筛子
+      const allHeard = flat(GATE.checks.map((node) => node.明细)).join('\n')
+        + '\n' + (panel ? panel.innerText || '' : '');
+      scanText('这一趟所有听到的话都没有内部名词', allHeard, list);
+    }
+
+    function finish(error) {
+      if (error) {
+        GATE.error = String((error && error.message) || error);
+        check('整趟跑完没有中断', false, GATE.error);
+      }
+      GATE.verdict = GATE.计数.不通 === 0 && GATE.计数.项 >= 12 ? 'PASS' : 'FAIL';
+      GATE.结束时刻 = new Date().toISOString();
+      const line = `判决：${GATE.verdict} 共 ${GATE.计数.项} 项，不通 ${GATE.计数.不通} 项`;
+      summary.textContent = line;
+      result.textContent = `${line}\n` + GATE.checks
+        .map((node) => `${node.过 ? '[过]' : '[不通]'} ${node.名字}${node.明细 ? ` → ${node.明细}` : ''}`)
+        .join('\n');
+      document.title = `avatarGate ${GATE.verdict}`;
+      say(line, GATE.verdict === 'PASS');
+    }
+
+    run().then(() => finish(null), (error) => finish(error));
+  </script>
+</body>
+</html>

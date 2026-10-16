@@ -1,0 +1,47 @@
+[
+  {
+    "delay": 0,
+    "payload": {
+      "Type": 1,
+      "Data": {
+        "MsgId": "priority-A-1",
+        "RoomId": "priority",
+        "User": {
+          "Id": "A",
+          "Nickname": "观众甲"
+        },
+        "Content": "今天开心吗？"
+      }
+    }
+  },
+  {
+    "delay": 0,
+    "payload": {
+      "Type": 1,
+      "Data": {
+        "MsgId": "priority-B-1",
+        "RoomId": "priority",
+        "User": {
+          "Id": "B",
+          "Nickname": "观众乙"
+        },
+        "Content": "哈哈哈哈"
+      }
+    }
+  },
+  {
+    "delay": 0,
+    "payload": {
+      "Type": 1,
+      "Data": {
+        "MsgId": "priority-C-1",
+        "RoomId": "priority",
+        "User": {
+          "Id": "C",
+          "Nickname": "观众丙"
+        },
+        "Content": "@AI 你今天喜欢喝什么茶？"
+      }
+    }
+  }
+]

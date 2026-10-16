@@ -1,0 +1,92 @@
+{
+  "release": "v3.0.0-preview.20261016",
+  "kind": "development preview source only",
+  "baseline_main": "85446f31bab1e2d6f3b1b7291ece3ac8cb220d58",
+  "SOURCE_COMPLETENESS": "PASS",
+  "source_groups": 9,
+  "LICENSE_AND_PRIVACY_GATE": "PASS",
+  "private_books_records_voices_weights_credentials": "not distributed",
+  "PRODUCTION_ENVIRONMENT_PROTECTION": "PASS",
+  "protected_hashes_unchanged": 633,
+  "production_listener_identities_unchanged": true,
+  "tests": {
+    "reading_isolated": {
+      "passed": 28,
+      "total": 28
+    },
+    "voice_isolated": {
+      "passed": 42,
+      "total": 42
+    },
+    "manager_isolated": {
+      "passed": 44,
+      "total": 44
+    },
+    "live_isolated": {
+      "passed": 23,
+      "total": 23
+    },
+    "higgs_reference_fake_engine": {
+      "passed": 5,
+      "total": 5
+    },
+    "independent_avatar_frontend_suites": {
+      "passed": 5,
+      "total": 5
+    },
+    "manual_panel_suites": {
+      "passed": 1,
+      "total": 1
+    }
+  },
+  "syntax_and_js_imports": "PASS",
+  "ui_import_route_count": 115,
+  "powershell_syntax": "PASS",
+  "TTS_transaction_checks": {
+    "passed": 8,
+    "total": 8
+  },
+  "STATIC_FRESH_REBUILD": "PASS",
+  "initialization_idempotent": true,
+  "fresh_user_tables": {
+    "character_profile": 0,
+    "memory_record": 0,
+    "reading_progress": 0
+  },
+  "FRESH_INSTALL_E2E": "HOLD",
+  "release_GPU_model_avatar_playback": "NOT_TESTED",
+  "historical_existing_environment": {
+    "LOCAL_LIVE_E2E": "PASS",
+    "REAL_PLATFORM_FRESH_EVENT": "HOLD",
+    "short_chat_tail_issue": "NOT_REPRODUCED",
+    "affection_amusement": "user accepted; not a new-speaker guarantee"
+  },
+  "existing_demo_media": [
+    {
+      "path": "docs/media/AI_Girlfriend_Real_Demo_110s.mp4",
+      "sha256": "64b6babe4c9da82f55076798ac10a4c2bcb14a062d086caff151f3266ebbf0bd",
+      "unchanged": true
+    },
+    {
+      "path": "docs/media/AI_Girlfriend_Short_Demo_30s.mp4",
+      "sha256": "b6be6f17ee86b5a28b66cb2d4037c8ec02fbf1023d5726f407a739f846228563",
+      "unchanged": true
+    },
+    {
+      "path": "docs/media/cover_github.png",
+      "sha256": "a5a42a696d9219b0490b686165012f113111d0ef8ee65159804aeff2c3b0a6b8",
+      "unchanged": true
+    },
+    {
+      "path": "docs/media/screenshot_avatar.png",
+      "sha256": "4c91a93dbc09ca9fad7d7693a4f355034ee7c8c21e18040071c707b2cfd3b22d",
+      "unchanged": true
+    },
+    {
+      "path": "docs/media/screenshot_reading.png",
+      "sha256": "054c8d8270f669628ebc275dc127c635d6155319ddaa1917aa6127b47bc21741",
+      "unchanged": true
+    }
+  ],
+  "publication_note": "Remote commit/tree verification is performed after push and recorded in release notes and the final delivery report; these are build-time source validation results, not new-machine acceptance."
+}

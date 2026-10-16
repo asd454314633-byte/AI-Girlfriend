@@ -32,6 +32,8 @@
     <link rel="stylesheet" href="console_layout.css?v=console-v2" />
     <!-- V3 工作区布局（AI_GIRLFRIEND_FRONTEND_V3_WORKSPACE_01）：最后加载，靠后序取胜 -->
     <link rel="stylesheet" href="gf_workspace.css?v=v3-display-modes-03" />
+    <!-- 书库管理 + 音色管理（2026-10-15）：最后加载，靠后序取胜 -->
+    <link rel="stylesheet" href="ui/library_admin.css?v=vl-manage-01" />
   </head>
   <!--
     `booting` disables transitions/animations until the first paint commits.
@@ -249,6 +251,9 @@
                   <span>章节</span>
                   <select id="reading-chapter" aria-label="选择章节"></select>
                 </label>
+                <!-- 书库管理（AI_GIRLFRIEND_READING_LIBRARY_MANAGE_01）：
+                     删除 / 批量 / 重命名 / 重复整理 / 回收站都在这一个入口里。 -->
+                <button id="reading-manage" class="btn ghost" type="button">管理书库</button>
               </div>
 
               <div id="reading-text" class="reading-text" aria-live="polite"></div>
@@ -389,6 +394,7 @@
         <nav id="settings-tabs" class="settings-tabs" aria-label="设置分组">
           <button type="button" class="settings-tab" data-tab="persona">人物与形象</button>
           <button type="button" class="settings-tab is-active" data-tab="voice">声音与语气</button>
+          <button type="button" class="settings-tab" data-tab="voice-library">音色管理</button>
           <button type="button" class="settings-tab" data-tab="model">语言模型</button>
           <button type="button" class="settings-tab" data-tab="layout">画面布局</button>
           <button type="button" class="settings-tab" data-tab="memory">记忆管理</button>
@@ -439,6 +445,12 @@
               <div id="gf-performance-fields" class="gf-performance-fields"></div>
               <p id="gf-performance-note" class="gf-performance-note"></p>
             </section>
+          </section>
+
+          <!-- 音色管理：上传参考音频 / 克隆 / 试听 / 切换（AI_GIRLFRIEND_VOICE_LIBRARY_01）。
+               由 ui/voice_library.js 渲染进 #vl-panel-mount；原版小烟音色受保护。 -->
+          <section class="tab-panel" data-panel="voice-library" role="tabpanel" aria-label="音色管理">
+            <div id="vl-panel-mount"></div>
           </section>
 
           <!-- 语言模型：对话用 LLM（原 Dock「对话与声音」组迁入，id 不变）。 -->
@@ -647,8 +659,8 @@
     <script src="/conn_trace.js?v=layout-02"></script>
     <script src="/audio-router.js?v=longaudio-02"></script>
       <script src="/avatar-sync.js?v=reading-boundaries-v8"></script>
-      <script src="/live_interaction.js?v=live-02"></script>
-      <script type="module" src="main.js?v=v3-stable-acceptance-04"></script>
+      <script src="/live_interaction.js?v=live-04-default-persona"></script>
+      <script type="module" src="main.js?v=v3-three-emotions-06"></script>
       <!-- 人物/记忆面板自带挂载：页面里有 #char-panel 就装进去，没有就自己插一张卡片。 -->
       <script type="module" src="character_panel.js?v=char-panel-04"></script>
       <!-- 数字人面板自带挂载：列人物 / 添加 / 制作 / 切换，切换期间由它主导会话断开与重连。 -->

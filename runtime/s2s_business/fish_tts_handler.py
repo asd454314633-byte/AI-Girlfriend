@@ -18,8 +18,8 @@ from speech_to_speech.pipeline.messages import AUDIO_RESPONSE_DONE, EndOfRespons
 
 logger = logging.getLogger(__name__)
 API = "http://127.0.0.1:3030/generate"
-VOICE = "configure-your-voice"
-VOICE_DIR = "external/fish-s2-pro/voices"
+VOICE = "default"
+VOICE_DIR = str(__import__('pathlib').Path(__file__).resolve().parents[2] / 'external/fish-s2-pro/voices')
 PIPELINE_SR = 16000
 BLOCKSIZE = 512
 MAX_RESPONSE_BYTES = 64 * 1024 * 1024

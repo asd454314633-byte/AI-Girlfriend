@@ -1,0 +1,66 @@
+{
+  "registry_version": 1,
+  "created_at": "2026-09-21",
+  "llama_server": "tools/llama.cpp/llama-server.exe",
+  "listen": {
+    "host": "127.0.0.1",
+    "port": 8090
+  },
+  "launch_params_frozen": "-np 1 -c 8192 -fa on --temp 1.0 --top-p 0.95",
+  "models": {
+    "dark_roast": {
+      "path": "models/llm/Qwen3.5-9B-The-Defiant-Fable-DARK-ROAST-Uncensored-Heretic-NEO-IMATRIX-MAX-MTP.i1-Q4_K_M.gguf",
+      "role": "realtime",
+      "port": 8090,
+      "arch": "qwen35",
+      "size_bytes": 5780091616,
+      "sha256": "c6714846c53ad70eeb8ffa4133584906554a17f4ee6febaa108916caca7ec4c2",
+      "default": true,
+      "label": "DARK ROAST 9B",
+      "hint": "默认 / 更快"
+    },
+    "gemma4": {
+      "path": "models/llm/Gemma4-12B-QAT-Uncensored-HauhauCS-Balanced-Q4_K_M.gguf",
+      "role": "quality",
+      "port": 8090,
+      "arch": "gemma4",
+      "size_bytes": 7381381760,
+      "sha256": "59656d7494d6376ca97e9e20b64ea2e16cd97f12ec6d47bfccba91cb785b5134",
+      "default": false,
+      "label": "Gemma4 12B",
+      "hint": "高质量"
+    },
+    "legacy14": {
+      "path": "models/llm/Qwen3-14B-Instruct-Q4_K_M.gguf",
+      "role": "emergency_rollback",
+      "port": 8090,
+      "arch": "qwen2",
+      "size_bytes": 9001752960,
+      "sha256": "500a8806e85ee9c83f3ae08420295592451379b4f8cf2d0f41c15dffeb6b81f0",
+      "default": false,
+      "label": "原 14B",
+      "hint": "紧急回滚用",
+      "ui_visible": false,
+      "note": "stable but NSFW-restricted; emergency rollback only"
+    },
+    "qwen3_live": {
+      "path": "models/llm/Qwen3-4B-Instruct-2507-Q4_K_M.gguf",
+      "role": "LIVE",
+      "port": 8090,
+      "arch": "qwen3",
+      "size_bytes": 2497281120,
+      "sha256": "3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597",
+      "default": false,
+      "label": "Qwen3 直播",
+      "hint": "4B · 非思考",
+      "ui_visible": true,
+      "upstream_model": "Qwen/Qwen3-4B-Instruct-2507",
+      "quantization": "Q4_K_M",
+      "quantization_publisher": "unsloth",
+      "source_commit": "18727206c51467496bfba014368bd0a30e97f411",
+      "source_url": "https://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF/blob/main/Qwen3-4B-Instruct-2507-Q4_K_M.gguf",
+      "provenance": "NEW_LIVE_MODEL; not historical recovery",
+      "parameter_count": 4022468096
+    }
+  }
+}

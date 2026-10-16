@@ -22,10 +22,13 @@ import { $, truncateError, DEBUG } from "./ui/dom.js";
 import { ChatView } from "./ui/chat.js?v=console-v1";
 import { Account } from "./ui/account.js";
 import { startZhCn } from "./ui/zh_cn.js?v=capability-ui-05";
-import { mountGirlfriend, setLive, manualSelection } from "./ui/girlfriend.js?v=capability-ui-06";
+import { mountGirlfriend, setLive, manualSelection } from "./ui/girlfriend.js?v=three-emotions-07";
 import { mountReading, pauseForUserTurn, resumeAfterAssistantReply,
          stopForModeSwitch, readingInstructionContext } from "./ui/reading.js?v=reading-pipeline-v17-book-selection";
 import { ReadingInstructionGuard } from "./ws/reading-instructions.js?v=20261004b";
+// 书库管理 + 音色管理（2026-10-15）：独立模块，不动既有面板。
+import { mountReadingManager } from "./ui/reading_manager.js?v=ra-manage-02";
+import { mountVoiceLibrary } from "./ui/voice_library.js?v=vl-manage-02";
 
 const DEFAULT_VOICE = "Aiden";
 const LEGACY_DEFAULT_INSTRUCTIONS = "You are a friendly voice assistant.";
@@ -2414,6 +2417,9 @@ mountGirlfriend({
   setKnownVoiceBackends: (ids) => client?.setKnownVoiceBackends?.(ids),
 });
 mountReading();
+// 书库管理入口与音色管理面板（都在设置弹窗 / 陪读视图内，零冲突挂载）。
+mountReadingManager();
+mountVoiceLibrary();
 // 开机先问一次权威模式：UI 显示什么完全由后端说了算。
 // localStorage 里那个只是「上次选了哪一项」的提示，只用来跟后端对一次账，
 // 对不上就听后端的 —— 它永远不是事实源。

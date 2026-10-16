@@ -1,0 +1,84 @@
+[
+  {
+    "delay": 0.4,
+    "payload": {
+      "Type": 1,
+      "Data": "{\"MsgId\":\"replay-A-1\",\"RoomId\":\"fixture\",\"User\":{\"Id\":\"A\",\"Nickname\":\"观众甲\"},\"Content\":\"你喜欢猫吗？\"}"
+    }
+  },
+  {
+    "delay": 0.4,
+    "payload": {
+      "Type": 1,
+      "Data": {
+        "MsgId": "replay-B-1",
+        "RoomId": "fixture",
+        "User": {
+          "Id": "B",
+          "Nickname": "观众乙"
+        },
+        "Content": "你叫什么名字？"
+      }
+    }
+  },
+  {
+    "delay": 0.4,
+    "payload": {
+      "Type": 1,
+      "Data": {
+        "MsgId": "replay-C-1",
+        "RoomId": "fixture",
+        "User": {
+          "Id": "C",
+          "Nickname": "观众丙"
+        },
+        "Content": "哈哈哈哈"
+      }
+    }
+  },
+  {
+    "delay": 0.4,
+    "payload": {
+      "Type": 1,
+      "Data": {
+        "MsgId": "replay-A-1",
+        "RoomId": "fixture",
+        "User": {
+          "Id": "A",
+          "Nickname": "观众甲"
+        },
+        "Content": "你喜欢猫吗？"
+      }
+    }
+  },
+  {
+    "delay": 0.4,
+    "payload": {
+      "Type": 1,
+      "Data": {
+        "MsgId": "replay-D-1",
+        "RoomId": "fixture",
+        "User": {
+          "Id": "D",
+          "Nickname": "观众丁"
+        },
+        "Content": "@AI 晚上好，今天开心吗？😊"
+      }
+    }
+  },
+  {
+    "delay": 0.4,
+    "payload": {
+      "Type": 1,
+      "Data": {
+        "MsgId": "replay-spam",
+        "RoomId": "fixture",
+        "User": {
+          "Id": "spam",
+          "Nickname": "广告"
+        },
+        "Content": "加微信做兼职"
+      }
+    }
+  }
+]

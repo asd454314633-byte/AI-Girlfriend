@@ -1,0 +1,236 @@
+/* 书库管理 + 音色管理（AI_GIRLFRIEND_READING_LIBRARY_MANAGE_01 / VOICE_LIBRARY_01）。
+ * 单独一个文件：只消费上游 :root 设计变量，暗底细边框，与人物/数字人面板同一调性。
+ * 只做布局与状态显示，不引入任何新颜色体系。 */
+
+/* ---------- 通用面板 ---------- */
+.ra-panel,
+.vl-panel {
+  display: block;
+  box-sizing: border-box;
+  width: min(560px, 100%);
+  margin: 14px auto 0;
+  padding: 12px 14px 16px;
+  border: 1px solid var(--border-strong, #3a3a44);
+  border-radius: var(--radius-md, 14px);
+  background: var(--bg-elev-1, #17171d);
+  color: var(--text, #e8e8ef);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.ra-panel *,
+.vl-panel * {
+  box-sizing: border-box;
+}
+.ra-panel h3,
+.vl-panel h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.ra-hint,
+.vl-hint {
+  margin: 4px 0 8px;
+  color: var(--text-dim, #9a9aa8);
+  font-size: 12px;
+}
+.ra-status,
+.vl-status {
+  margin: 8px 0 0;
+  color: var(--text-dim, #9a9aa8);
+  font-size: 12px;
+  min-height: 1.2em;
+}
+.ra-status.is-error,
+.vl-status.is-error {
+  color: #ff8f8f;
+}
+.ra-status.is-ok,
+.vl-status.is-ok {
+  color: #9fd8a4;
+}
+
+/* ---------- 书库管理 ---------- */
+.ra-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0;
+}
+.ra-toolbar input[type="search"] {
+  flex: 1 1 150px;
+  min-width: 130px;
+}
+.ra-toolbar select {
+  max-width: 130px;
+}
+.ra-count {
+  color: var(--text-dim, #9a9aa8);
+  font-size: 12px;
+}
+.ra-list {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  max-height: 320px;
+  overflow-y: auto;
+  border: 1px solid var(--border, #2c2c36);
+  border-radius: var(--radius-sm, 8px);
+}
+.ra-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border, #2c2c36);
+}
+.ra-item:last-child {
+  border-bottom: 0;
+}
+.ra-item.is-dup {
+  background: rgba(111, 125, 255, 0.07);
+}
+.ra-item.is-active {
+  outline: 1px solid var(--accent, #6f7dff);
+}
+.ra-item .ra-name {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ra-meta {
+  color: var(--text-dim, #9a9aa8);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.ra-badge {
+  flex: 0 0 auto;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 11px;
+  border: 1px solid var(--border-strong, #3a3a44);
+  color: var(--text-dim, #9a9aa8);
+  white-space: nowrap;
+}
+.ra-badge.is-reading {
+  color: #ffd489;
+  border-color: #8a6d3b;
+}
+.ra-badge.is-done {
+  color: #9fd8a4;
+  border-color: #3f6b45;
+}
+.ra-badge.is-dup {
+  color: #b9c2ff;
+  border-color: #4a54a8;
+}
+.ra-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border, #2c2c36);
+}
+.ra-trash {
+  margin-top: 10px;
+}
+.ra-trash-list {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+/* ---------- 音色管理 ---------- */
+.vl-upload {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border: 1px dashed var(--border-strong, #3a3a44);
+  border-radius: var(--radius-sm, 8px);
+  margin-bottom: 10px;
+}
+.vl-upload input[type="text"] {
+  flex: 1 1 140px;
+  min-width: 130px;
+}
+.vl-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 340px;
+  overflow-y: auto;
+  border: 1px solid var(--border, #2c2c36);
+  border-radius: var(--radius-sm, 8px);
+}
+.vl-item {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border, #2c2c36);
+}
+.vl-item:last-child {
+  border-bottom: 0;
+}
+.vl-item.is-active {
+  outline: 1px solid var(--accent, #6f7dff);
+}
+.vl-item-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.vl-item-head .vl-name {
+  flex: 1 1 auto;
+  font-weight: 600;
+}
+.vl-item-sub {
+  margin: 2px 0 0;
+  color: var(--text-dim, #9a9aa8);
+  font-size: 11px;
+}
+.vl-item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.vl-ref-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+.vl-ref-row textarea {
+  flex: 1 1 auto;
+  min-height: 44px;
+  resize: vertical;
+}
+.vl-limit {
+  margin: 6px 0 0;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm, 8px);
+  border: 1px solid var(--border, #2c2c36);
+  background: var(--bg-elev-2, #1f1f27);
+  color: var(--text-dim, #9a9aa8);
+  font-size: 12px;
+}
+.vl-limit.is-blocked {
+  color: #ffd489;
+}
+
+/* ---------- 书库管理弹窗 ---------- */
+#reading-manager-modal {
+  border: 1px solid var(--border-strong, #3a3a44);
+  border-radius: var(--radius-md, 14px);
+  background: var(--bg-elev-1, #17171d);
+  color: var(--text, #e8e8ef);
+  padding: 14px 16px 16px;
+  width: min(640px, 92vw);
+  max-height: 86vh;
+}
+#reading-manager-modal::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}

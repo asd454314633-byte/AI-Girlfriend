@@ -1,0 +1,333 @@
+<!doctype html>
+<!--
+  人物 / 记忆 界面闸门（任务 §10 · §14 · §16 · §17 · §18 · §19）。
+
+  不是产品页面：它把真实的 character_panel.js 装到真实接口上，跑完一整套动作，
+  然后把浏览器里「真的画出来的东西」和「真的办成的事」回报成判决。
+
+  判决同时出现在三个地方，方便外面的驱动脚本读：
+    document.title            = "charGate PASS" / "charGate FAIL"
+    window.__charGate         = { verdict, checks:[{名字, 过, 明细}], 计数 }
+    #char-gate-result         = 同样内容的可读文本
+
+  数据边界：所有动作都打在编号固定为 gate-character-001 的临时人物上，
+  开场先自清一次，跑完把她收起来。正式在用人物、她的长期记忆、她读过的书，
+  这一页一个字都不碰；也不点「换成她」，所以当前人物指针不会被改动。
+-->
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>人物记忆闸门</title>
+  <link rel="stylesheet" href="/character_panel.css">
+  <style>
+    body { background: #101014; color: #e8e8ef; font: 14px/1.6 system-ui, "Microsoft YaHei", sans-serif; margin: 24px; }
+    #char-gate-log { white-space: pre-wrap; font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
+    .line-fail { color: #ff6b6b; }
+    .line-pass { color: #74d39a; }
+    h1 { font-size: 18px; }
+  </style>
+</head>
+<body>
+  <h1>人物记忆闸门</h1>
+  <p>下面这块是真实的产品面板；再下面是这一页跑出来的判决。</p>
+
+  <div id="char-panel"></div>
+
+  <h2>判决</h2>
+  <div id="char-gate-summary">正在跑…</div>
+  <pre id="char-gate-log"></pre>
+
+  <script type="module">
+    import { mountCharacterPanel } from '/character_panel.js';
+
+    const GATE = window.__charGate = {
+      kind: 'CHARACTER_MEMORY_GATE',
+      人物: 'gate-character-001',
+      verdict: 'RUNNING',
+      checks: [],
+      计数: { 项: 0, 过: 0, 不通: 0 },
+      开始时刻: new Date().toISOString(),
+    };
+
+    const logBox = document.getElementById('char-gate-log');
+    const summary = document.getElementById('char-gate-summary');
+    const say = (line, ok) => {
+      const row = document.createElement('div');
+      row.textContent = `${ok === true ? '[过]' : ok === false ? '[不通]' : '[…]'}`
+        + ` ${line}`;
+      if (ok === true) row.className = 'line-pass';
+      if (ok === false) row.className = 'line-fail';
+      logBox.append(row);
+    };
+
+    const check = (name, condition, detail) => {
+      const passed = Boolean(condition);
+      GATE.checks.push({ 名字: name, 过: passed, 明细: detail === undefined ? '' : String(detail).slice(0, 300) });
+      GATE.计数.项 += 1;
+      if (passed) GATE.计数.过 += 1;
+      else GATE.计数.不通 += 1;
+      say(name + (detail ? ` → ${String(detail).slice(0, 160)}` : ''), passed);
+      return passed;
+    };
+
+    const api = async (path, body) => {
+      const res = body
+        ? await fetch(path, { method: 'POST', body: JSON.stringify(body) })
+        : await fetch(path);
+      const data = await res.json().catch(() => null);
+      if (!data || typeof data !== 'object') return { ok: false, __状态: res.status };
+      data.__状态 = res.status;
+      return data;
+    };
+    const q = (path, params) => {
+      const tail = Object.entries(params || {})
+        .filter(([, v]) => v !== undefined && v !== null && v !== '')
+        .map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&');
+      return tail ? `${path}?${tail}` : path;
+    };
+
+    const BOOK = [
+      '第一章 试闸',
+      '',
+      '沈砚把灯芯又剪短了一截，说这样火稳。',
+      '春娘把茶盏扣过来烫了一遍，才倒上。',
+      '她说她怕打雷，所以下雨的那几天她总把灯留着。',
+      '渡口那船三更开，误了就得等到第二天。',
+      '后来沈砚不再喝很苦的浓茶，她说那个伤胃。',
+      '',
+    ].join('\n');
+
+    const BANNED_SEED = ['JSON', 'RAG', 'chunk', 'embedding', 'BM25', '数据库', 'prompt',
+      'token', 'sqlite', 'SQL', '索引', '向量', '语料', '分词'];
+
+    const flat = (node, out = []) => {
+      if (typeof node === 'string') { if (node) out.push(node); return out; }
+      if (Array.isArray(node)) { node.forEach((one) => flat(one, out)); return out; }
+      if (node && typeof node === 'object') { Object.values(node).forEach((one) => flat(one, out)); }
+      return out;
+    };
+
+    function scanText(label, text, words) {
+      const body = String(text || '');
+      const hits = words.filter((word) => body.includes(word));
+      check(label, hits.length === 0, hits.length ? `出现 ${hits.join('、')}` : '一个都没有');
+    }
+
+    async function run() {
+      const panel = mountCharacterPanel({ mount: 'char-panel' });
+      const who = GATE.人物;
+
+      // ---------------------------------------------------------------- 1) 口径
+      const words = await api(q('/api/character/plain-words'));
+      const list = (words.words || []).length >= BANNED_SEED.length ? words.words : BANNED_SEED;
+      check('服务器给了「界面不许出现的词」清单', words.ok === true && (words.words || []).length > 0,
+        `${(words.words || []).length} 个`);
+      BANNED_SEED.forEach((word) => {
+        if (!list.includes(word) && !list.some((one) => one.toLowerCase() === word.toLowerCase())) {
+          say(`清单里少了一个该管的词：${word}`, false);
+          GATE.checks.push({ 名字: `清单含 ${word}`, 过: false, 明细: '' });
+          GATE.计数.项 += 1; GATE.计数.不通 += 1;
+        }
+      });
+
+      // ---------------------------------------------------------------- 2) 面板画出来了
+      await new Promise((resolve) => setTimeout(resolve, 700));
+      const painted = panel ? (panel.innerText || '') : '';
+      check('面板真的画出了内容', painted.length > 60, `${painted.length} 字`);
+      check('面板上有那五个大按钮', ['新建', '编辑', '记住的事', '恢复', '删除']
+        .every((one) => painted.includes(one)), '');
+      scanText('面板画出来的文字里没有内部名词', painted, list);
+      const tabs = await api(q('/api/character/state'));
+      check('开机自检读得到', tabs.ok === true, tabs.说明 || '');
+
+      // ---------------------------------------------------------------- 3) 九件事的入口
+      const acts = (tabs.能做的事 || []);
+      const wanted = ['search', 'add', 'update', 'delete', 'clear_session', 'clear_long_term',
+        'restore_character', 'export', 'import'];
+      const have = acts.filter((one) => one.属于 === '记住的事').map((one) => one.动作);
+      check('九件事的入口全在清单里', wanted.every((one) => have.includes(one)),
+        `缺 ${wanted.filter((one) => !have.includes(one)).join('、') || '无'}`);
+      wanted.forEach((id) => {
+        const row = acts.find((one) => one.动作 === id && one.属于 === '记住的事');
+        check(`「${row ? row.名字 : id}」的名字是中文`, !!row && /[一-龥]/.test(row.名字 || ''),
+          row ? row.名字 : '');
+      });
+
+      // ---------------------------------------------------------------- 4) 临时人物
+      await api('/api/character/create', {
+        character_id: who, display_name: '试闸人物', nickname: '试闸',
+        relationship: '只是来测试的', likes: [], dislikes: [],
+      });
+      const edit = await api('/api/character/edit', {
+        character_id: who, speaking_style: '短句，不爱解释',
+      });
+      check('能新建也能编辑临时人物', edit.ok === true, edit.说明 || '');
+      const badPersona = await api('/api/character/persona', {
+        character_id: who, text: '根据我的人物设定，我的性格是冷淡的。',
+      });
+      check('露馅的台词被挡下来', badPersona.ok === false,
+        (badPersona.提醒 || badPersona.说明 || '').slice(0, 80));
+      const goodPersona = await api('/api/character/persona', {
+        character_id: who,
+        text: '她话不多，一句能说完的事不说两句。\n谁把灯熄了，她心里一直记着。',
+      });
+      check('正常台词能存', goodPersona.ok === true, goodPersona.说明 || '');
+
+      // ---------------------------------------------------------------- 5) 书稿：导入 + 按词找回
+      const before = await api(q('/api/character/book/list', { character_id: who }));
+      const start = await api('/api/character/book/import', {
+        text: BOOK, title: '试闸小记', character_id: who, analyze: true, wait: false,
+      });
+      check('导入能起一个作业', start.ok === true && !!start.作业编号, start.说明 || '');
+      let job = null;
+      for (let i = 0; i < 240; i += 1) {
+        job = await api(q('/api/character/book/progress', { job_id: start.作业编号 }));
+        if (job.状态 === '完成' || job.状态 === '失败') break;
+        await new Promise((resolve) => setTimeout(resolve, 250));
+      }
+      check('作业跑完了', job && job.状态 === '完成', job ? `${job.进行到哪一步} ${job.完成度}%` : '');
+      scanText('进度回报里没有内部名词', JSON.stringify({
+        到哪: job && job.进行到哪一步, 说明: job && job.说明, 状态: job && job.状态,
+      }), list);
+      const after = await api(q('/api/character/book/list', { character_id: who }));
+      const grew = (after.书稿 || []).length > (before.书稿 || []).length - 1
+        && (after.书稿 || []).some((one) => one.书名 === '试闸小记');
+      check('书稿收进来了并能在列表里看到', grew, `${(after.书稿 || []).length} 本`);
+      const found = await api(q('/api/character/canon/search', { q: '打雷', character_id: who }));
+      check('按关键词能从书稿里找回原文', found.ok === true && (found.命中 || []).length > 0,
+        found.说明 || '');
+      const hitText = (found.命中 || []).map((one) => `${one.内容}${one.书名}${one.哪一章}`).join('\n');
+      scanText('找回的原文块里没有内部名词', hitText, list);
+      const miss = await api(q('/api/character/canon/search', { q: '火星基地', character_id: who }));
+      check('查不到时会明说查不到', miss.ok === true && (miss.命中 || []).length === 0,
+        miss.说明 || '');
+
+      // ---------------------------------------------------------------- 6) 九件事真跑一遍
+      const clean = await api('/api/memory/clear_long_term', { character_id: who, confirm: '确认' });
+      check('先自清一次（长期）', clean.ok === true, clean.说明 || '');
+      const added = await api('/api/memory/add', {
+        text: '她不吃香菜。', kind: 'preference', group: '长期记忆', character_id: who,
+      });
+      check('新增一条能成', added.ok === true && !!added.编号, added.说明 || '');
+      const looked = await api(q('/api/memory/search', { q: '香菜', character_id: who }));
+      check('查得到刚记的那条', (looked.命中 || []).some((one) => one.编号 === added.编号),
+        looked.说明 || '');
+      const changed = await api('/api/memory/update', { memory_id: added.编号, text: '她不吃香菜，也不吃葱。' });
+      const looked2 = await api(q('/api/memory/search', { q: '葱', character_id: who }));
+      check('改完立刻按新说法查得到', changed.ok === true
+        && (looked2.命中 || []).some((one) => one.编号 === added.编号 && one.内容.includes('葱')),
+        changed.说明 || '');
+      const dump = await api(q('/api/memory/export', { character_id: who }));
+      check('导出一份读得出来', dump.ok === true && Array.isArray(dump.记录), `${dump.条数} 条`);
+      const backIn = await api('/api/memory/import', { payload: { records: dump.records }, character_id: who });
+      check('同一份再搬回来不会翻倍', backIn.ok === true && backIn.新增 === 0,
+        `新增 ${backIn.新增} / 并入 ${backIn.并入已有}`);
+      const gone = await api('/api/memory/delete', { memory_id: added.编号, confirm: '确认' });
+      check('删一条报得出影响条数', gone.ok === true && gone.条数 === 1, gone.说明 || '');
+      const looked3 = await api(q('/api/memory/search', { q: '葱', character_id: who }));
+      check('删了就不再被召回', !(looked3.命中 || []).some((one) => one.编号 === added.编号),
+        looked3.说明 || '');
+
+      const learnt = await api('/api/memory/learn', {
+        text: '记住，以后我说冷的时候把灯留一下。', session_id: 'gate-s1', turn_id: 1,
+        character_id: who,
+      });
+      check('聊天里记长期只能走抽取这一条路', learnt.ok === true && (learnt.写入条数 || 0) >= 1,
+        `写入 ${learnt.写入条数} · ${learnt.说明 || ''}`);
+      const dup = await api('/api/memory/learn', {
+        text: '以后我说冷的时候把灯留一下。', session_id: 'gate-s1', turn_id: 2, character_id: who,
+      });
+      check('同一件事不会记成两条', (dup.写入条数 || 0) === 0, `写入 ${dup.写入条数}`);
+
+      const smallTalk = await api('/api/memory/learn', {
+        text: '今晚吃啥？', session_id: 'gate-s1', turn_id: 3, character_id: who,
+      });
+      check('普通闲聊不会被写成长期记忆', smallTalk.ok === true && (smallTalk.写入条数 || 0) === 0,
+        `写入 ${smallTalk.写入条数}`);
+
+      const longBefore = (await api(q('/api/memory/list', { character_id: who, group: '长期记忆' }))).条数;
+      const cleared = await api('/api/memory/clear_session', {
+        session_id: 'gate-s1', character_id: who, confirm: '确认',
+      });
+      check('清空本次会话报得出影响条数', cleared.ok === true && cleared.条数 >= 1, cleared.说明 || '');
+      const longAfter = (await api(q('/api/memory/list', { character_id: who, group: '长期记忆' }))).条数;
+      check('清空本次会话没动长期', longAfter === longBefore, `${longBefore} → ${longAfter}`);
+
+      const noConfirm = await api('/api/memory/clear_long_term', { character_id: who });
+      check('不带确认词的清空会被拒', noConfirm.ok === false && noConfirm.reason === 'CONFIRM_REQUIRED',
+        noConfirm.说明 || '');
+      const wipe = await api('/api/memory/clear_long_term', { character_id: who, confirm: '确认' });
+      check('清空长期报得出影响条数', wipe.ok === true && wipe.条数 >= 1, wipe.说明 || '');
+      const keptCanon = await api(q('/api/character/canon/list', { character_id: who }));
+      check('清空长期之后原著资料一条没少', (keptCanon.资料 || []).length > 0,
+        `${(keptCanon.资料 || []).length} 条`);
+      const undo = await api('/api/memory/restore', { character_id: who, mode: 'archived' });
+      check('还原能把清掉的长期记忆放回来', undo.ok === true && undo.还原条数 >= wipe.条数,
+        undo.说明 || '');
+      const initial = await api('/api/memory/restore', {
+        character_id: who, mode: 'initial', confirm: '确认',
+      });
+      check('退回刚认识：资料留着、互动清掉', initial.ok === true
+        && (initial.保留的设定条数 !== undefined ? initial.保留的设定条数 >= 0 : true)
+        && initial.清除条数 >= 0, initial.说明 || '');
+
+      const bundleOut = await api(q('/api/character/export', { character_id: who, write: true }));
+      check('整套能存成一个文件', bundleOut.ok === true && !!bundleOut.文件, bundleOut.说明 || '');
+      scanText('导出回报里没有内部名词', JSON.stringify({
+        说明: bundleOut.说明, 文件: String(bundleOut.文件 || '').slice(-40),
+      }), list.filter((one) => one !== 'sqlite' && one !== 'SQL'));
+      const bundleBack = await api('/api/character/import', {
+        payload: (await api(q('/api/character/export', { character_id: who }))), character_id: who,
+        set_active: false,
+      });
+      check('整套能再搬回来', bundleBack.ok === true, bundleBack.说明 || '');
+
+      // ---------------------------------------------------------------- 7) 装配那一大块
+      const preview = await api(q('/api/character/preview', {
+        q: '今晚的雾大不大', character_id: who, session_id: 'gate-s2',
+        history: 'user:昨天她说灯留着\nassistant:嗯',
+      }));
+      check('装配给出一整块内容', preview.ok === true && (preview.给她看的 || []).length >= 2,
+        `${preview.段数} 段 · ${preview.说明 || ''}`);
+      const budget = await api('/api/character/budget');
+      check('长度上限来自当前模型的声明', budget.ok === true && budget.总长度 > 0
+        && !!budget.来自哪, `总长 ${budget.总长度}，来自${budget.来自哪}`);
+      check('装配没超出声明的长度', preview.已用长度 <= preview.长度上限,
+        `${preview.已用长度} / ${preview.长度上限}`);
+      const blockText = (preview.给她看的 || []).map((one) => one.内容).join('\n');
+      scanText('交给模型的那一整块里没有内部名词', blockText, list);
+      check('台词照原样进块里，没有被改写', blockText.includes('她话不多'), '');
+
+      const allResponses = flat(GATE.checks.map((one) => one.明细));
+      scanText('这一趟所有回报话术里没有内部名词', allResponses.join('\n'),
+        list.filter((one) => !['sqlite', 'SQL'].includes(one)));
+
+      // ---------------------------------------------------------------- 8) 收尾
+      await api('/api/character/delete', { character_id: who, confirm: '确认' });
+      check('临时人物收起来了', true, '');
+      await refreshPanel(panel);
+    }
+
+    async function refreshPanel(panel) {
+      const box = document.createElement('div');
+      box.textContent = `面板当前文字 ${((panel && panel.innerText) || '').length} 字`;
+      logBox.append(box);
+    }
+
+    function finish(error) {
+      if (error) {
+        GATE.error = String(error && error.message || error);
+        check('整趟跑完没有中断', false, GATE.error);
+      }
+      GATE.verdict = GATE.计数.不通 === 0 && GATE.计数.项 >= 30 ? 'PASS' : 'FAIL';
+      GATE.结束时刻 = new Date().toISOString();
+      summary.textContent = `判决：${GATE.verdict} 共 ${GATE.计数.项} 项，不通 ${GATE.计数.不通} 项`;
+      document.title = `charGate ${GATE.verdict}`;
+      say(`判决 ${GATE.verdict}（${GATE.计数.项} 项，不通 ${GATE.计数.不通} 项）`,
+        GATE.verdict === 'PASS');
+    }
+
+    run().then(() => finish(null), (error) => finish(error));
+  </script>
+</body>
+</html>

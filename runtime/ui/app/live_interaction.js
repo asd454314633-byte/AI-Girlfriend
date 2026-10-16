@@ -8,6 +8,7 @@
   let sessionId = '';
   let responseId = '', text = '', bytes = 0, generationDone = false;
   let enabled = false, interval = 600, pollBusy = false, closed = false;
+  let pollFailures = 0;
   const observed = new Set(), phases = new Set();
   const liveResponses = new Set();
   let dispatchTimeout = 90000, routerAcceptedAt = 0, soundSeen = false;
@@ -27,7 +28,7 @@
   const api = async (path, data) => {
     const res = await fetch(base + path, {method: data ? 'POST' : 'GET',
       headers: data ? {'Content-Type':'application/json'} : {}, body: data ? JSON.stringify(data) : undefined,
-      signal: AbortSignal.timeout(5000)});
+      signal: AbortSignal.timeout(path === '/control' ? 15000 : 5000)});
     if (!res.ok) throw new Error('LIVE_HTTP_' + res.status);
     return res.json();
   };
@@ -87,7 +88,7 @@
           phase('llm_first_token'); text += data.delta || '';
         }
         if (data.type === 'response.output_audio_transcript.done') {
-          phase('llm_first_text_block'); text += data.transcript || ''; phase('llm_done', {reply:text});
+          phase('llm_first_text_block'); text = data.transcript || text; phase('llm_done', {reply:text});
         }
         if (data.type === 'response.output_audio.delta') {
           phase('tts_start'); phase('audio_generated');
@@ -126,12 +127,35 @@
         {routerAcceptedAt=Date.now(); phase('router_accepted', {sink:event.sink, played_bytes:event.playedBytes});}
     });
   }
+  async function avatarPlayback(id) {
+    const av = window.AvatarSync;
+    const before = Date.now();
+    const url = av.config.livetalkingBase.replace(/\/+$/,'') + '/api/admin/playback?sessionid=' + encodeURIComponent(av.sessionid);
+    const res = await fetch(url, {signal:AbortSignal.timeout(3000)});
+    const body = await res.json();
+    const after = Date.now();
+    if (!res.ok || body.code !== 0 || !Array.isArray(body.data?.events)) throw new Error('AVATAR_PLAYBACK_BOUNDARY_UNKNOWN');
+    const events = body.data.events.filter(e => e.response_id === id);
+    const count = (av.segments || []).find(([rid]) => rid === id)?.[1] || 1;
+    const start = events.find(e => e.event === 'output_start');
+    const end = events.find(e => e.event === 'output_end' && e.segment_index === count - 1);
+    let delay = 150;
+    if (av.peerConnection) (await av.peerConnection.getStats()).forEach(s => {
+      if (s.type === 'inbound-rtp' && s.kind === 'audio' && s.jitterBufferEmittedCount > 0)
+        delay = Math.max(80, Math.min(500, 1000 * (s.jitterBufferTargetDelay ?? s.jitterBufferDelay) / s.jitterBufferEmittedCount + 40));
+    });
+    const offset = (before + after) / 2 - body.data.at_ms;
+    return {response_id:id, sessionid:av.sessionid, start, end,
+      started:Boolean(start && after >= start.at_ms + offset + delay),
+      finished:Boolean(end && after >= end.at_ms + offset + delay + (after-before)/2 + 20)};
+  }
   async function poll() {
     if (pollBusy || closed) return;
     pollBusy = true;
     try {
       observeAudio();
       const state = await api('/status');
+      pollFailures = 0;
       enabled = state.LIVE_INTERACTION_ENABLED === 'ON';
       interval = state.frontend_poll_ms || 600;
       dispatchTimeout = (state.dispatch_timeout || 90) * 1000;
@@ -148,18 +172,16 @@
       if (active && generationDone) {
         const audible = window.s2sAudioRouter?.turnAudibility(responseId);
         let speaking = false;
+        let boundary;
         if (audible?.sink === 'avatar' && window.AvatarSync?.sessionid) {
-          const url = window.AvatarSync.config.livetalkingBase.replace(/\/+$/,'') + '/is_speaking';
-          const res = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionid:window.AvatarSync.sessionid}),signal:AbortSignal.timeout(3000)});
-          const body=await res.json();
-          if(body.code!==0)throw new Error('AVATAR_PLAYBACK_STATUS_UNKNOWN');
-          speaking = Boolean(body.data);
-        } else speaking = localPlayed > playedBaseline && localQueuedMs > 0;
-        if(speaking && !soundSeen){soundSeen=true;phase('audio_start',{sink:audible?.sink});}
+          boundary = await avatarPlayback(responseId);
+          speaking = boundary.started;
+        } else speaking = localPlayed > playedBaseline;
+        if(speaking && !soundSeen){soundSeen=true;phase('audio_start',{sink:audible?.sink,response_id:responseId,sessionid:boundary?.sessionid});}
         // PCM duration is measured from bytes at the existing 24 kHz mono s16
         // output, preventing a synthesis receipt from releasing playback early.
-        const tailOver = routerAcceptedAt && Date.now() >= routerAcceptedAt + bytes / 48;
-        if (!audioBusy() && !speaking && tailOver) finish(audible?.audible ? 'completed' : 'failed', {audible:Boolean(audible?.audible), sink:audible?.sink, sound_observed:soundSeen});
+        const tailOver = boundary ? boundary.finished : localPlayed > playedBaseline && localQueuedMs === 0;
+        if (!audioBusy() && tailOver) finish(audible?.audible && soundSeen ? 'completed' : 'failed', {audible:Boolean(audible?.audible), sink:audible?.sink, sound_observed:soundSeen,playback_response_id:responseId,output_end:boundary?.end});
       }
       // MODE_SYSTEM_V1 §33：朗读模式下不让普通弹幕把故事打碎。本轮不设计「主播朗读
       // + 弹幕抢答」的策略，只做这一条隔离 —— 模式是 READING 时干脆不去 claim。
@@ -168,6 +190,10 @@
       if (enabled && !readingNow && !active && !privateBusy && Date.now() >= privateUntil && !audioBusy() && socket?.readyState === 1) {
         await pendingPhases;
         const result = await api('/claim', {client_id:clientId, ready:true, private_busy:false,s2s_session_id:sessionId});
+        if (result.reason && result.reason !== 'ONE_ACTIVE_SESSION_REQUIRED') {
+          const el = document.getElementById('live-status');
+          if (el) el.textContent = '直播回应暂不可用：' + result.reason;
+        }
         if (result.job) {
           active = {...result.job, startedAt:Date.now()}; text = ''; bytes = 0; phases.clear();
           routerAcceptedAt=0; soundSeen=false; playedBaseline=localPlayed;
@@ -181,8 +207,10 @@
         }
       }
     } catch (error) {
+      pollFailures++;
+      interval = Math.min(10000, 600 * Math.pow(2, Math.min(pollFailures, 4)));
       const el = document.getElementById('live-status');
-      if (el) el.textContent = '直播服务未启动';
+      if (el) el.textContent = '直播链路暂不可用：' + error.message;
       const toggle = document.getElementById('live-toggle');
       if (toggle) toggle.disabled = true;
     } finally { pollBusy = false; if (!closed) setTimeout(poll, interval); }
@@ -206,7 +234,7 @@
     panel.querySelector('#live-comment').textContent = comment ? `${comment.username}: ${comment.content}` : '';
     panel.querySelector('#live-reply').textContent = state.recent_replies?.at(-1)?.reply || '';
   }
-  window.liveInteraction = {isLiveResponse:id=>liveResponses.has(id),status:()=>({enabled,active:active?.ticket,responseId,bytes,text,privateBusy,localQueuedMs}), control:value=>api('/control',{enabled:value})};
+  window.liveInteraction = {isLiveResponse:id=>liveResponses.has(id),status:()=>({deployment:'live-03-output-boundaries',enabled,active:active?.ticket,responseId,bytes,text,privateBusy,localQueuedMs}), control:value=>api('/control',{enabled:value})};
   window.addEventListener('pagehide', () => {closed=true; finish('failed',{reason:'page_closed'});});
   function start() {
     render({available:false, collector_connected:false, queue_depth:0});
