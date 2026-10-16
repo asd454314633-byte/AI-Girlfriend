@@ -5,6 +5,7 @@ from __future__ import annotations
 import io
 import json
 import logging
+import os
 import wave
 import zlib
 from pathlib import Path
@@ -21,15 +22,64 @@ from speech_to_speech.pipeline.messages import AUDIO_RESPONSE_DONE, EndOfRespons
 
 logger = logging.getLogger(__name__)
 API = "http://127.0.0.1:7077"
-KEY_FILE = Path(os.environ.get("HIGGS_API_KEY_FILE", "runtime/higgs/higgs_api_key.txt"))
+KEY_FILE = Path(str(__import__('pathlib').Path(__file__).resolve().parents[2] / 'runtime/higgs/higgs_api_key.txt'))
 # The delivery preset path lives in providers/manifests/tts.json (runtime_controls
 # -> state_file / legacy_state_files); a second hard-coded copy is what made the
 # UI and this handler disagree.
-EVIDENCE = Path(os.environ.get("HIGGS_EVIDENCE_DIR", "tts_candidates/higgs_v3_q4/evidence"))
-LISTENING_TESTS = {} # No private historical listening-test transcripts distributed.
-REFERENCE_AUDIO = os.environ.get("HIGGS_REFERENCE_AUDIO", "external/higgs/reference.wav")
-REFERENCE_TEXT = ""
+EVIDENCE = Path(str(__import__('pathlib').Path(__file__).resolve().parents[2] / 'tts_candidates/higgs_v3_q4/evidence'))
+LISTENING_TESTS = {
+    "你回来啦，我刚刚还在想你今天什么时候到家。": "TEST_1_NORMAL",
+    "你终于回来啦！我等你好久了，快过来让我看看！": "TEST_2_EXCITED",
+    "你怎么现在才回来！我都等你这么久了！": "TEST_3_ANGRY_SHOUT",
+    "过来一点，我想小声跟你说句话。": "TEST_4_WHISPER",
+}
+_REFERENCE_ROOT = Path(__file__).resolve().parents[2] / 'models/native/qwen3'
+REFERENCE_AUDIO = os.environ.get('HIGGS_REFERENCE_AUDIO', str(_REFERENCE_ROOT / 'ref.wav'))
+REFERENCE_TEXT = os.environ.get('HIGGS_REFERENCE_TEXT') or ((_REFERENCE_ROOT / 'ref.txt').read_text(encoding='utf-8').strip() if (_REFERENCE_ROOT / 'ref.txt').exists() else '')
 PROVIDER_ID = "higgs"
+# 音色库激活状态（AI_GIRLFRIEND_VOICE_LIBRARY_01）：7860 的 /api/voices/activate
+# 写这里；值为 {"voice_id": "vc_xxxxxxxxxx"}。xiaoyan / 文件不存在 = 内置小烟参考。
+# 只读，不写；参考素材本体在 runtime/voices/profiles/<id>/ref.wav。
+ACTIVE_VOICE_FILE = Path(str(__import__('pathlib').Path(__file__).resolve().parents[2] / 'runtime/windows/active_voice_higgs.json'))
+VOICES_PROFILES = Path(str(__import__('pathlib').Path(__file__).resolve().parents[2] / 'runtime/voices/profiles'))
+_active_voice_cache: tuple[float, tuple[str, str]] | None = None
+
+
+def _active_reference() -> tuple[str, str]:
+    """当前生效的 (reference_audio_path, reference_text)，按状态文件 mtime 缓存。
+
+    找不到激活音色 / 素材缺失 / 文件损坏时一律回退内置小烟参考——音色库的任何
+    故障都不允许打断合成。"""
+    global _active_voice_cache
+    try:
+        mtime = ACTIVE_VOICE_FILE.stat().st_mtime
+    except OSError:
+        if _active_voice_cache is not None:
+            _active_voice_cache = None
+        return REFERENCE_AUDIO, REFERENCE_TEXT
+    if _active_voice_cache is not None and _active_voice_cache[0] == mtime:
+        return _active_voice_cache[1]
+    resolved = (REFERENCE_AUDIO, REFERENCE_TEXT)
+    try:
+        voice_id = str(json.loads(ACTIVE_VOICE_FILE.read_text(encoding="utf-8")).get("voice_id") or "")
+    except (OSError, ValueError):
+        voice_id = ""
+    if voice_id and not voice_id.startswith("vc_"):
+        logger.warning("active voice id %r is not a user profile; using default xiaoyan ref", voice_id)
+    elif voice_id:
+        ref_wav = VOICES_PROFILES / voice_id / "ref.wav"
+        meta_file = VOICES_PROFILES / voice_id / "meta.json"
+        try:
+            ref_text = str(json.loads(meta_file.read_text(encoding="utf-8")).get("ref_text") or "")
+        except (OSError, ValueError):
+            ref_text = ""
+        if ref_wav.exists() and ref_text:
+            resolved = (str(ref_wav), ref_text)
+        else:
+            logger.warning("voice profile %s incomplete (wav=%s text=%s); fallback to xiaoyan",
+                           voice_id, ref_wav.exists(), bool(ref_text))
+    _active_voice_cache = (mtime, resolved)
+    return resolved
 
 
 class HiggsTTSHandler(BaseHandler):
@@ -91,10 +141,12 @@ class HiggsTTSHandler(BaseHandler):
             yield from self._generate_segment(segment, delivery_prefix, preset, response_seed)
 
     def _generate_segment(self, text: str, delivery_prefix: str, preset: str, seed: int) -> Iterator[np.ndarray]:
+        reference_audio, reference_text = _active_reference()
+        logger.info("Higgs reference resolved: %s (preset=%s)", os.path.basename(reference_audio), preset)
         payload = {
             "input": delivery_prefix + text,
-            "reference_audio_path": REFERENCE_AUDIO,
-            "reference_text": REFERENCE_TEXT,
+            "reference_audio_path": reference_audio,
+            "reference_text": reference_text,
             "response_format": "wav",
             "temperature": 0.8,
             "top_k": 50,

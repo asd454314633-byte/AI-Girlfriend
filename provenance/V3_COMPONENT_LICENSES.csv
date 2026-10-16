@@ -1,0 +1,16 @@
+classification,component,path_or_glob,upstream,version,license,bundled,restrictions
+SELF_DEVELOPED,V3 business and manager,"runtime/{reading,character,memory,live,ui7860_manager,s2s_business}/ and scripts/",https://github.com/asd454314633-byte/AI-Girlfriend,V3-20261016,MIT,source only,no private data
+SELF_DEVELOPED,Independent avatar frontend,runtime/ui/app/avatar-sync.js,provenance/AVATAR_SYNC_RESTORATION_AUDIT_20261012.md,existing public main,MIT,yes,legacy unlicensed implementation excluded
+THIRD_PARTY_ORIGINAL,LiveTalking upstream subset,runtime/avatar/app/,https://github.com/lipku/LiveTalking,c963ad409c556918b7d23999bf87c47a7c05c932,Apache-2.0,yes code only,upstream license retained; model assets separate
+THIRD_PARTY_MODIFIED,LiveTalking modified server and avatar files,runtime/avatar/app/,https://github.com/lipku/LiveTalking,c963ad409c556918b7d23999bf87c47a7c05c932 plus project changes,Apache-2.0,yes code only,see NOTICE and V3_FILE_ORIGINS
+THIRD_PARTY_MODIFIED,speech-to-speech demo and overlay,"runtime/ui/app/{server.py,main.js,index.html,style.css,s2s-realtime-client.js}; third_party_modified/",https://github.com/huggingface/speech-to-speech,0.2.11 / 5ac2730e88a111229c5b56b94b515a1bd4d30c65,Apache-2.0,yes selected files,upstream license retained
+THIRD_PARTY_ORIGINAL,OpenAI realtime agents UMD,runtime/ui/app/vendor/openai-realtime-agents.umd.js,https://github.com/openai/openai-realtime-agents,0.14.3,MIT,yes,existing bundled source retained
+EXTERNAL_DEPENDENCY,speech-to-speech package,installed at setup,https://github.com/huggingface/speech-to-speech,0.2.11,Apache-2.0,no wheel,apply overlay after install
+EXTERNAL_DEPENDENCY,llama.cpp,tools/llama.cpp/,https://github.com/ggml-org/llama.cpp,b11065,MIT,no binary,obtain compatible build
+EXTERNAL_DEPENDENCY,Higgs Studio application,external install,https://github.com/Saganaki22/Higgs-Audio-v3-Studio,0.3.0,Apache-2.0 application source,no,model and native artifacts not re-licensed
+RIGHTS_UNCONFIRMED,Higgs native DLL,external native engine,https://github.com/Saganaki22/Higgs-Audio-v3-Studio,0.3.0,artifact redistribution not independently confirmed,no,obtain legally; no blanket MIT
+EXTERNAL_DEPENDENCY,s2.cpp,external/fish-s2-pro/s2.cpp,https://github.com/rodrigomatta/s2.cpp,2c33261938da1a41d713768b1b391b4d368d7d2c,Fish Audio Research License,no,research/non-commercial; commercial separately licensed
+RIGHTS_UNCONFIRMED,BarrageGrab collector,external port8888,https://github.com/monsterxwx/BarrageGrab,user-selected version,review upstream license and platform terms,no,no platform credentials redistributed
+RIGHTS_UNCONFIRMED,Legacy avatar adapter,excluded,https://github.com/liuw8233-cell/ai_girlfriend,699f7fe,no redistribution license confirmed,no,do not copy legacy source
+RIGHTS_UNCONFIRMED,Optional Sola narrative preset,excluded source JSON,https://pyrxpia.github.io/sola-hub/,Sola V2 Ember V2.0 Full Release,redistribution not confirmed,no,project-authored renderer only; disabled in all public modes
+EXTERNAL_DEPENDENCY,Five existing display media,docs/media/,docs/MEDIA_USAGE_POLICY.md,existing public baseline,confirmed project display permission only,unchanged,no reuse/training/cloning/identity extraction

@@ -36,7 +36,7 @@ if (-not (Get-Command -CommandType Function -Name 'Invoke-AvatarHold' -ErrorActi
 
 # SHELL_ONLY_SEAM_BEGIN
 if ($ValidateShellOnly) {
-    $expectedWorkingDirectory = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
+    $expectedWorkingDirectory = ([IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../')))
     $actualWorkingDirectory = (Get-Location).ProviderPath
     if (-not $actualWorkingDirectory -or -not ([IO.Path]::GetFullPath($actualWorkingDirectory).TrimEnd('\') -ieq [IO.Path]::GetFullPath($expectedWorkingDirectory).TrimEnd('\'))) {
         [Console]::Error.WriteLine('VALIDATION_ERROR = WORKING_DIRECTORY_MISMATCH')

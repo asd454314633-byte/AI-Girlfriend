@@ -159,6 +159,8 @@ function canonicalPreferences(id, stored) {
   Object.entries(stored || {}).forEach(([key, value]) => {
     const target = aliases[key] && !(aliases[key] in (stored || {})) ? aliases[key] : key;
     if (!allowed.has(target) || typeof value !== 'string' || !value.trim()) return;
+    const control = (spec.controls || []).find((row) => row.field === target);
+    if (control?.type === 'enum' && !(control.values || []).some((row) => row.id === value.trim())) return;
     merged[target] = value.trim();
   });
   return merged;

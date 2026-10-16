@@ -1,0 +1,167 @@
+<!doctype html>
+<!--
+  Capability-render gate (任务 §5).  Not a product page: it drives the REAL
+  ui/girlfriend.js render code against the REAL server schema and reports what the
+  browser actually painted.
+
+  ?as=<providerId>  — render the performance panel as if that provider were the
+                      active one.  Only `active` is overridden; every control,
+                      label, enum value and limit is passed through verbatim from
+                      GET /api/voice-models.  Nothing here names a provider, so a
+                      provider added tomorrow is gate-testable with no edit.
+
+  The verdict is machine-readable in #gate-result so it can be asserted from a
+  driver instead of eyeballed.
+-->
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>能力渲染闸门</title>
+</head>
+<body>
+  <h1>能力渲染闸门（capability render gate）</h1>
+  <p>本页不是产品页面：它只把真实的 <code>ui/girlfriend.js</code> 渲染代码接到真实的
+     <code>GET /api/voice-models</code> 清单上，然后把浏览器实际画出来的东西回报成判决。</p>
+
+  <select id="gf-voice-model"></select>
+  <div id="gf-performance-model"></div>
+  <div id="gf-performance-note"></div>
+  <div id="gf-performance-fields"></div>
+  <div id="gf-voice-status"></div>
+  <select id="gf-model"></select>
+  <div id="gf-model-status"></div>
+  <textarea id="gf-composer-input"></textarea>
+  <button id="gf-composer-send"></button>
+  <button id="gf-performance-reset"></button>
+  <form id="gf-composer"></form>
+
+  <h2>判决</h2>
+  <pre id="gate-result">running…</pre>
+
+  <script>
+    // Install the shim before the module graph loads: only `active` is rewritten.
+    const initial = new URLSearchParams(location.search).get('as') || '';
+    window.__gate = { wanted: initial, seenActive: '', overrides: 0 };
+    const nativeFetch = window.fetch.bind(window);
+    window.fetch = async (input, init) => {
+      const res = await nativeFetch(input, init);
+      const url = String(typeof input === 'string' ? input : (input && input.url) || '');
+      const wanted = window.__gate.wanted;
+      if (!wanted || !url.split('?')[0].endsWith('/api/voice-models')) return res;
+      const body = await res.json().catch(() => null);
+      if (!body || typeof body !== 'object') return res;
+      const rows = body.capabilities || body.providers || [];
+      if (!rows.some((row) => row.id === wanted)) return res;
+      body.active = wanted;
+      body.activeMainTtsCount = 1;
+      window.__gate.seenActive = wanted;
+      window.__gate.overrides += 1;
+      return new Response(JSON.stringify(body), {
+        status: 200, headers: { 'Content-Type': 'application/json' },
+      });
+    };
+  </script>
+  <script type="module">
+    import { mountGirlfriend } from '/ui/girlfriend.js';
+
+    const noop = async () => false;
+    const hooks = {
+      sendText: noop,
+      ensureLive: noop,
+      setManualVoiceMode: () => {},
+      setKnownVoiceBackends: () => {},
+    };
+    mountGirlfriend(hooks);
+
+    const note = () => document.getElementById('gf-performance-note').textContent || '';
+
+    /** Paint the performance panel for one provider id, then report what appeared. */
+    async function paintFor(id) {
+      const fields = document.getElementById('gf-performance-fields');
+      const modelLine = document.getElementById('gf-performance-model');
+      const payload = await (await fetch('/api/voice-models')).json();
+      const declared = (payload.capabilities || payload.providers || []).find((row) => row.id === (id || payload.active));
+      const wantLine = `当前模型：${(declared && declared.label_zh) || ''}`;
+
+      // A re-mount repaints once from the *previous* provider's spec before the fresh
+      // /api/voice-models answer lands, so sampling the panel right away reports a
+      // one-row-stale field set.  Blank it, then wait for the model line to name the
+      // provider actually being painted -- that text is written inside the same
+      // renderPerformance pass as the fields, so it is a completion signal that works
+      // for a provider declaring zero controls too.
+      fields.replaceChildren();
+      modelLine.textContent = '';
+      const noteEl = document.getElementById('gf-performance-note');
+      noteEl.textContent = '';
+      window.__gate.wanted = id || '';
+      mountGirlfriend(hooks);
+      for (let i = 0; i < 100; i += 1) {
+        if (modelLine.textContent === wantLine) break;
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+      await new Promise((resolve) => setTimeout(resolve, 80));
+
+      const painted = [...fields.querySelectorAll(':scope > label')].map((label) => ({
+        title: (label.querySelector('span') || {}).textContent || '',
+        control: (label.querySelector('select') || label.querySelector('input') || {}).tagName || 'NONE',
+        options: [...label.querySelectorAll('option')].map((option) => option.textContent),
+        field: label.querySelector('[data-voice-field]')?.dataset.voiceField
+          || label.querySelector('[data-runtime-control]')?.dataset.runtimeControl || '',
+      }));
+      const declaredControls = (declared?.controls || []).map((c) => c.field);
+      const declaredRuntime = (declared?.runtime_controls || []).map((c) => c.field);
+      const paintedFields = painted.map((row) => row.field).filter(Boolean);
+      const all = [...declaredControls, ...declaredRuntime];
+      const checks = {
+        render_settled_on_requested_provider: modelLine.textContent === wantLine,
+        every_declared_field_painted: all.every((f) => paintedFields.includes(f)),
+        nothing_undclared_painted: paintedFields.every((f) => all.includes(f)),
+        field_count_matches: paintedFields.length === all.length,
+        labels_come_from_schema: painted.every((row) =>
+          (declared?.controls || []).concat(declared?.runtime_controls || [])
+            .some((c) => (row.title || '').startsWith(c.label_zh || c.field))),
+        enum_uses_select: painted.filter((r) => r.options.length).every((r) => r.control === 'SELECT'),
+        runtime_control_is_server_side: painted
+          .filter((row) => declaredRuntime.includes(row.field))
+          .every((row) => row.control === 'SELECT'),
+      };
+      return {
+        provider: id || '(server active)',
+        label_zh: declared?.label_zh ?? null,
+        declared: all,
+        painted: paintedFields,
+        titles: painted.map((row) => `${row.title}/${row.control}`),
+        checks,
+        verdict: Object.values(checks).every(Boolean) ? 'PASS' : 'FAIL',
+      };
+    }
+
+    /** One-call sweep over every row the manifest publishes. */
+    async function sweep() {
+      const payload = await (await fetch('/api/voice-models')).json();
+      const rows = payload.capabilities || payload.providers || [];
+      const results = [];
+      for (const row of rows) results.push(await paintFor(String(row.id)));
+      const summary = {
+        kind: 'CAPABILITY_RENDER_GATE',
+        note: 'fields painted by the real ui/girlfriend.js against the real /api/voice-models schema',
+        gate_provider_literal_in_js_source: 'checked by runtime/tests/test_provider_neutrality.py',
+        results,
+        verdict: results.every((r) => r.verdict === 'PASS') ? 'PASS' : 'FAIL',
+      };
+      document.getElementById('gate-result').textContent = JSON.stringify(summary, null, 2);
+      document.title = `gate ${summary.verdict}`;
+      return summary;
+    }
+
+    window.__gate.paintFor = paintFor;
+    window.__gate.sweep = sweep;
+    if (window.__gate.wanted) {
+      paintFor(window.__gate.wanted).then((one) => {
+        document.getElementById('gate-result').textContent = JSON.stringify(one, null, 2);
+        document.title = `gate ${one.verdict}`;
+      });
+    }
+  </script>
+</body>
+</html>

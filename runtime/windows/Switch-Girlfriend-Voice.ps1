@@ -5,6 +5,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 . (Join-Path (Split-Path -Parent (Split-Path -Parent $PSScriptRoot)) 'scripts\Runtime-Common.ps1')
+try { & (Join-Path $script:AppRoot 'scripts\Write-Lifecycle-Context.ps1') }
+catch { Write-RuntimeLog 'tts-switch.log' ('LIFECYCLE_CONTEXT_UNAVAILABLE '+$_.Exception.Message) }
 # Validation is resolved against the TTS manifest at run time (no hardcoded set),
 # so a newly registered provider switches without editing this file.
 $targetSpec = Get-ProviderSpec 'TTS' $Target
@@ -33,7 +35,7 @@ if (-not $cudaBin) { throw 'CUDA_BIN_UNDECLARED scripts/Runtime-Common.ps1 did n
 # The whisper model path is no longer written here. It is resolved from the STT manifest row's
 # launch.placeholders.STT_MODEL_DIR, so pointing the pipeline at another recognizer-weight
 # directory is a manifest edit rather than an edit of this lifecycle script.
-$refText = ''
+$refText = '这是一段用于验证语音克隆的合成参考文本。'
 
 function Save-SwitchState([bool]$Busy,[string]$Phase,[string]$Message,[string]$Result='',[string]$Detail='',[string]$Previous='',[string]$Destination='') {
     # TSSCP01 (TASK_ID = AI_GIRLFRIEND_TTS_SWITCH_CONTROL_PLANE_FINAL_REPAIR_01):
@@ -301,6 +303,7 @@ try {
             Write-AtomicFile $backendFile $Target -Encoding Ascii
         }
         Save-SwitchState $false '' '' 'SWITCH_OK' 'already active' $previous $Target
+        & (Join-Path $script:AppRoot 'scripts\Schedule-UI-Migration.ps1')
         Write-Output "SWITCH_OK target=$Target"
         exit 0
     }

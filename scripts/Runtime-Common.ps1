@@ -5,11 +5,11 @@ $script:NativeRoot = Join-Path $script:RuntimeRoot 'windows'
 $script:LogRoot = Join-Path $script:AppRoot 'logs\runtime'
 $script:PidFile = Join-Path $script:NativeRoot 'service_pids.json'
 $script:S2SPython = Join-Path $script:RuntimeRoot 'core\venv\Scripts\python.exe'
-$script:S2SPythonRuntime = Join-Path $script:RuntimeRoot 'core\python\cpython-3.12.3-windows-x86_64-none\python.exe'
+$script:S2SPythonRuntime = (& $script:S2SPython -c 'import sys; print(sys._base_executable)').Trim()
 $script:S2SExe = Join-Path $script:RuntimeRoot 'core\venv\Scripts\speech-to-speech.exe'
 $script:AvatarPython = Join-Path $script:RuntimeRoot 'avatar\venv\Scripts\python.exe'
 $script:UiPython = $script:S2SPython
-$script:CudaBin = '' # Configure your CUDA bin directory locally
+$script:CudaBin = if($env:CUDA_PATH){Join-Path $env:CUDA_PATH 'bin'}else{Join-Path $script:AppRoot 'external\cuda\bin'}
 
 New-Item -ItemType Directory -Force -Path $script:LogRoot,$script:NativeRoot | Out-Null
 
@@ -735,11 +735,26 @@ function Start-NativeProcess([string]$Name,[string]$Executable,[string[]]$Argume
         return $current
     }
 
-    $out = Join-Path $script:LogRoot "$LogStem.stdout.log"
-    $err = Join-Path $script:LogRoot "$LogStem.stderr.log"
     $line = (($Arguments | ForEach-Object { Quote-ProcessArgument ([string]$_) }) -join ' ')
-    $proc = Start-Process -FilePath $Executable -ArgumentList $line -WorkingDirectory $WorkingDirectory `
-        -PassThru -WindowStyle Hidden -RedirectStandardOutput $out -RedirectStandardError $err
+    $port=if($Name -eq 's2s'){8765}else{0}
+    foreach($providerId in (Get-ProviderIds 'TTS' -EnabledOnly)){
+        $spec=Get-ProviderSpec 'TTS' $providerId
+        if((Get-ProviderProp (Get-ProviderProp $spec 'worker') 'pid_key') -eq $Name){$port=Get-ProviderHealthPort $spec}
+    }
+    $specDir=Join-Path $script:NativeRoot 'native_console_specs'
+    New-Item -ItemType Directory -Force -Path $specDir|Out-Null
+    $sid=[Security.Principal.WindowsIdentity]::GetCurrent().User.Value
+    & icacls.exe $specDir /inheritance:r /grant:r "*${sid}:(OI)(CI)F"|Out-Null
+    if($LASTEXITCODE -ne 0){throw 'NATIVE_SPEC_ACL_FAILED'}
+    $launchSpec=Join-Path $specDir ($Name+'_'+[guid]::NewGuid().ToString('N')+'.json')
+    $pidFile=$launchSpec+'.pid.json'
+    Write-JsonTextUtf8 $launchSpec (@{executable=$Executable;argument_line=$line;workdir=$WorkingDirectory;pid_file=$pidFile;title="AI Girlfriend $Name $port http://127.0.0.1:$port"}|ConvertTo-Json -Depth 5)
+    Start-Process -FilePath (Get-Command pwsh.exe -ErrorAction Stop).Source -WindowStyle Normal -ArgumentList @('-NoLogo','-NoProfile','-File',(Join-Path $script:AppRoot 'scripts\Native-Service-Console.ps1'),'-Spec',$launchSpec)|Out-Null
+    $deadline=(Get-Date).AddSeconds(10)
+    while(-not (Test-Path -LiteralPath $pidFile) -and (Get-Date) -lt $deadline){Start-Sleep -Milliseconds 100}
+    if(-not (Test-Path -LiteralPath $pidFile)){throw 'VISIBLE_LAUNCH_PID_TIMEOUT'}
+    $child=Read-JsonFile $pidFile
+    $proc=Get-Process -Id ([int]$child.pid) -ErrorAction Stop
     Set-ObjectValue $state $Name $proc.Id
     $started = Get-CimInstance Win32_Process -Filter "ProcessId=$($proc.Id)" -ErrorAction SilentlyContinue
     # OWNERSHIP REPAIR 2026-09-25: the pid stored under 'avatar' is the VENV LAUNCHER
@@ -753,6 +768,7 @@ function Start-NativeProcess([string]$Name,[string]$Executable,[string[]]$Argume
         commandLine=if($started){[string]$started.CommandLine}else{$line}
         createdBy='AI_GIRLFRIEND_WINDOWS_NATIVE'
         role='launcher'
+        consoleSpec=$launchSpec
         listenerAuthority='runtime/windows/avatar_runtime_state.json:listener_pid'
     })
     Save-ServicePids $state
@@ -760,11 +776,21 @@ function Start-NativeProcess([string]$Name,[string]$Executable,[string[]]$Argume
 }
 
 function Stop-NativeProcess([string]$Name,[string]$ExpectedExecutable,[string]$CommandMarker='',[object[]]$ExtraOwned=@()) {
+    if($Name -eq 'ui'){
+        & (Join-Path $script:AppRoot 'scripts\Stop-UI7860.ps1')
+        if(-not $?){throw 'UI_MANAGED_STOP_FAILED'}
+        return
+    }
     # $ExtraOwned lets the caller hand in processes this service provably owns but
     # that are no longer in the tracked pid's process tree (an orphaned worker
     # child); they are force-killed with the tree and counted in the final
     # still-running check. Callers that pass nothing behave exactly as before.
     $state = Read-ServicePids
+    $owner=Get-ServiceOwner $state $Name
+    if($owner -and $owner.PSObject.Properties['consoleSpec'] -and $owner.consoleSpec){
+        if([string]$owner.consoleSpec -notlike "$($script:NativeRoot)\native_console_specs\*"){throw 'FOREIGN_CONSOLE_SPEC'}
+        [IO.File]::WriteAllText(([string]$owner.consoleSpec+'.stop'),'planned lifecycle stop')
+    }
     $pidValue = [int]$state.$Name
     if ($pidValue -le 0) { return }
     $proc = Get-CimInstance Win32_Process -Filter "ProcessId=$pidValue" -ErrorAction SilentlyContinue
@@ -795,6 +821,11 @@ function Stop-NativeProcess([string]$Name,[string]$ExpectedExecutable,[string]$C
 
 function Stop-S2S {
     $state=Read-ServicePids
+    $owner=Get-ServiceOwner $state 's2s'
+    if($owner -and $owner.PSObject.Properties['consoleSpec'] -and $owner.consoleSpec){
+        if([string]$owner.consoleSpec -notlike "$($script:NativeRoot)\native_console_specs\*"){throw 'FOREIGN_CONSOLE_SPEC'}
+        [IO.File]::WriteAllText(([string]$owner.consoleSpec+'.stop'),'planned lifecycle stop')
+    }
     $pidValue=[int]$state.s2s
     if($pidValue -le 0) { return }
     $tracked=Get-CimInstance Win32_Process -Filter "ProcessId=$pidValue" -ErrorAction SilentlyContinue

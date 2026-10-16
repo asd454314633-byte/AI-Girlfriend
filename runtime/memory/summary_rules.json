@@ -1,0 +1,21 @@
+{
+  "_说明": "每一场滚动摘要的压缩规则。改这里的数字就能调整纪要长短，不需要动 Python。",
+  "_为什么是数据不是代码": "任务 §19 要求『不许每轮复述、不许模板化』，靠的不是散在各处的 if，而是这一份可核对的规则。",
+  "keep_recent_turns": 8,
+  "line_max_chars": 46,
+  "folded_max_chars": 260,
+  "total_max_chars": 520,
+  "drop_shorter_than_chars": 4,
+  "speaker_labels": {
+    "user": "他说",
+    "assistant": "她说"
+  },
+  "_字段含义": {
+    "keep_recent_turns": "纪要里逐轮保留最近几轮，更早的折成『更早：…』一行",
+    "line_max_chars": "单轮要点最长多少字，超了就从句读处截断",
+    "folded_max_chars": "折起来的那一行最长多少字",
+    "total_max_chars": "整份纪要最长多少字（装配上下文时还会再按模型预算裁一次）",
+    "drop_shorter_than_chars": "归一化后短于此的句子视为没说事，不进纪要",
+    "speaker_labels": "纪要里两侧的称呼，界面上不出现角色/系统这类词"
+  }
+}

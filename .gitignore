@@ -31,3 +31,26 @@
 runtime/windows/*.json
 runtime/windows/*.txt
 runtime/mode/mode_state.json
+runtime/ui7860_manager/state/
+runtime/ui7860_manager/lab_state/
+runtime/ui7860_manager/hold_shutdown
+runtime/higgs/*key*.txt
+runtime/live/config.json
+runtime/live/attempted.json
+runtime/live/*request.json
+runtime/llm/models.json
+runtime/llm/active_model.json
+runtime/llm/active_model_label*.txt
+runtime/character/data/
+runtime/memory/data/
+runtime/voices/
+reading/index/
+models/
+external/
+tools/llama.cpp/
+runtime/core/venv/
+runtime/avatar/venv/
+runtime/core/python/
+*.public-overlay-backup
+**/.pytest_cache/
+# Only the five already-authorized display media are tracked explicitly.

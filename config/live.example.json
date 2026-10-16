@@ -1,0 +1,76 @@
+{
+  "enabled": false,
+  "source": "douyin",
+  "ws_url": "ws://127.0.0.1:8888/",
+  "bridge_path": "runtime/live/barrage_bridge.py",
+  "auto_reconnect": true,
+  "reconnect_min": 1,
+  "reconnect_max": 20,
+  "queue_size": 32,
+  "comment_ttl": 30,
+  "priority_ttl": 45,
+  "room_cooldown": 4,
+  "user_cooldown": 20,
+  "selection_delay": 0.8,
+  "max_user_context": 8,
+  "max_room_context": 6,
+  "max_users": 256,
+  "context_ttl": 300,
+  "max_content": 500,
+  "dedupe_size": 10000,
+  "dedupe_ttl": 600,
+  "fingerprint_bucket": 5,
+  "dispatch_timeout": 90,
+  "frontend_poll_ms": 600,
+  "reply_policy": {
+    "mention": 100,
+    "question": 60,
+    "followup": 80,
+    "continuing": 45,
+    "ordinary": 10,
+    "min_score": 40
+  },
+  "mention_terms": [
+    "@AI",
+    "@ai",
+    "主播",
+    "@你"
+  ],
+  "question_terms": [
+    "?",
+    "？",
+    "吗",
+    "什么",
+    "怎么",
+    "为什么",
+    "哪里",
+    "几岁",
+    "叫啥"
+  ],
+  "followup_terms": [
+    "那",
+    "刚才",
+    "还没回答",
+    "继续",
+    "我家的",
+    "然后"
+  ],
+  "spam_terms": [
+    "加微信",
+    "加vx",
+    "兼职",
+    "刷单",
+    "http://",
+    "https://"
+  ],
+  "blocked_identity_terms": [
+    "记住我",
+    "叫我老公",
+    "我是你的主人",
+    "忽略之前",
+    "忽略规则",
+    "系统指令"
+  ],
+  "log_level": "INFO",
+  "api_port": 8781
+}

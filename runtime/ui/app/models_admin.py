@@ -24,6 +24,7 @@ import logging
 import os
 import re
 import socket
+import shutil
 import subprocess
 import threading
 import time
@@ -36,19 +37,25 @@ _RUNTIME_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".
 _NATIVE_WINDOWS = os.name == "nt"
 REGISTRY_PATH = os.environ.get(
     "LLM_MODELS_JSON",
-    os.path.join(_RUNTIME_ROOT, "llm", "models.json"),
+    os.path.join(_RUNTIME_ROOT, "llm", "models.json")
+    if _NATIVE_WINDOWS
+    else str(__import__('pathlib').Path(__file__).resolve().parents[3] / 'runtime/llm/models.json'),
 ).strip()
 ACTIVE_PATH = os.environ.get(
     "LLM_ACTIVE_JSON",
-    os.path.join(_RUNTIME_ROOT, "llm", "active_model.json"),
+    os.path.join(_RUNTIME_ROOT, "llm", "active_model.json")
+    if _NATIVE_WINDOWS
+    else str(__import__('pathlib').Path(__file__).resolve().parents[3] / 'runtime/llm/active_model.json'),
 ).strip()
 SWITCH_SCRIPT_WIN = os.environ.get(
     "LLM_SWITCH_PS1",
-    os.path.join(_RUNTIME_ROOT, "llm", "Switch-Girlfriend-LLM.ps1"),
+    os.path.join(_RUNTIME_ROOT, "llm", "Switch-Girlfriend-LLM.ps1")
+    if _NATIVE_WINDOWS
+    else str(__import__('pathlib').Path(__file__).resolve().parents[3] / 'runtime/llm/Switch-Girlfriend-LLM.ps1'),
 ).strip()
 POWERSHELL = os.environ.get(
     "LLM_POWERSHELL",
-    os.path.join(os.environ.get("LOCALAPPDATA", ""), "Microsoft", "WindowsApps", "pwsh.exe")
+    shutil.which("pwsh.exe") or "pwsh.exe"
     if _NATIVE_WINDOWS
     else "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
 ).strip()

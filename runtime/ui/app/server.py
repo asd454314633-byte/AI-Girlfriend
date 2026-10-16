@@ -768,6 +768,18 @@ if not LIMITER_ENABLED:
 
     app.include_router(avatar_admin.router)
 
+    # 书库管理（AI_GIRLFRIEND_READING_LIBRARY_MANAGE_01）：整理 / 重命名 / 回收站。
+    # 同一注册条件与时机：只在本地桌面部署存在，且必须在 catch-all 静态挂载之前。
+    import reading_admin
+
+    app.include_router(reading_admin.router)
+
+    # 音色管理（AI_GIRLFRIEND_VOICE_LIBRARY_01）：上传参考音频 / 克隆 / 试听 / 切换。
+    # 音频与元数据全部留在本机 runtime/voices/，不出网。
+    import voice_library_admin
+
+    app.include_router(voice_library_admin.router)
+
 
 # Static front-end. Registered last so the /api routes win. `html=True` serves
 # index.html at "/". The repo is public anyway, so serving the dir is fine.

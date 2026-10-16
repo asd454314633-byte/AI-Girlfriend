@@ -1,0 +1,32 @@
+[
+  {
+    "delay": 0.1,
+    "payload": {
+      "Type": 1,
+      "Data": {
+        "MsgId": "v3-smoke-1",
+        "RoomId": "local-fixture",
+        "User": {
+          "Id": "v3-test-viewer",
+          "Nickname": "本地验收"
+        },
+        "Content": "@AI 请只说一句：直播互动测试已经完成。"
+      }
+    }
+  },
+  {
+    "delay": 0.1,
+    "payload": {
+      "Type": 1,
+      "Data": {
+        "MsgId": "v3-smoke-1",
+        "RoomId": "local-fixture",
+        "User": {
+          "Id": "v3-test-viewer",
+          "Nickname": "本地验收"
+        },
+        "Content": "@AI 请只说一句：直播互动测试已经完成。"
+      }
+    }
+  }
+]

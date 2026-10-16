@@ -1,5 +1,49 @@
 # NOTICE (attribution, derivative boundaries and license carve-outs)
 
+## V3 source release update — 2026-10-16
+
+This release synchronizes the currently deployed, legally distributable control,
+reading, voice-library, TTS, live-comment and service-manager source. It does not
+relicense third-party dependencies. Per-file release origins and modifications
+are recorded in `provenance/V3_FILE_ORIGINS.json`; external components and model
+terms are recorded in `provenance/V3_COMPONENT_LICENSES.csv` and
+`provenance/MODEL_AND_ASSET_SOURCES.csv`.
+
+New project modules include reading_admin, voice_library_admin, the authenticated
+ui7860_manager, native visible-console wrappers and the project's own reusable
+barrage_bridge parser. Public-deployment edits replace private paths, voice
+transcripts and persona configuration with relative paths or neutral templates.
+They do not include private books, progress, voices, credentials or registrations.
+
+The current speech-to-speech 0.2.11 overlay contains modified s2s_pipeline.py and
+websocket_router.py (Apache-2.0), and project-authored reading_bridge.py and
+TTS/manual_voice_mode.py. Its upstream license is preserved separately at
+`third_party_licenses/speech-to-speech-Apache-2.0.txt`. The compatibility shim
+`runtime/girlfriend_reading.py` is project-authored. Existing LiveTalking Apache-2.0
+license and the reviewed independent public avatar-sync implementation are retained.
+No legacy unlicensed adapter is imported from production.
+
+The optional project-authored Sola preset renderer is included, but the third-party
+Sola V2 Ember/Flame preset JSON and associated frozen prompt assets are not:
+redistribution rights are unconfirmed. All public modes keep that optional layer
+disabled. Its recorded source is https://pyrxpia.github.io/sola-hub/ (V2.0 Full
+Release); do not enable it without separately obtaining authorized assets and
+verifying the renderer's source-integrity manifest. The nine core capabilities
+do not require it.
+
+Higgs Studio application source identifies Apache-2.0, but native DLLs and all
+weights remain external. Higgs TTS3 model terms include research/non-commercial
+restrictions, a separately conditioned creator grant, and separate commercial
+licensing for other uses. Fish S2 Pro and the locally used s2.cpp distribution
+carry Fish Audio Research License conditions; commercial use requires separate
+authorization. Gemma-family terms are not MIT. Refer to the actual upstream
+licenses, not a blanket claim about this repository's code.
+
+Obsolete WSL launch mirrors, production-specific memory cleanup utilities and
+forensic outputs are excluded; current Windows behaviour is provided instead.
+The five display-only demonstration files and their MEDIA_USAGE_POLICY remain
+byte-for-byte unchanged. New private listening WAVs are not included.
+
 This file records the per-file provenance classes verified on 2026-10-12 by:
 (a) a git-blob diff of `runtime/avatar/app/**` against the pinned upstream
 commit, and (b) line-level similarity checks of the UI files against their
@@ -83,7 +127,7 @@ code licenses, but it binds anyone who downloads the weights.
 
 ## 4. Dependencies installed at setup time (not vendored)
 
-speech-to-speech 0.2.11 (Apache-2.0, wheel SHA256 `ac33e2e8…b2a2`), 
+speech-to-speech 0.2.11 (Apache-2.0, wheel SHA256 `ac33e2e8…b2a2`),
 faster-whisper, Silero VAD (via upstream VADHandler), llama.cpp — see
 `docs/INSTALL.md` and `provenance/MODEL_AND_ASSET_SOURCES.csv`.
 

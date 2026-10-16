@@ -27,7 +27,7 @@ catalogued by ``runtime/audit/system_v2/PATCH_MANIFEST.json``.
 
 Known, deliberately unfixed defect (kept out of this migration on purpose — see
 the §31 report): ``documents.READING_ROOT`` and ``documents.DB_PATH`` still default
-to WSL-era paths (``/mnt/d/…``, ``/home/<user>/…``) that do not exist on the
+to WSL-era paths (``/mnt/d/…``, ``/home/user/…``) that do not exist on the
 Windows native runtime, and production never sets ``READING_ROOT`` /
 ``GIRLFRIEND_MEMORY_DB``.  Fixing that is a behaviour change, not a relocation, so
 it was left for the owner.  Importing this package creates no directories.

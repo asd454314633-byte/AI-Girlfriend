@@ -1,12 +1,14 @@
-﻿asset,description,source,license,distribution_note
-wav2lip_weights,Wav2Lip 权重 (wav2lip.pth),https://github.com/Rudrabha/Wav2Lip,NON-COMMERCIAL,原始一键包内携带；本地 models/；不随仓库发布
-wav2lip256_package,Wav2Lip256 整合包组件,原始一键包 lineage（2026-08-05 版，见 SOURCE_LOCK route_verdict）,UNKNOWN/REVIEW,本地 models/ 与 runtime/avatar；不随仓库发布
-s3fd,s3fd 人脸检测权重,Wav2Lip 官方仓库,NON-COMMERCIAL,不随仓库发布
-qwen3_14b_gguf,Qwen3 14B GGUF,QwenLM 官方发布（HF），经 llama.cpp 量化链,Apache-2.0 (model),不随仓库发布；本地 models/
-llama_cpp,llama.cpp Windows 二进制,ggml-org/llama.cpp releases,MIT,不随仓库发布
-qwen3_tts,Qwen3-TTS 声音克隆服务,QwenLM 官方 + faster-qwen3-tts GGML wheel（F1 文档级）,REVIEW_REQUIRED,本地 TTS 服务目录；不随仓库发布
-faster_whisper,faster-whisper 1.2.1,PyPI / SYSTRAN/faster-whisper,MIT,venv 依赖，不随仓库发布
-silero_vad,Silero VAD v5,snakers4/silero-vad（经 speech-to-speech VADHandler）,MIT,venv 依赖，不随仓库发布
-avatar_media,官方示例形象（视频/图像）,原始一键包 lineage,UNKNOWN/REVIEW,不随仓库发布
-voice_reference,用户参考声音（15s）,用户个人录制,PERSONAL DATA,绝对排除
-reading_library,用户书库/阅读进度,用户个人数据,PERSONAL DATA,"绝对排除（runtime/reading/data, reading/library）"
+asset,description,source,version_or_revision,license,distribution_note
+dark_roast,DARK ROAST9B Q4_K_M,https://huggingface.co/mradermacher/Qwen3.5-9B-The-Defiant-Fable-DARK-ROAST-Uncensored-Heretic-NEO-IMATRIX-MAX-MTP-i1-GGUF,ad376a5c5343273577a89f5c708eb62b1f39ab07,model card Apache-2.0; verify base and quantizer terms,NOT BUNDLED; template hash retained
+gemma4,Gemma4 12B QAT Balanced Q4_K_M,https://huggingface.co/HauhauCS/Gemma4-12B-QAT-Uncensored-HauhauCS-Balanced,ae8045ac2bd216293ca49a3065da2c942dde4b68,Gemma terms; not MIT,NOT BUNDLED; accept applicable upstream terms
+qwen3_live,Qwen3 4B Instruct2507 Q4_K_M,https://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF,18727206c51467496bfba014368bd0a30e97f411,verify model card and base Apache-2.0,NOT BUNDLED
+qwen3_tts,Qwen3-TTS Base1.7B,https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base,12Hz-1.7B-Base,model card Apache-2.0,NOT BUNDLED; own authorized reference required
+higgs,Higgs TTS3 main4B / Q4 aggregate components,https://huggingface.co/bosonai/higgs-tts-3-4b,Studio0.3.0 local engine contract,Boson Higgs TTS3 Research and Non-Commercial License with creator-use conditions,NOT BUNDLED; separate commercial licensing for other covered uses
+fish,Fish S2 Pro Q4 aggregate components,https://huggingface.co/fishaudio/s2-pro,S2 Pro,Fish Audio Research License,NOT BUNDLED; commercial separately licensed
+whisper,Whisper large-v3 CTranslate2,https://huggingface.co/Systran/faster-whisper-large-v3,large-v3,verify upstream model terms,NOT BUNDLED
+wav2lip,Wav2Lip256 model,https://github.com/Rudrabha/Wav2Lip,user-selected compatible weights,research/non-commercial model terms,NOT BUNDLED; LiveTalking code license does not relicense weights
+s3fd,Face detection weights,https://github.com/Rudrabha/Wav2Lip,user-selected compatible weights,verify model-specific restrictions,NOT BUNDLED
+avatar,User avatar photos/video,user authorized local source,not applicable,personal rights required,NOT BUNDLED
+reference,User reference and cloned voice,user authorized local source,not applicable,personal rights and consent required,NOT BUNDLED; no private Xiaoyan or listening WAV
+books,Books and progress,user data,not applicable,private,NOT BUNDLED; fictional chapter and empty initialization only
+demo,Five pre-existing project demonstrations,docs/MEDIA_USAGE_POLICY.md,unchanged existing public files,GitHub project display only,not reusable assets; no new real-person media

@@ -1,0 +1,47 @@
+[
+  {
+    "delay": 8,
+    "payload": {
+      "Type": 1,
+      "Data": {
+        "MsgId": "context-A-1",
+        "RoomId": "context",
+        "User": {
+          "Id": "A",
+          "Nickname": "观众甲"
+        },
+        "Content": "@AI 你喜欢猫吗？"
+      }
+    }
+  },
+  {
+    "delay": 16,
+    "payload": {
+      "Type": 1,
+      "Data": {
+        "MsgId": "context-B-1",
+        "RoomId": "context",
+        "User": {
+          "Id": "B",
+          "Nickname": "观众乙"
+        },
+        "Content": "@AI 你叫什么名字？"
+      }
+    }
+  },
+  {
+    "delay": 0,
+    "payload": {
+      "Type": 1,
+      "Data": {
+        "MsgId": "context-A-2",
+        "RoomId": "context",
+        "User": {
+          "Id": "A",
+          "Nickname": "观众甲"
+        },
+        "Content": "@AI 我家的猫叫汤圆，你觉得这个名字好吗？"
+      }
+    }
+  }
+]

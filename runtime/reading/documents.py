@@ -9,8 +9,8 @@
 `<项目根>/reading/{library,index,temp}`，不跨机器、不复制进 WSL。
 
 **MODE_SYSTEM_V1 修正（本轮唯一改动的既有缺陷）**：迁移出 site-packages 时这两条
-默认值仍是 WSL 年代的字符串（`/mnt/d/…`、`/home/<user>/…`），在 Windows 原生
-运行时上会被解释成 `D:\\mnt\\d\\…`、`D:\\home\\<user>\\…` —— 目录确实会被建出来，
+默认值仍是 WSL 年代的字符串（`/mnt/d/…`、`/home/user/…`），在 Windows 原生
+运行时上会被解释成 `D:\\mnt\\d\\…`、`D:\\home\\user\\…` —— 目录确实会被建出来，
 但那是个谁也不会去看的影子位置：导入的书、朗读进度全落在那里，页面显示「书库还空着」，
 `/api/reading/block` 恒为空。现在默认落到项目真实路径上。
 

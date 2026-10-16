@@ -36,7 +36,7 @@
       "id": "qwen3",
       "provider_type": "TTS",
       "display_name": "Qwen3 TTS",
-      "display_name_zh": "千问 TTS",
+      "display_name_zh": "千问 TTS Base（1.7B）",
       "version": "0.2.11-handler",
       "enabled": true,
       "ui_visible": true,
@@ -69,7 +69,7 @@
         ],
         "placeholders": {
           "QWEN3_MODEL_DIR": "runtime/../models/native/qwen3",
-          "QWEN3_REF_TEXT": "Configure your own reference transcript locally; none is distributed"
+          "QWEN3_REF_TEXT": "models/native/qwen3/ref.txt if present, else the frozen production reference transcript"
         },
         "requires": [
           "{QWEN3_MODEL_DIR}",
@@ -114,7 +114,8 @@
             {
               "id": "gentle",
               "label_zh": "温柔",
-              "emit": "请用温柔的语气说话。"
+              "emit": "请用温柔的语气说话。",
+              "ui_visible": false
             },
             {
               "id": "cold",
@@ -129,7 +130,8 @@
             {
               "id": "whisper",
               "label_zh": "耳语",
-              "emit": "请用耳语、轻声说话。"
+              "emit": "请用耳语、轻声说话。",
+              "ui_visible": false
             },
             {
               "id": "excited",
@@ -219,7 +221,7 @@
       "id": "higgs",
       "provider_type": "TTS",
       "display_name": "Higgs Audio v3",
-      "display_name_zh": "Higgs Audio v3",
+      "display_name_zh": "Higgs Audio v3（约4.65B · Q4）",
       "version": "studio-0.3.0-adapter",
       "enabled": true,
       "ui_visible": true,
@@ -350,7 +352,7 @@
             },
             {
               "id": "determination",
-              "label_zh": "坚定",
+              "label_zh": "严厉／强硬（坚定）",
               "emit": "<|emotion:determination|>"
             },
             {
@@ -365,7 +367,7 @@
             },
             {
               "id": "affection",
-              "label_zh": "喜爱",
+              "label_zh": "温柔关爱",
               "emit": "<|emotion:affection|>"
             },
             {
@@ -415,7 +417,7 @@
             },
             {
               "id": "disgust",
-              "label_zh": "厌恶",
+              "label_zh": "厌恶／嫌弃",
               "emit": "<|emotion:disgust|>"
             },
             {
@@ -656,7 +658,7 @@
           "evidence": "每次请求都带 reference_audio_path"
         }
       },
-      "panel_note_zh": "未选择时保留原有生成行为。",
+      "panel_note_zh": "未选择时保留原有生成行为。4B 为主模型名称；本地 GGUF 全部张量约4.65B，含配套组件。无已确认的原生嘲讽标签。",
       "delivery": {
         "placement": "text_prefix",
         "separator": "",
@@ -672,7 +674,7 @@
       "id": "fish",
       "provider_type": "TTS",
       "display_name": "Fish S2 Pro",
-      "display_name_zh": "Fish S2 Pro",
+      "display_name_zh": "Fish S2 Pro（约4.95B · Q4）",
       "version": "s2.cpp-cuda-adapter",
       "enabled": true,
       "ui_visible": true,
@@ -719,14 +721,15 @@
           "FISH_MODEL": "external/fish-s2-pro/models/s2-pro-q4_k_m.gguf",
           "FISH_TOKENIZER": "external/fish-s2-pro/models/tokenizer.json",
           "FISH_VOICES": "external/fish-s2-pro/voices",
-          "FISH_VOICE_SAMPLE": "external/fish-s2-pro/voices/configure-your-voice.s2voice"
+          "FISH_VOICE_SAMPLE": "external/fish-s2-pro/voices/default.s2voice"
         },
         "requires": [
           "{FISH_EXE}",
           "{FISH_MODEL}",
           "{FISH_TOKENIZER}",
           "{FISH_VOICE_SAMPLE}"
-        ]
+        ],
+        "_external_install": "s2.cpp lives outside this repo (external/fish-s2-pro) and its weights are never copied here. These placeholders are the single owner of that install root: launch_context()/Get-ProviderLaunchContext keep only values that resolve to an existing path, so a moved install surfaces as FISH_ASSET_UNDECLARED at switch time instead of a silently wrong argv. Before 2026-09-24 the same five paths were hand-written inside runtime/windows/Switch-Girlfriend-Voice.ps1 and two of these placeholders were prose, which made worker_cli_args unexpandable."
       },
       "health": {
         "scheme": "tcp",
@@ -777,7 +780,7 @@
             {
               "id": "gentle",
               "label_zh": "温柔",
-              "emit": "soft and gentle voice"
+              "emit": "soft tone"
             },
             {
               "id": "strict",
@@ -862,7 +865,7 @@
           "evidence": "同一请求内复用已解析 prompt codes"
         }
       },
-      "panel_note_zh": "自定义表现按原文作为 Fish 文本提示发送，实际表现由模型决定。",
+      "panel_note_zh": "本地 GGUF 全部张量约4.95B（含配套组件）。温柔使用 [soft tone]，耳语使用 [whisper]。嘲讽：UNSUPPORTED，一次实际对照未能可靠确认效果，未启用。自定义表现仍按原文发送。",
       "delivery": {
         "placement": "text_prefix",
         "separator": " ",

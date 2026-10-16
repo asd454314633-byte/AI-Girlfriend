@@ -147,6 +147,7 @@ def ui_controls(spec: dict[str, Any], alias_map: dict[str, str]) -> list[dict[st
             control["values"] = [
                 {"id": str(item.get("id", "")), "label_zh": str(item.get("label_zh", item.get("id", "")))}
                 for item in enum_values(capabilities, name)
+                if item.get("ui_visible", True)
             ]
         else:
             control["max_length"] = int(entry.get("max_length", 160))

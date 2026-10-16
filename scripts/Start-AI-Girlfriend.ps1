@@ -1,4 +1,4 @@
-﻿param([switch]$NoBrowser)
+param([switch]$NoBrowser)
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'Runtime-Common.ps1')
 # The digital-human launch body lives in its own library so the cold start and the
@@ -63,24 +63,8 @@ function Start-AvatarNative {
 }
 
 function Start-UiNative {
-    Assert-PortFree 7860
-    $app=Join-Path $script:RuntimeRoot 'ui\app'
-    $args=@('-m','uvicorn','server:app','--host','127.0.0.1','--port','7860')
-    $env:SPEECH_TO_SPEECH_URL='http://127.0.0.1:8765'
-    $env:S2S_SPEAK_BASE='http://127.0.0.1:8765'
-    $env:LLM_MODELS_JSON=Join-Path $script:RuntimeRoot 'llm\models.json'
-    $env:LLM_ACTIVE_JSON=Join-Path $script:RuntimeRoot 'llm\active_model.json'
-    $env:LLM_SWITCH_PS1=Join-Path $script:RuntimeRoot 'llm\Switch-Girlfriend-LLM.ps1'
-    $env:LLM_POWERSHELL=Join-Path $env:LOCALAPPDATA 'Microsoft\WindowsApps\pwsh.exe'
-    $env:S2S_SPEAK_STATUS='http://127.0.0.1:8765/v1/pool'
-    $pidValue=Start-NativeProcess 'ui' $script:UiPython $args $app 'ui-7860'
-    $deadline=(Get-Date).AddSeconds(90)
-    while((Get-Date) -lt $deadline) {
-        if(Test-Http 'http://127.0.0.1:7860/api/config') { return }
-        if(-not (Get-Process -Id $pidValue -ErrorAction SilentlyContinue)) { throw "UI_PROCESS_EXITED pid=$pidValue" }
-        Start-Sleep -Seconds 2
-    }
-    throw 'UI_START_TIMEOUT port=7860'
+    & (Join-Path $PSScriptRoot 'Start-UI7860.ps1')
+    if(-not $?){throw 'UI_MANAGED_START_FAILED'}
 }
 
 try {

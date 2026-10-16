@@ -107,7 +107,7 @@ AVATAR_SUPERVISOR = STATE_DIR / "Avatar-Supervisor.ps1"
 # 与指针文件同一套纪律：一份事实一个写者。字段名与
 # runtime/avatar/app/server/routes.py 的 _process_ownership() 读的是同一套。
 AVATAR_RUNTIME_STATE = STATE_DIR / "avatar_runtime_state.json"
-POWERSHELL = str(Path(os.environ.get("LOCALAPPDATA", "")) / "Microsoft" / "WindowsApps" / "pwsh.exe")
+POWERSHELL = __import__('shutil').which('pwsh.exe') or 'pwsh.exe'
 # 生命周期入口固定用 5.1，和计划任务包装器（GirlfriendAvatar8010_Manual 的
 # Action）同一个引擎：owner 身份判定、状态文件写法都只在这一种下实测过，
 # 两种引擎混用等于把「谁 owns 8010」再问一遍。

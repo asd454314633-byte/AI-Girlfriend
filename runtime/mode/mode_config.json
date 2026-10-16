@@ -1,10 +1,15 @@
 {
   "schema": "ai-girlfriend-mode/1",
+  "_说明": "这一份是模式体系里唯一能改的开关表。每个模式各自加载什么，全部写在这里的模式条目里——以后不再有全局开关：任何一个任务想打开某一块，必须指名它属于哪个模式，不能让全场一起生效。",
+  "_回滚": "把某个模式的某个开关改回原值即可，改完不用重启服务（mtime 变了就重读）。当前模式本身在 mode_state.json，不在这一份。",
+  "_历史根因": "最近真人聊天出现「她微微垂下眼帘」这种第三人称旁白，根因是 Sola V2 Ember（作者官方叙事预设）被全局打开：它正文明确要求 Narrate / Run the world / 3rd person / Do not pause the fiction，与「人物本人直接说话」根本冲突。已确认：当前生产 Prompt 5/6 出旁白，仅关 Ember 0/6 出旁白。所以 ROLEPLAY 与 READING 的 sola_v2_ember 一律 false。文件一个都不删，历史资产保留在 runtime/character/sola_v2_ember/。",
   "modes": {
     "ROLEPLAY": {
       "label": "互动聊天",
       "implemented": true,
       "order": 1,
+      "_是什么": "AI 女友正常人物交流模式。无论当前人物是女友、妈妈、姐姐、老师、秘书还是任何自定义人物，都必须是这个人物本人在说话。",
+      "_核心": "人物能力保留，文学叙述格式删除。性格、身份、关系、情绪、自主性、主动表达、长期记忆、短期上下文、称呼、语气、角色约束一样都不能少；少的只有「小说作者视角」这种输出格式。",
       "sola_v2_ember": false,
       "human_interaction": true,
       "include_reading_context": false,
@@ -14,6 +19,8 @@
       "label": "陪读朗读",
       "implemented": true,
       "order": 2,
+      "_是什么": "忠实朗读用户提供的文字。主任务是读，不是扮演。用户中途打断提问时用当前人物身份回答，回答完自动从断点续读。",
+      "_核心": "原文是什么就读什么，禁止改写/总结/润色/续写/编剧情/省略段落/解释文本。朗读正文走 原文→分块→TTS，不经过 LLM。",
       "sola_v2_ember": false,
       "human_interaction": false,
       "include_reading_context": true,
@@ -23,6 +30,7 @@
       "label": "第三个模式",
       "implemented": false,
       "order": 3,
+      "_本轮纪律": "只显示，不实现、不调用任何逻辑。不得顺手加入 直播助手 / 专业问答 / Agent / 联网搜索 / 云模型 / 视觉模式 / 主动陪伴。以后单独开任务。",
       "sola_v2_ember": false,
       "human_interaction": false,
       "include_reading_context": false,

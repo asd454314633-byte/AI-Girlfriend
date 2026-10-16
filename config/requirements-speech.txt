@@ -1,0 +1,8 @@
+speech-to-speech[faster-whisper]==0.2.11
+qwen-tts
+scipy
+soundfile
+faster-whisper
+# Install the appropriate torch/torchaudio CUDA build from the official index
+# before this file. See runtime/core/windows-production-requirements.txt for the
+# recorded existing-environment versions; it is not a portable lock guarantee.
