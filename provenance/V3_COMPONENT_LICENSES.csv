@@ -12,4 +12,5 @@ RIGHTS_UNCONFIRMED,Higgs native DLL,external native engine,https://github.com/Sa
 EXTERNAL_DEPENDENCY,s2.cpp,external/fish-s2-pro/s2.cpp,https://github.com/rodrigomatta/s2.cpp,2c33261938da1a41d713768b1b391b4d368d7d2c,Fish Audio Research License,no,research/non-commercial; commercial separately licensed
 RIGHTS_UNCONFIRMED,BarrageGrab collector,external port8888,https://github.com/monsterxwx/BarrageGrab,user-selected version,review upstream license and platform terms,no,no platform credentials redistributed
 RIGHTS_UNCONFIRMED,Legacy avatar adapter,excluded,https://github.com/liuw8233-cell/ai_girlfriend,699f7fe,no redistribution license confirmed,no,do not copy legacy source
+RIGHTS_UNCONFIRMED,Optional Sola narrative preset,excluded source JSON,https://pyrxpia.github.io/sola-hub/,Sola V2 Ember V2.0 Full Release,redistribution not confirmed,no,project-authored renderer only; disabled in all public modes
 EXTERNAL_DEPENDENCY,Five existing display media,docs/media/,docs/MEDIA_USAGE_POLICY.md,existing public baseline,confirmed project display permission only,unchanged,no reuse/training/cloning/identity extraction

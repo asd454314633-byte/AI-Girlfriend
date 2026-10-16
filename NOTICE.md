@@ -23,6 +23,14 @@ TTS/manual_voice_mode.py. Its upstream license is preserved separately at
 license and the reviewed independent public avatar-sync implementation are retained.
 No legacy unlicensed adapter is imported from production.
 
+The optional project-authored Sola preset renderer is included, but the third-party
+Sola V2 Ember/Flame preset JSON and associated frozen prompt assets are not:
+redistribution rights are unconfirmed. All public modes keep that optional layer
+disabled. Its recorded source is https://pyrxpia.github.io/sola-hub/ (V2.0 Full
+Release); do not enable it without separately obtaining authorized assets and
+verifying the renderer's source-integrity manifest. The nine core capabilities
+do not require it.
+
 Higgs Studio application source identifies Apache-2.0, but native DLLs and all
 weights remain external. Higgs TTS3 model terms include research/non-commercial
 restrictions, a separately conditioned creator grant, and separate commercial

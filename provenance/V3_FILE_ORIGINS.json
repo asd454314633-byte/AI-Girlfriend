@@ -32,7 +32,7 @@
     },
     {
       "path": "NOTICE.md",
-      "release_sha256": "e7854dfff4f910ba7637f05f907e0e0a2b433a01a96877bab9116cdedeee0250",
+      "release_sha256": "d4ea9f249a86f869295ed744058c2dbc887aa537f33dd3c667c850f4abd8d2a9",
       "classification": "SELF_DEVELOPED",
       "license": "MIT",
       "upstream": "this repository or project documentation"
@@ -277,7 +277,7 @@
     },
     {
       "path": "provenance/V3_COMPONENT_LICENSES.csv",
-      "release_sha256": "1d14b6691586a8941b8fb3903f665c958b2d0429673f64a21c05ff04d11f13e6",
+      "release_sha256": "73431519d84d2fbdffe51ecc6749f4cb70317c1c0855cff054019d3d6f8106e7",
       "classification": "SELF_DEVELOPED",
       "license": "MIT",
       "upstream": "this repository or project documentation"
