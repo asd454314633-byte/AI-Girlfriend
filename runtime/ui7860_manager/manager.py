@@ -417,10 +417,39 @@ def start(mode, port, state, maintenance=False):
     with spec_path.open('x', encoding='utf-8') as f:
         json.dump(spec, f)
     powershell = str(Path(os.environ['SystemRoot']) / 'System32/WindowsPowerShell/v1.0/powershell.exe')
-    subprocess.Popen([powershell, '-NoLogo', '-NoProfile', '-ExecutionPolicy', 'Bypass',
-                      '-File', str(HERE / 'Console.ps1'), '-Python', sys.executable,
-                      '-Runner', str(Path(__file__).resolve()), '-Spec', str(spec_path)],
-                     cwd=str(HERE), creationflags=subprocess.CREATE_NEW_CONSOLE)
+    # Optional single-console mode: when runtime/windows/v3_console_mode.json
+    # declares {"mode": "background"}, the console host runs hidden and its
+    # stdout/stderr stream to rotated log files instead of a visible window.
+    # Missing/unreadable file keeps the historical visible-console behavior.
+    mode_path = PROJECT / 'runtime/windows/v3_console_mode.json'
+    try:
+        background = json.loads(mode_path.read_text(encoding='utf-8')).get('mode') == 'background'
+    except FileNotFoundError:
+        background = False
+    except Exception as exc:
+        raise RuntimeError(f'V3_CONSOLE_MODE_CONFIG_INVALID: {exc}') from exc
+    args = [powershell, '-NoLogo', '-NoProfile', '-ExecutionPolicy', 'Bypass',
+            '-File', str(HERE / 'Console.ps1'), '-Python', sys.executable,
+            '-Runner', str(Path(__file__).resolve()), '-Spec', str(spec_path)]
+    if background:
+        log_dir = PROJECT / 'logs/runtime'
+        log_dir.mkdir(parents=True, exist_ok=True)
+        stdout_path, stderr_path = log_dir / 'ui7860.stdout.log', log_dir / 'ui7860.stderr.log'
+        for path in (stdout_path, stderr_path):
+            if path.exists():
+                stamp = time.strftime('%Y%m%d-%H%M%S')
+                path.replace(path.with_name(f'{path.name}.{stamp}.log'))
+                archives = sorted(path.parent.glob(path.name + '.*.log'), key=lambda p: p.stat().st_mtime, reverse=True)
+                for stale in archives[10:]:
+                    stale.unlink(missing_ok=True)
+        args.append('-Background')
+        # Redirect directly to files, never to a pipe this controller would have
+        # to drain; the UI server stays independent of the console host.
+        with stdout_path.open('ab', buffering=0) as stdout, stderr_path.open('ab', buffering=0) as stderr:
+            subprocess.Popen(args, cwd=str(HERE), creationflags=subprocess.CREATE_NO_WINDOW,
+                             stdout=stdout, stderr=stderr, close_fds=True)
+    else:
+        subprocess.Popen(args, cwd=str(HERE), creationflags=subprocess.CREATE_NEW_CONSOLE)
     deadline = time.monotonic() + 20
     while time.monotonic() < deadline:
         record_path = state_dir / 'record.json'

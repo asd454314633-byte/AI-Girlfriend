@@ -223,6 +223,8 @@ function render() {
   }
   const activeSel = /** @type {HTMLSelectElement|null} */ ($("vl-active-select"));
   if (activeSel) activeSel.value = activeHiggs;
+  const current = $("inline-current-voice");
+  if (current) current.textContent = (voices.find((v) => v.voice_id === activeHiggs) || {}).name || activeHiggs;
 }
 
 async function refresh() {
@@ -270,7 +272,7 @@ export function mountVoiceLibrary() {
       <input id="vl-file" type="file" accept=".wav,.mp3,.flac,.m4a,.ogg,.opus,.webm" aria-label="选择参考音频" />
       <input id="vl-name" type="text" placeholder="音色名称（可选）" aria-label="音色名称" />
       <input id="vl-ref-text" type="text" placeholder="参考文字（留空则自动识别）" aria-label="参考文字" />
-      <button id="vl-upload-btn" class="btn primary" type="button">上传并创建音色</button>
+      <button id="vl-upload-btn" class="btn primary" type="button">保存音色</button>
     </div>
     <ul id="vl-list" class="vl-list" aria-label="音色列表"></ul>
     <div id="vl-limits"></div>
@@ -278,6 +280,30 @@ export function mountVoiceLibrary() {
     <p id="vl-status" class="vl-status" role="status"></p>
   `;
   mount.replaceChildren(panel);
+  let transcriptionSerial = 0;
+  $("vl-file").addEventListener("change", async () => {
+    const serial = ++transcriptionSerial;
+    const file = $("vl-file").files?.[0];
+    if (!file) { $("vl-upload-btn").disabled = false; return; }
+    const ref = $("vl-ref-text");
+    const initial = ref.value;
+    const form = new FormData();
+    form.append("file", file);
+    $("vl-upload-btn").disabled = true;
+    status($("vl-status"), "正在本机 Whisper 识别参考文字…可继续编辑");
+    try {
+      const response = await fetch("/api/voices/transcribe", { method: "POST", body: form });
+      const result = await response.json();
+      if (serial !== transcriptionSerial) return;
+      if (!response.ok || !result.ok) throw new Error(result.detail?.reason || result.detail || "识别失败");
+      if (ref.value === initial) ref.value = result.ref_text;
+      status($("vl-status"), "参考音频与识别文字已关联；可修改文字后保存。", "ok");
+    } catch (error) {
+      if (serial === transcriptionSerial) status($("vl-status"), error.message + "；可手工填写后保存。", "error");
+    } finally {
+      if (serial === transcriptionSerial) $("vl-upload-btn").disabled = false;
+    }
+  });
   $("vl-upload-btn").addEventListener("click", async () => {
     const input = /** @type {HTMLInputElement} */ ($("vl-file"));
     const nameInput = /** @type {HTMLInputElement} */ ($("vl-name"));

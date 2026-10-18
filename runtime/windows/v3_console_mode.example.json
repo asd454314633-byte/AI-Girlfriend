@@ -1,0 +1,6 @@
+{
+  "schema": "v3-console-mode/1",
+  "mode": "foreground",
+  "stdoutStderr": "direct-file-redirection",
+  "_notes": "Copy to runtime/windows/v3_console_mode.json to enable. mode=background hides service console hosts and streams stdout/stderr to logs/runtime/*.log (single management console workflow). mode=foreground (default when the file is absent) keeps the historical visible per-service console windows. Only 'foreground' and 'background' are recognized; anything else reads as foreground."
+}

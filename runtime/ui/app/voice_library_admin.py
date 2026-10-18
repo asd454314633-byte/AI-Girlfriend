@@ -365,6 +365,34 @@ def _transcribe(wav_path: Path) -> str:
         return "".join(seg.text for seg in segments).strip()
 
 
+@router.post("/api/voices/transcribe")
+async def voices_transcribe(file: UploadFile = File(...)):
+    """A temporary local preview; no voice is saved or activated here."""
+    import tempfile
+    suffix = Path(file.filename or '').suffix.lower()
+    if suffix not in SUPPORTED_SUFFIX:
+        raise HTTPException(400, detail={'reason': '不支持的音频格式'})
+    raw = await file.read(MAX_UPLOAD_BYTES + 1)
+    if not raw or len(raw) > MAX_UPLOAD_BYTES:
+        raise HTTPException(400, detail={'reason': '空文件或超过50MB'})
+    scratch = _RUNTIME_ROOT / 'reading' / 'temp' / 'voice-preview'
+    scratch.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix='reference-', dir=scratch) as folder:
+        source = Path(folder) / ('input' + suffix)
+        wav = Path(folder) / 'ref.wav'
+        source.write_bytes(raw)
+        try:
+            probe = await run_in_threadpool(_probe_and_convert, source, wav)
+            text = await run_in_threadpool(_transcribe, wav)
+            if not text:
+                raise ValueError('未识别到说话内容，可手工填写参考文字')
+            return {'ok': True, 'ref_text': text, 'asr_transcribed': True, **probe}
+        except ValueError as exc:
+            raise HTTPException(400, detail={'reason': str(exc)}) from exc
+        except Exception as exc:
+            raise HTTPException(503, detail={'reason': '本机Whisper识别失败：' + type(exc).__name__}) from exc
+
+
 @router.post("/api/voices/upload")
 async def voices_upload(file: UploadFile = File(...), name: str = Form(""),
                         ref_text: str = Form(""), transcribe: str = Form("true")):

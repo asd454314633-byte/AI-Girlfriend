@@ -534,6 +534,8 @@ export class S2sRealtimeClient extends EventTarget {
     this._generation = gen;
     const { OpenAIRealtimeWebRTC, OpenAIRealtimeWebSocket, RealtimeSession } = sdk();
     let transport;
+    let rejectHandshake;
+    const handshakeFailure = new Promise((resolve, reject) => { rejectHandshake = reject; });
     if (this.options.transport === "websocket") {
       transport = new OpenAIRealtimeWebSocket({
         useInsecureApiKey: true,
@@ -544,7 +546,17 @@ export class S2sRealtimeClient extends EventTarget {
         // connection without an OpenAI-specific subprotocol (the signed session
         // token is already carried by the connect URL).
         createWebSocket: async ({ url: socketUrl }) => {
+          if (gen !== this._generation || this._closed) throw codedError('connect aborted', 'aborted');
           const socket = new globalThis.WebSocket(socketUrl);
+          socket.addEventListener('message', (event) => {
+            if (gen !== this._generation) return;
+            try {
+              const frame = JSON.parse(event.data);
+              if (frame.type === 'error' && frame.error?.type === 'session_limit_reached') {
+                rejectHandshake(codedError('语音会话已被另一页面占用，请先结束那里的通话后再连接。', 'session-slot-busy'));
+              }
+            } catch { /* A diagnostic frame never changes normal audio delivery. */ }
+          });
           if (this._micDiagnostic) {
             const send = socket.send.bind(socket);
             socket.send = (data) => {
@@ -625,7 +637,7 @@ export class S2sRealtimeClient extends EventTarget {
 
     this._dialing = true;
     try {
-      await session.connect({ apiKey: "s2s-local", url: this._url });
+      await Promise.race([session.connect({ apiKey: "s2s-local", url: this._url }), handshakeFailure]);
     } catch (error) {
       this._dialing = false;
       await this._retireGeneration(gen, "handshake failed", session);

@@ -132,6 +132,8 @@ let voiceActive = '';
 let voiceProviders = [];
 /** 最近一次语音状态；field_aliases / default 这些注册表事实都从这里取。 */
 let voiceState = {};
+let performanceSignature = '';
+let voiceRefreshPending = null;
 
 /** @param {string} id */
 function voiceSpec(id) {
@@ -263,6 +265,7 @@ function renderPerformance() {
   const spec = voiceSpec(voiceActive);
   const name = $('gf-performance-model');
   if (name) name.textContent = `当前模型：${voiceLabel(voiceActive)}`;
+  if ($('inline-voice-current')) $('inline-voice-current').textContent = voiceLabel(voiceActive);
   const note = $('gf-performance-note');
   if (note) note.textContent = (spec && spec.note_zh) || '';
   const values = readPreferences(voiceActive);
@@ -308,7 +311,6 @@ function renderVoiceOptions() {
 
 function renderVoice(state) {
   const selector = /** @type {HTMLSelectElement | null} */ ($('gf-voice-model'));
-  const previous = voiceActive;
   voiceState = state || {};
   voiceProviders = state.capabilities || state.providers || [];
   renderVoiceOptions();
@@ -317,7 +319,14 @@ function renderVoice(state) {
     selector.value = voiceActive;
     selector.disabled = Boolean(state.switch?.busy);
   }
-  if (voiceActive !== previous) { renderPerformance(); syncManualVoice(); }
+  // The selected provider can stay constant while its schema arrives or changes.
+  const signature = JSON.stringify({ active: voiceActive, spec: voiceSpec(voiceActive),
+    aliases: (voiceState.state || {}).field_aliases, ready: Boolean(state.ready) });
+  if (signature !== performanceSignature || !$('gf-performance-fields')?.children.length) {
+    performanceSignature = signature;
+    renderPerformance();
+    syncManualVoice();
+  }
   registerBrandTerms(voiceProviders.flatMap((row) => [row.id, row.label_zh, row.display_name]));
 }
 
@@ -355,6 +364,12 @@ function startReadyPolling() {
 }
 
 async function refreshVoice() {
+  if (voiceRefreshPending) return voiceRefreshPending;
+  voiceRefreshPending = refreshVoiceState().finally(() => { voiceRefreshPending = null; });
+  return voiceRefreshPending;
+}
+
+async function refreshVoiceState() {
   const res = await api('/api/voice-models');
   if (!res.ok) { voiceStatus('语音模型状态读取失败'); return; }
   renderVoice(res.json);
@@ -365,7 +380,7 @@ async function refreshVoice() {
     stopReadyPolling();
     voiceStatus(readyLabel(res.json));
   } else {
-    voiceStatus('语音服务未就绪，正在重试…');
+    voiceStatus('模型已注册，当前尚未加载；回到聊天后自动恢复。');
     startReadyPolling();
   }
 }
@@ -479,6 +494,12 @@ export function mountGirlfriend(h) {
       input.style.height = `${Math.min(input.scrollHeight, 140)}px`;
     });
   }
+  // Keep the registry current even after the bounded readiness retry has expired.
+  window.addEventListener('focus', () => { void refreshVoice(); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) void refreshVoice(); });
+  $('settings-tabs')?.addEventListener('click', () => { void refreshVoice(); });
+  $('settings-btn')?.addEventListener('click', () => { void refreshVoice(); });
+  window.setInterval(() => { if (!document.hidden && !voicePollTimer) void refreshVoice(); }, 15000);
   void refreshModels();
   renderPerformance();
   void refreshVoice();
@@ -489,6 +510,7 @@ export { manualSelection };
 /** 由 main.js 在连接建立 / 断开时调用：文字发送要有活着的 WS。 */
 export function setLive(value) {
   live = Boolean(value);
+  if (live) void refreshVoice();
   const input = /** @type {HTMLTextAreaElement | null} */ ($("gf-composer-input"));
   const send = $("gf-composer-send");
   if (input) input.classList.toggle("idle", !live);

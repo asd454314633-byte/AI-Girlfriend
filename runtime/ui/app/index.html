@@ -34,6 +34,7 @@
     <link rel="stylesheet" href="gf_workspace.css?v=v3-display-modes-03" />
     <!-- 书库管理 + 音色管理（2026-10-15）：最后加载，靠后序取胜 -->
     <link rel="stylesheet" href="ui/library_admin.css?v=vl-manage-01" />
+    <link rel="stylesheet" href="three_modes.css?v=voice-panel-01" />
   </head>
   <!--
     `booting` disables transitions/animations until the first paint commits.
@@ -124,6 +125,10 @@
             <button id="dynamic-chat-toggle" class="btn ghost" type="button" aria-pressed="false" disabled>动态互动：关闭</button>
             <span id="dynamic-chat-note" style="font-size:12px;color:var(--muted,#aaa)">文字互动 · 实验选项，可能较慢</span>
           </div>
+          <section id="voice-tools" aria-label="声音与音色">
+            <details id="voice-fold"><summary>声音与语气 <span id="inline-voice-current"></span></summary><div id="inline-voice"></div></details>
+            <details id="library-fold"><summary>音色管理 <span id="inline-current-voice"></span></summary><div id="inline-library"></div></details>
+          </section>
           <div class="orb-slot">
             <div class="orb-wrap">
               <div id="mic-gate" class="mic-gate">
@@ -660,7 +665,7 @@
     <script src="/audio-router.js?v=longaudio-02"></script>
       <script src="/avatar-sync.js?v=reading-boundaries-v8"></script>
       <script src="/live_interaction.js?v=live-04-default-persona"></script>
-      <script type="module" src="main.js?v=v3-three-emotions-06"></script>
+      <script type="module" src="main.js?v=voice-panel-20261018"></script>
       <!-- 人物/记忆面板自带挂载：页面里有 #char-panel 就装进去，没有就自己插一张卡片。 -->
       <script type="module" src="character_panel.js?v=char-panel-04"></script>
       <!-- 数字人面板自带挂载：列人物 / 添加 / 制作 / 切换，切换期间由它主导会话断开与重连。 -->

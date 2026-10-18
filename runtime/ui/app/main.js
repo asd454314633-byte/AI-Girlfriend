@@ -17,18 +17,18 @@
  * @typedef {S2sRealtimeClient} RealtimeClient
  */
 
-import { S2sRealtimeClient } from "./s2s-realtime-client.js?v=reading-delivery-20261004b";
+import { S2sRealtimeClient } from "./s2s-realtime-client.js?v=session-capacity-20261018";
 import { $, truncateError, DEBUG } from "./ui/dom.js";
 import { ChatView } from "./ui/chat.js?v=console-v1";
 import { Account } from "./ui/account.js";
 import { startZhCn } from "./ui/zh_cn.js?v=capability-ui-05";
-import { mountGirlfriend, setLive, manualSelection } from "./ui/girlfriend.js?v=three-emotions-07";
+import { mountGirlfriend, setLive, manualSelection } from "./ui/girlfriend.js?v=voice-refresh-01";
 import { mountReading, pauseForUserTurn, resumeAfterAssistantReply,
          stopForModeSwitch, readingInstructionContext } from "./ui/reading.js?v=reading-pipeline-v17-book-selection";
 import { ReadingInstructionGuard } from "./ws/reading-instructions.js?v=20261004b";
 // 书库管理 + 音色管理（2026-10-15）：独立模块，不动既有面板。
 import { mountReadingManager } from "./ui/reading_manager.js?v=ra-manage-02";
-import { mountVoiceLibrary } from "./ui/voice_library.js?v=vl-manage-02";
+import { mountVoiceLibrary } from "./ui/voice_library.js?v=vl-transcribe-01";
 
 const DEFAULT_VOICE = "Aiden";
 const LEGACY_DEFAULT_INSTRUCTIONS = "You are a friendly voice assistant.";
@@ -1468,6 +1468,7 @@ const readingInstructions = new ReadingInstructionGuard(() => ({
   mode: modeState.mode, client, liveSession: client?._session, ...readingInstructionContext(),
 }));
 
+let renderedBusinessMode = null;
 function renderMode() {
   // 挂在 window 上给别的模块读（live_interaction.js 据此在朗读模式下不去抢话）。
   // 这是**广播**，不是第二份事实源：能写的仍然只有 /api/mode 那一处。
@@ -1498,9 +1499,11 @@ function renderMode() {
   if (chatView) chatView.hidden = modeState.mode !== "ROLEPLAY";
   if (readingView) readingView.hidden = modeState.mode !== "READING";
   // 切到朗读时刷新书库与断点（reading.js 挂的钩子；未挂就跳过）。
-  if (modeState.mode === "READING" && !modeSwitching) {
+  // renderedBusinessMode 只防同模式的重复刷新，不是第二份事实源。
+  if (modeState.mode === "READING" && !modeSwitching && renderedBusinessMode !== "READING") {
     window.__gfReadingRefresh?.();
   }
+  if (!modeSwitching) renderedBusinessMode = modeState.mode;
 }
 
 /** 把刚拿到的那一整块提示词推给正在通话的这一场（换人走的就是这条路）。 */
@@ -1969,8 +1972,27 @@ function stopJoinCountdown() {
  * created here, which is still inside the gesture for a direct orb tap.
  * @param {AudioContext | null} [audioContext]
  */
+/** Wait briefly for the avatar WebRTC media (bounded); never blocks the call. */
+async function waitForAvatarMedia() {
+  const avatar = window.AvatarSync;
+  if (!avatar || avatar.suspended || avatar.mediaReady() ||
+      globalThis.s2sAudioRouter?.diagnostics().policy.avatar_enabled === false) return;
+  const started = Date.now();
+  void avatar.connect().catch(error => console.warn('[avatar startup]', error));
+  await new Promise(resolve => {
+    const check = () => {
+      if (avatar.mediaReady() || avatar.suspended || Date.now() - started >= 8000) { resolve(); return; }
+      setTimeout(check, 100);
+    };
+    check();
+  });
+}
+
 async function doStart(audioContext = null) {
   const transport = effectiveTransport();
+  // Give the avatar WebRTC media a head start so the first reply is audible
+  // through the digital human instead of falling back to local playback.
+  await waitForAvatarMedia();
   // Resolve the target before touching mic/audio so a misconfiguration (e.g.
   // direct mode with no URL) fails fast with a clear message. Over WebRTC the
   // browser never dials the s2s server itself — the offer goes to the
@@ -2397,6 +2419,29 @@ window.__connUi = {
 };
 initGateArc();
 startZhCn();
+// Move the existing nodes and listeners into the chat workspace; there is still
+// one registry and one voice library (the settings tabs become shortcuts).
+for (const [panelId, selector] of [['inline-voice', '[data-panel="voice"]'], ['inline-library', '[data-panel="voice-library"]']]) {
+  const body = document.querySelector(selector);
+  const destination = document.getElementById(panelId);
+  if (body && destination) { body.classList.remove('tab-panel', 'active'); body.hidden = false; destination.append(body); }
+}
+document.querySelectorAll('#settings-tabs [data-tab="voice"],#settings-tabs [data-tab="voice-library"]').forEach(button => {
+  button.addEventListener('click', event => {
+    if (!event.isTrusted) return;
+    settingsModal.close();
+    const target = document.getElementById(button.dataset.tab === 'voice' ? 'voice-fold' : 'library-fold');
+    target.open = true; target.scrollIntoView({ block: 'nearest' });
+  });
+});
+let conversationGrew = false;
+new MutationObserver(() => {
+  const grown = document.querySelectorAll('.hist-msg').length >= 6;
+  if (grown && !conversationGrew && !document.getElementById('voice-tools')?.contains(document.activeElement)) {
+    document.querySelectorAll('#voice-tools details').forEach(d => d.open = false);
+  }
+  conversationGrew = grown;
+}).observe(document.getElementById('gf-view-chat'), { childList: true, subtree: true });
 mountGirlfriend({
   sendText: async (text) => {
     // 打字也算插话：先停朗读，再让这一句走 LLM（顺序反了会两段音频叠在一起）。

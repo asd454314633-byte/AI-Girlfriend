@@ -725,6 +725,24 @@ function Quote-ProcessArgument([string]$Value) {
     return $Value
 }
 
+function Get-V3BackgroundMode {
+    # Optional single-console support. Only an explicit "background" in
+    # runtime/windows/v3_console_mode.json launches services hidden with
+    # file-redirected logs; a missing or unreadable file keeps the historical
+    # visible-console behavior so the public default is unchanged.
+    $modePath = Join-Path $script:NativeRoot 'v3_console_mode.json'
+    if (-not (Test-Path -LiteralPath $modePath)) { return $false }
+    try { return ((Read-JsonFile $modePath).mode -eq 'background') } catch { return $false }
+}
+
+function Rotate-V3ServiceLog([string]$Path,[int]$Keep=10) {
+    if (-not (Test-Path -LiteralPath $Path)) { return }
+    $stamp = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
+    Move-Item -LiteralPath $Path -Destination ($Path + '.' + $stamp + '.log') -Force
+    $old = @(Get-ChildItem -LiteralPath (Split-Path -Parent $Path) -File -Filter ((Split-Path -Leaf $Path) + '.*.log') -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending)
+    foreach ($item in @($old | Select-Object -Skip $Keep)) { Remove-Item -LiteralPath $item.FullName -Force }
+}
+
 function Start-NativeProcess([string]$Name,[string]$Executable,[string[]]$Arguments,[string]$WorkingDirectory,[string]$LogStem) {
     if (-not (Test-Path -LiteralPath $Executable)) { throw "EXECUTABLE_MISSING path=$Executable" }
     $state = Read-ServicePids
@@ -736,7 +754,7 @@ function Start-NativeProcess([string]$Name,[string]$Executable,[string[]]$Argume
     }
 
     $line = (($Arguments | ForEach-Object { Quote-ProcessArgument ([string]$_) }) -join ' ')
-    $port=if($Name -eq 's2s'){8765}else{0}
+    $port=if($Name -eq 's2s'){8765}elseif($Name -eq 'avatar'){8010}else{0}
     foreach($providerId in (Get-ProviderIds 'TTS' -EnabledOnly)){
         $spec=Get-ProviderSpec 'TTS' $providerId
         if((Get-ProviderProp (Get-ProviderProp $spec 'worker') 'pid_key') -eq $Name){$port=Get-ProviderHealthPort $spec}
@@ -749,12 +767,27 @@ function Start-NativeProcess([string]$Name,[string]$Executable,[string[]]$Argume
     $launchSpec=Join-Path $specDir ($Name+'_'+[guid]::NewGuid().ToString('N')+'.json')
     $pidFile=$launchSpec+'.pid.json'
     Write-JsonTextUtf8 $launchSpec (@{executable=$Executable;argument_line=$line;workdir=$WorkingDirectory;pid_file=$pidFile;title="AI Girlfriend $Name $port http://127.0.0.1:$port"}|ConvertTo-Json -Depth 5)
-    Start-Process -FilePath (Get-Command pwsh.exe -ErrorAction Stop).Source -WindowStyle Normal -ArgumentList @('-NoLogo','-NoProfile','-File',(Join-Path $script:AppRoot 'scripts\Native-Service-Console.ps1'),'-Spec',$launchSpec)|Out-Null
-    $deadline=(Get-Date).AddSeconds(10)
-    while(-not (Test-Path -LiteralPath $pidFile) -and (Get-Date) -lt $deadline){Start-Sleep -Milliseconds 100}
-    if(-not (Test-Path -LiteralPath $pidFile)){throw 'VISIBLE_LAUNCH_PID_TIMEOUT'}
-    $child=Read-JsonFile $pidFile
-    $proc=Get-Process -Id ([int]$child.pid) -ErrorAction Stop
+    $background = Get-V3BackgroundMode
+    if ($background) {
+        $logDir = Join-Path $script:AppRoot 'logs\runtime'
+        New-Item -ItemType Directory -Force -Path $logDir | Out-Null
+        $stdout = Join-Path $logDir ($LogStem + '.stdout.log')
+        $stderr = Join-Path $logDir ($LogStem + '.stderr.log')
+        Rotate-V3ServiceLog $stdout
+        Rotate-V3ServiceLog $stderr
+        # Redirect directly to files: no anonymous pipe is left unread and the
+        # service process remains independent of this controller's console.
+        $proc = Start-Process -FilePath $Executable -WindowStyle Hidden -ArgumentList $line -WorkingDirectory $WorkingDirectory -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru
+        $child = @{ pid=$proc.Id; start_utc=$proc.StartTime.ToUniversalTime().ToString('o'); stdout=$stdout; stderr=$stderr }
+        Write-JsonTextUtf8 $pidFile ($child | ConvertTo-Json -Depth 4)
+    } else {
+        Start-Process -FilePath (Get-Command pwsh.exe -ErrorAction Stop).Source -WindowStyle Normal -ArgumentList @('-NoLogo','-NoProfile','-File',(Join-Path $script:AppRoot 'scripts\Native-Service-Console.ps1'),'-Spec',$launchSpec)|Out-Null
+        $deadline=(Get-Date).AddSeconds(10)
+        while(-not (Test-Path -LiteralPath $pidFile) -and (Get-Date) -lt $deadline){Start-Sleep -Milliseconds 100}
+        if(-not (Test-Path -LiteralPath $pidFile)){throw 'VISIBLE_LAUNCH_PID_TIMEOUT'}
+        $child=Read-JsonFile $pidFile
+        $proc=Get-Process -Id ([int]$child.pid) -ErrorAction Stop
+    }
     Set-ObjectValue $state $Name $proc.Id
     $started = Get-CimInstance Win32_Process -Filter "ProcessId=$($proc.Id)" -ErrorAction SilentlyContinue
     # OWNERSHIP REPAIR 2026-09-25: the pid stored under 'avatar' is the VENV LAUNCHER
@@ -769,6 +802,8 @@ function Start-NativeProcess([string]$Name,[string]$Executable,[string[]]$Argume
         createdBy='AI_GIRLFRIEND_WINDOWS_NATIVE'
         role='launcher'
         consoleSpec=$launchSpec
+        stdoutLog=[string]$child.stdout
+        stderrLog=[string]$child.stderr
         listenerAuthority='runtime/windows/avatar_runtime_state.json:listener_pid'
     })
     Save-ServicePids $state
@@ -809,8 +844,16 @@ function Stop-NativeProcess([string]$Name,[string]$ExpectedExecutable,[string]$C
             Stop-Process -Id $pidValue -Force -ErrorAction SilentlyContinue
         }
         foreach($childId in $treeIds) { try { Wait-Process -Id ([int]$childId) -Timeout 15 -ErrorAction SilentlyContinue } catch {} }
-        $stillRunning=@($treeIds | Where-Object { Get-Process -Id ([int]$_) -ErrorAction SilentlyContinue })
-        if($stillRunning.Count -or (Get-Process -Id $pidValue -ErrorAction SilentlyContinue)) {
+        # TerminateProcess is asynchronous. Confirm real exit with a bounded
+        # census before declaring failure; never send another kill in this wait.
+        $exitDeadline=(Get-Date).AddSeconds(5)
+        do {
+            $stillRunning=@($treeIds | Where-Object { Get-Process -Id ([int]$_) -ErrorAction SilentlyContinue })
+            $parentRunning=Get-Process -Id $pidValue -ErrorAction SilentlyContinue
+            if(-not $stillRunning.Count -and -not $parentRunning){break}
+            Start-Sleep -Milliseconds 200
+        }while((Get-Date) -lt $exitDeadline)
+        if($stillRunning.Count -or $parentRunning) {
             throw "OWNED_PROCESS_TREE_STILL_RUNNING service=$Name pids=$($stillRunning -join ',')"
         }
     }

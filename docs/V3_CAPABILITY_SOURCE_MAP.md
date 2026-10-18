@@ -15,3 +15,14 @@
 | 9 服务管理 | runtime/ui7860_manager/{manager,Console,fixture_app,test_manager}、scripts/Manage-Project-Service.ps1、Native-Service-Console.ps1、Register-ProjectTasks.ps1、Start-AI-Girlfriend.cmd | Windows HMAC/ACL、独立visible console；本机新登记，不发布key | 管理器44项隔离生命周期及源码身份验证；本次不控制生产 |
 
 九类均包含合法自研／已归因源码，完整运行仍需外部依赖。无法合法打包不代表不存在，也不把“说明了缺失”包装为开箱即用。Higgs worker必须把请求reference_audio_path/reference_text传给native clone调用，本版保留该修复。
+
+## 2026-10-18 增量（聊天/陪读范围）
+
+| 变更 | 文件 | 说明 |
+|---|---|---|
+| 音色上传自动识别 | runtime/ui/app/voice_library_admin.py、ui/voice_library.js | 新增 /api/voices/transcribe：上传参考音频先经本机 Whisper 提取参考文字，可编辑后保存；不保存/不激活音色 |
+| 语音面板收纳 | runtime/ui/app/index.html、main.js、three_modes.css（新）、ui/girlfriend.js、ui/voice_library.js | 声音与音色面板移入聊天区折叠面板；设置页标签变为跳转入口；聊天变长自动收起 |
+| 语音状态刷新 | runtime/ui/app/ui/girlfriend.js | 去重并发刷新、按签名重渲染、窗口聚焦/可见性/定时轻量回读 |
+| 数字人媒体就绪等待 | runtime/ui/app/main.js | 开始通话前有界等待数字人媒体就绪（≤8s），避免首轮语音回落本机 |
+| 会话容量握手 | runtime/ui/app/s2s-realtime-client.js | realtime 握手期间识别 session_limit_reached，立即以明确错误失败，不再悬挂 |
+| 后台控制台选项 | runtime/ui7860_manager/{manager.py,Console.ps1}、scripts/Runtime-Common.ps1、runtime/windows/v3_console_mode.example.json | 可选单管理台模式：v3_console_mode.json 声明 background 时服务控制台隐藏、日志落文件；缺省/缺文件保持可见控制台行为不变 |

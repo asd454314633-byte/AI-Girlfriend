@@ -29,6 +29,7 @@
 # 再分发存疑期间曾整体排除；现已替换为独立实现并通过来源审查，恢复跟踪。
 # runtime/ui/app/avatar-sync.js
 runtime/windows/*.json
+!runtime/windows/v3_console_mode.example.json
 runtime/windows/*.txt
 runtime/mode/mode_state.json
 runtime/ui7860_manager/state/
