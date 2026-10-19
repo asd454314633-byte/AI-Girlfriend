@@ -20,7 +20,7 @@ SAMPLE = """第一章 初见
 
 第二章 长谈
 
-聊了很久，从音乐聊到香菜。她笑了。
+聊了很久，从天气聊到香菜。她笑了。
 他也笑了！
 然后沉默。
 
@@ -49,7 +49,7 @@ def main():
     print("[朗读切块：按 。！？； 与自然段，不是固定字数]")
     view = R.chapter_view(doc, 1)
     got = [c["text"] for c in view["chunks"]]
-    want = ["聊了很久，从音乐聊到香菜。她笑了。", "他也笑了！", "然后沉默。"]
+    want = ["聊了很久，从天气聊到香菜。她笑了。", "他也笑了！", "然后沉默。"]
     check(got == want, "第二章切块（短句并进前一句）", str(got))
     check(all(text[a:b] == c["text"] for c in view["chunks"]
               for a, b in [(c["char_start"], c["char_end"])]), "偏移量能还原原文")
@@ -89,7 +89,7 @@ def main():
     print("[READING_STATE 注入块 §15-§17]")
     R.set_progress(doc, 1, 0, "READING")
     R.set_chapter_summary(doc, 0, "两人在雨里第一次说话。")
-    R.set_chapter_summary(doc, 1, "从音乐聊到香菜，关系变近。")
+    R.set_chapter_summary(doc, 1, "从天气聊到香菜，关系变近。")
     block = R.reading_state_block()
     print("  ----")
     for line in block.split("\n"):
@@ -99,7 +99,7 @@ def main():
     check("测试书" in block and "第二章 长谈" in block, "含书名与章节")
     check("她推开门" in block, "含前 2~3 段（前一句在第一章）")
     check("然后沉默" in block, "含后 1~2 段")
-    check("从音乐聊到香菜，关系变近。" in block, "含本章摘要")
+    check("从天气聊到香菜，关系变近。" in block, "含本章摘要")
     check("两人在雨里第一次说话。" in block, "含前章摘要")
     check("不得当成用户的经历写进长期记忆" in block, "带隔离声明")
     check(len(block) <= R.READING_BLOCK_MAX_CHARS + 200, "块封顶", f"{len(block)} chars")
