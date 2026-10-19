@@ -70,9 +70,9 @@ test('manual panel is backend-scoped, persistent, and resettable', async () => {
   await mount();
   assert.deepEqual(keys(), ['emotion', 'style', 'sound_effect', 'speed', 'pitch', 'expressiveness']);
   assert.deepEqual(manualSelection().manual_voice_mode, {});
-  control('style').value = 'singing';
+  control('style').value = 'whispering';
   control('style').listeners.change();
-  assert.equal(manualSelection().manual_voice_mode.style, 'singing');
+  assert.equal(manualSelection().manual_voice_mode.style, 'whispering');
 
   active = 'fish';
   await mount();
