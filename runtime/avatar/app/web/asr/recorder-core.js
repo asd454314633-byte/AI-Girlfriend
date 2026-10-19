@@ -554,7 +554,6 @@ maxSample: 为16位pcm采样的绝对值中最大的一个（计算峰值音量�
 Recorder.PowerDBFS=function(maxSample){
 	var val=Math.max(0.1, maxSample||0),Pref=0x7FFF;
 	val=Math.min(val,Pref);
-	//https://www.logiclocmusic.com/can-you-tell-the-decibel/
 	//https://blog.csdn.net/qq_17256689/article/details/120442510
 	val=20*Math.log(val/Pref)/Math.log(10);
 	return Math.max(-100,Math.round(val));
