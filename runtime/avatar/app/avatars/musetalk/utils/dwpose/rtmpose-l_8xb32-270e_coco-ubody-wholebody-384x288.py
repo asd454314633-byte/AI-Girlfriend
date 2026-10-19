@@ -107,8 +107,8 @@ data_root = 'data/UBody/'
 backend_args = dict(backend='local')
 
 scenes = [
-    'Magic_show', 'Entertainment', 'ConductMusic', 'Online_class', 'TalkShow',
-    'Speech', 'Fitness', 'Interview', 'Olympic', 'TVShow', 'Singing',
+    'Magic_show', 'Entertainment, 'Online_class', 'TalkShow',
+    'Speech', 'Fitness', 'Interview', 'Olympic', 'TVShow',
     'SignLanguage', 'Movie', 'LiveVlog', 'VideoConference'
 ]
 
