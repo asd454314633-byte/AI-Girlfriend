@@ -1,0 +1,19 @@
+#voice-tools {display:grid;gap:6px;padding:8px 14px;flex:0 1 auto;min-width:0;min-height:82px;max-height:42vh;overflow:auto;overscroll-behavior:contain}
+#voice-tools details {border:1px solid var(--border-strong,#333);border-radius:12px;background:rgba(20,23,32,.65);min-width:0}
+#voice-tools summary {cursor:pointer;padding:10px 12px;list-style-position:inside;font-size:13px;font-weight:600}
+#voice-tools summary span {font-weight:400;font-size:11px;color:var(--muted,#aaa);margin-left:8px}
+#voice-tools details>div {padding:0 10px 10px;max-height:32vh;overflow:auto;overscroll-behavior:contain}
+#voice-tools .gf-performance-fields {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#voice-tools .gf-performance-head {flex-wrap:wrap;gap:5px}
+#voice-tools .gf-performance-head strong {font-size:12px}
+#voice-tools .gf-performance-note,#voice-tools .vl-hint {font-size:11px;line-height:1.5}
+#voice-tools .vl-panel>h3 {display:none}
+#voice-tools input,#voice-tools select,#voice-tools textarea {max-width:100%;min-width:0}
+#voice-tools .vl-upload {display:grid;grid-template-columns:1fr;gap:6px}
+#gf-view-chat {min-height:0;overflow:hidden}
+#gf-view-chat .orb-slot {flex:none;padding-top:4px;padding-bottom:4px}
+#gf-view-chat .orb-wrap {--orb-size:78px}
+#gf-view-chat .gf-live-conversation {min-height:72px;overflow:auto}
+.gf-mode-row {flex-wrap:wrap}
+@media(max-height:760px) {#voice-tools details>div{max-height:25vh} #gf-view-chat .orb-wrap{--orb-size:62px}}
+@media(max-width:600px) {#voice-tools .gf-performance-fields{grid-template-columns:1fr} .gf-mode-status{max-width:90vw}}
