@@ -456,11 +456,6 @@
               "emit": ""
             },
             {
-              "id": "singing",
-              "label_zh": "唱歌",
-              "emit": "<|style:singing|>"
-            },
-            {
               "id": "shouting",
               "label_zh": "喊叫",
               "emit": "<|style:shouting|>"
